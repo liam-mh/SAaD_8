@@ -1,0 +1,60 @@
+@startuml  
+
+!theme C4_united from https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/themes   
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml  
+
+UpdateBoundaryStyle($bgColor="#E5E5E5", $fontColor="#E5E5E5", $borderColor="#E5E5E5")  
+
+skinparam defaultFontSize 16  
+
+LAYOUT_WITH_LEGEND()  
+
+' Define a custom tag for relationships  
+AddRelTag("Relationship", $textColor = "black", $lineColor = "black", $lineStyle = DashedLine())  
+
+title [System Context] Advanced Media Library (AML)  
+
+' Define actors/users of the system  
+Person(libraryMember, "Library Member", "Registered with the library and uses the system to access services.\n")  
+Person(guest, "Guest", "\nA non-registered user who visits the AML website.")  
+Person(accountant, "Accountant", "\nManages subscriptions and reconciles payments.")  
+Person(librarian, "Librarian", "\nHandles in-branch operations and media management.")  
+Person(branchManager, "Branch Manager", "\nManages branch operations and inventory.")  
+Person(systemAdmin, "System Administrator", "Responsible for the overall technical management of the AML system.")  
+Person(centralAdmin, "Central Administrator", "\nOversees all branches, allocates budgets, and manages policies.")  
+Person(callCenterOperator, "Call Center Operator", "\nHandles phone-based inquiries and transactions.")  
+Person(purchaseManager, "Purchase Manager", "\nManages and coordinates procurement activities.")  
+
+' Define the main system (AML) with white boundary and text  
+Boundary(amlBoundary, "") { 
+    System(amlSystemLabel, "Advanced Media Library System", "The central system that manages media resources and user interactions.")  
+}  
+
+' Define external systems  
+System_Ext(email, "Email Gateway", "[Twilio]\n\nSends notifications via email.\n", $sprite="&envelope-closed,scale=5.0,color=7E3743")  
+System_Ext(sms, "SMS Gateway", "[Twilio]\n\nSends notifications via SMS.\n", $sprite="&phone,scale=5.0,color=7E3743")  
+System_Ext(paymentGateway, "Payment Gateway", "[Stripe]\n\nHandles subscription payments and transactions.", $sprite="&credit-card,scale=5.0,color=7E3743")  
+System_Ext(externalVendor, "External Vendors System", "[Amazon Marketplace]\n\nMedia Procurement.\n", $sprite="&cart,scale=5.0,color=7E3743")  
+
+' Define relationships.   
+Rel(libraryMember, amlSystemLabel, "Search, borrow, return, manage media using", $tags="Relationship")  
+Rel(guest, amlSystemLabel, "Browse media catalog, register using", $tags="Relationship")  
+Rel(accountant, amlSystemLabel, "Manage subscriptions and reconcile payments using", $tags="Relationship")  
+Rel(librarian, amlSystemLabel, "Manage in-branch media and assist members using", $tags="Relationship")  
+Rel(branchManager, amlSystemLabel, "Oversee branch operations and inventory using", $tags="Relationship")  
+Rel(systemAdmin, amlSystemLabel, "Perform system maintenance and security tasks using", $tags="Relationship")  
+Rel(callCenterOperator, amlSystemLabel, "Assist users with media inquiries and reservations using", $tags="Relationship")  
+Rel(purchaseManager, amlSystemLabel, "Procures media for the library using", $tags="Relationship")  
+Rel(centralAdmin, amlSystemLabel, "Generate reports, allocate budgets, manage policies using", $tags="Relationship")  
+Rel(email, libraryMember, "Sends email notification to", $tags="Relationship")  
+Rel(email, purchaseManager, "Sends email of suggested procurement to", $tags="Relationship")  
+Rel(sms, libraryMember, "Sends SMS notification to", $tags="Relationship")  
+Rel(amlSystemLabel, email, "Send subscription and media notifications using", $tags="Relationship")  
+Rel(amlSystemLabel, sms, "Send subscription and media notifications using", $tags="Relationship")  
+Rel(amlSystemLabel, paymentGateway, "Process customer payments using", "HTTPS", $tags="Relationship")  
+Rel(amlSystemLabel, externalVendor, "Procure media resources using", $tags="Relationship")  
+
+SHOW_LEGEND(false)  
+
+@enduml
