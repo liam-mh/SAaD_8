@@ -31,6 +31,8 @@ The decision drivers for choosing the most appropriate solution include:
 - What are the positive and negative outcomes?
 - What will be affected (codebase, performance, security, etc.)?
 - How does this decision affect future decisions or systems?
+  ## Mitigation Strategy
+  - A short paragraph on minimising the consequences of the choice.
 
 ## Confirmation
 <!-- (Optional) Describe how this decision will be confirmed or validated. -->
@@ -46,4 +48,4 @@ The decision drivers for choosing the most appropriate solution include:
 
 ## References
 <!-- (Optional) Add references, links, or documents relevant to this decision. -->
-- List any relevant resources.
+- List any relevant resources via APA referencing.
