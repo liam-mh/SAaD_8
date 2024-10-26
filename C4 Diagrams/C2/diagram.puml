@@ -1,0 +1,132 @@
+@startuml
+!ENABLE_ALL_PLANT_ELEMENTS = 1
+!theme C4_united from https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/themes
+!include https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
+title C4 Level 2: Advanced Media Library System - Container Diagram
+skinparam defaultFontSize 16
+
+
+' Define colour coding
+UpdateBoundaryStyle($bgColor="#E0B6BD", $fontColor="brown", $borderColor="brown")
+AddRelTag("Relationship", $textColor="black", $lineColor="black", $lineStyle="dashed")
+AddElementTag("webApp", $bgColor="black", $borderColor="lightblue", $shape=EightSidedShape(), $legendText="Web Application (React)")
+AddElementTag("mobileApp", $bgColor="black", $borderColor="lightblue", $shape=EightSidedShape(), $legendText="Mobile Application (iOS/Android)")
+AddElementTag("apiGateway", $bgColor="#A9D18E", $fontColor="black", $borderColor="black", $legendText="API Gateway (Node.js/Express.js)")
+AddElementTag("esb", $bgColor="#00FBFF", $fontColor="black", $borderColor="black", $legendText="Enterprise Service Bus (ESB)")
+AddElementTag("backendAPI", $bgColor="#9DC3E6", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Backend API (Node.js/Express.js)")
+AddElementTag("database", $bgColor="#4d8ddb", $fontColor="black", $borderColor="black", $legendText="Database (Azure MySQL)")
+
+
+' Define the main system boundaries
+System_Boundary(aml, "Advanced Media Library (AML)") {
+Container(webApp, "Web Application", "React.js", "Provides a front-end interface for users to interact with.", $tags="webApp")
+Container(mobileApp, "Mobile Application", "iOS/Android", "Allows users to view and borrow media on the go.", $tags="mobileApp")
+Container(apiGateway, "API Gateway", "Node.js/Express.js", "Routes external traffic to the appropriate internal microservice.", $tags="apiGateway", $baseShape="hexagon")
+
+
+Container(esb, "Enterprise Service Bus", " ", "Manages communication between services and handles routing, transformation, and mediation.", $tags="esb", $baseShape="storage")
+
+
+System_Boundary(storefront, "Storefront Service") {
+    Container(backendAPIStorefront, "Storefront API", "Node.js/Express.js", "Handles user requests for media browse, borrow, and return operations.", $tags="backendAPI")
+}
+
+
+System_Boundary(account, "Account Service") {
+    Container(backendAPIAccount, "Account API", "Node.js/Express.js", "Handles user registration, login/authorisation and account management.", $tags="backendAPI")
+}
+
+
+System_Boundary(inventory, "Inventory Service") {
+    Container(backendAPIInventory, "Inventory API", "Node.js/Express.js", "Handles business logic, asset management and media procurement.", $tags="backendAPI")
+}
+
+ContainerDb(amlDB, "AML Database", "Azure MySQL", "Stores all tables the system requires e.g. media data, user data, inventory data.", $tags="database")
+
+Container(externalAPIGateway, "External API Gateway", "Node.js", "Manages external communication with payment systems, notifications and external vendors.", $tags="apiGateway", $baseShape="hexagon")
+
+}
+
+
+' External Systems
+System_Ext(smsSys, "SMS", "[Twillo]\n\n\n Sends notifications via SMS.", $sprite="&phone,scale=5.0,color=7E3743")
+System_Ext(vendorSystem, "External Vendor System", "[Amazon Marketplace] \n\n Used for procuring media resources.", $sprite="&cart,scale=5.0,color=7E3743")
+System_Ext(paymentGateway, "Payment Gateway", "[Stripe] \n \n Handles subscription payments and transactions.", $sprite="&credit-card,scale=5.0,color=7E3743")
+System_Ext(emailSys, "Email", "[Twillo]\n\n Sends notifications via email.", $sprite="&envelope-closed,scale=5.0,color=7E3743")
+
+
+' External People
+Person(libraryMember, "AML Member", "\n\n Search, borrow, return and manage media.")
+Person(guest, "Guest", "\n\n Browse media catalogue without logging in.")
+Person(amlAccountant, "AML Accountant", "\n\nManages subscriptions and reconciles payments.")
+Person(sysAdm, "System Administrator", "Responsible for the overall technical management of the AML system.")
+Person(cntrAdm, "Central Administrator", "\nOversees all branches, allocates budgets and manages policies.")
+Person(librarian, "Librarian", "\n\nHandles in-branch operations and media management.")
+Person(branchMan, "Branch Manager", "\n\nManages branch operations and inventory.")
+Person(callOp, "Call Centre Operator", "Assists users through phone-based media inquiries and reservations.")
+Person(purchaseMgr, "Purchase Manager", "\n\n Manages and coordinates procurement activities.")
+
+
+' Relationships - People
+Rel(libraryMember, mobileApp, "Search, borrow, return, manage media on the go", $tags="Relationship")
+Rel(guest, mobileApp, "Browse media catalogue, register/subscribe on the go", $tags="Relationship")
+Rel(libraryMember, webApp, "Search, borrow, return, manage media", $tags="Relationship")
+Rel(guest, webApp, "Browse media catalogue, register/subscribe", $tags="Relationship")
+Rel(amlAccountant, webApp, "Manage subscriptions and reconcile payments", $tags="Relationship")
+Rel(sysAdm, webApp, "Perform system, account and database maintenance", $tags="Relationship")
+Rel(cntrAdm, webApp, "Generate reports, allocate budgets, manage policies", $tags="Relationship")
+Rel(librarian, webApp, "Manage in-branch media and assist members", $tags="Relationship")
+Rel(branchMan, webApp, "Oversee branch operations and inventory", $tags="Relationship")
+Rel(callOp, webApp, "Assist users with media inquiries and reservations", $tags="Relationship")
+Rel(purchaseMgr, webApp, "Procures media for the library", $tags="Relationship")
+Rel_U(smsSys, libraryMember, "Sends SMS notifications", $tags="Relationship")
+Rel_U(emailSys, libraryMember, "Sends email notifications", $tags="Relationship")
+Rel_U(emailSys, purchaseMgr, "Sends email notifications", $tags="Relationship")
+
+
+'Relationships - Internal System
+Rel(webApp, apiGateway, " ", "RESTful API", $tags="Relationship")
+Rel(mobileApp, apiGateway, " ", "RESTful API", $tags="Relationship")
+
+/' Removed to implement ESB
+Rel(apiGateway, backendAPIStorefront, "Routes user requests for browsing or interacting with media", $tags="Relationship")
+Rel(apiGateway, backendAPIAccount, "Routes requests for account registration, login and editing", $tags="Relationship")
+Rel(apiGateway, backendAPIInventory, "Routes requests related to media inventory, procurement and asset management", $tags="Relationship")
+'/ 
+
+
+' All requests now routed through the ESB
+Rel(apiGateway, esb, "Routes traffic to internal microservices", $tags="Relationship")
+Rel(esb, backendAPIStorefront, "Routes user requests for browsing or interacting with media", $tags="Relationship")
+Rel(esb, backendAPIAccount, "Routes requests for account registration, login and editing", $tags="Relationship")
+Rel(esb, backendAPIInventory, "Routes requests related to media inventory, procurement and asset management", $tags="Relationship")
+
+
+'Relationships - Storefront Service
+Rel(backendAPIStorefront, amlDB, "Read/write media data", $tags="Relationship")
+Rel(backendAPIStorefront, externalAPIGateway, "Communicates with external systems for payments", $tags="Relationship")
+
+
+'Relationships - Account Service
+Rel(backendAPIAccount, amlDB, "Read/write user data", $tags="Relationship")
+Rel(backendAPIAccount, externalAPIGateway, "Communicate with external systems for SSO and notifications", $tags="Relationship")
+
+
+'Relationships - Inventory Service
+Rel(backendAPIInventory, amlDB, "Read/write inventory data", $tags="Relationship")
+Rel(backendAPIInventory, externalAPIGateway, "Communicate with external systems for media procurement", $tags="Relationship")
+
+
+'Relationships - Database
+Rel_D(amlDB, externalAPIGateway, " ", $tags="Relationship")
+
+
+' Relationships - External Systems
+Rel_L(externalAPIGateway, emailSys, "Sends subscription and media notifications via email", $tags="Relationship")
+Rel(externalAPIGateway, smsSys, "Sends subscription and media notifications via SMS", $tags="Relationship")
+Rel(externalAPIGateway, vendorSystem, "Procure media resources", $tags="Relationship")
+Rel(externalAPIGateway, paymentGateway, "Processes payments for subscriptions", $tags="Relationship")
+
+
+SHOW_LEGEND(true)
+@enduml
