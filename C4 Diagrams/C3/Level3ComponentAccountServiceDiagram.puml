@@ -1,0 +1,63 @@
+@startuml
+!ENABLE_ALL_PLANT_ELEMENTS = 1
+!theme C4_united from https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/themes
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+title C4 Level 3: Advanced Media Library System - Component Diagram - Account Service
+skinparam defaultFontSize 16
+
+
+' Define colour coding '
+UpdateBoundaryStyle($bgColor="#E0B6BD", $fontColor="brown", $borderColor="brown")
+AddRelTag("Relationship", $textColor="black", $lineColor="black", $lineStyle="dashed")
+AddElementTag("esb", $bgColor="#00FBFF", $fontColor="black", $borderColor="black", $legendText="Enterprise Service Bus (ESB)")
+AddElementTag("controller", $bgColor="#9DC3E6", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Service Controller (Node.js/Express.js)")
+AddElementTag("repo", $bgColor="#75A8E1", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Service Repository (MySQL)")
+AddElementTag("database", $bgColor="#4D8DDB", $fontColor="black", $borderColor="black", $legendText="Database (Azure MySQL)")
+
+Container(esb, "Enterprise Service Bus", " ", "Manages communication between services and handles routing, transformation, and mediation.", $tags="esb", $baseShape="storage")
+
+Container_Boundary(account, "Account Service") {
+    Component(registrationCtr, "Registration Controller", "Node.js/Express.js", "Provides account creation functionality.", $tags="controller")
+    Component(usrLoginCtr, "User Login Controller", "Node.js/Express.js", "Handles user sign-in and security functionality.", $tags="controller")
+    Component(profileCtr, "Profile Controller", "Node.js/Express.js", "Handles functionality for editing account details such as contact details, password or address.", $tags="controller")
+    Component(subscriptionCtr, "Subscription Controller", "Node.js/Express.js", "Handles management of subscriptions and payment history.", $tags="controller")
+    Component(empLoginCtr, "Employee Login Controller", "Node.js/Express.js", "Handles employee sign-in and security functionality.", $tags="controller")
+
+    Component(userRepo, "User Repository", "MySQL", "Handles SQL statements for user accounts.", $tags="repo")
+    Component(subRepo, "Subscription Repository", "MySQL", "Handles SQL statements for subscription info.", $tags="repo")
+    Component(userSubRepo, "User-Subscription Repository", "MySQL", "Handles SQL statements for user subscriptions.", $tags="repo")
+    Component(employeeRepo, "Employee Repository", "MySQL", "Handles SQL statements for employee accounts.", $tags="repo")
+    Component(paymentRepo, "Payment Repository", "MySQL", "Handles SQL statements for user payment info.", $tags="repo")
+}
+
+ContainerDb(database, "Database", "Azure MySQL", "Stores all tables the system requires e.g. media data, user data, inventory data.", $tags="database")
+
+' Relationships - ESB '
+Rel(esb, registrationCtr, "Handles API calls when registering an account", $tags="Relationship")
+Rel(esb, usrLoginCtr, "Handles API calls when users log into their account", $tags="Relationship")
+Rel(esb, profileCtr, "Handles API calls when users edit their account", $tags="Relationship")
+Rel(esb, subscriptionCtr, "Handles API calls for viewing and managing subscriptions and payments", $tags="Relationship")
+Rel(esb, empLoginCtr, "Handles API calls when employees log into their account", $tags="Relationship")
+
+' Relationships - Internal - Controller '
+Rel(registrationCtr, userRepo, "Adds new user to database", $tags="Relationship")
+Rel(usrLoginCtr, userRepo, " ", $tags="Relationship")
+Rel(profileCtr, userRepo, " ", $tags="Relationship")
+Rel(subscriptionCtr, subRepo, " ", $tags="Relationship")
+Rel(empLoginCtr, employeeRepo, " ", $tags="Relationship")
+Rel(subscriptionCtr, paymentRepo, " ", $tags="Relationship")
+
+' Relationships - Internal - Repo '
+Rel(userRepo, userSubRepo, " ", $tags="Relationship")
+Rel(subRepo, userSubRepo, " ", $tags="Relationship")
+Rel(paymentRepo, userSubRepo, " ", $tags="Relationship")
+
+' Relationships - Database '
+Rel(userRepo, database, "Queries User table", $tags="Relationship")
+Rel(subRepo, database, "Queries Subscription table", $tags="Relationship")
+Rel(userSubRepo, database, "Queries UserSubscriptions table", $tags="Relationship")
+Rel(employeeRepo, database, "Queries Employee table", $tags="Relationship")
+Rel(paymentRepo, database, "Queries Payment table", $tags="Relationship")
+
+SHOW_LEGEND(true)
+@enduml
