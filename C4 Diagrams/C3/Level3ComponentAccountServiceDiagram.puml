@@ -41,16 +41,16 @@ Rel(esb, empLoginCtr, "Handles API calls when employees log into their account",
 
 ' Relationships - Internal - Controller '
 Rel(registrationCtr, userRepo, "Adds new user to database", $tags="Relationship")
-Rel(usrLoginCtr, userRepo, " ", $tags="Relationship")
-Rel(profileCtr, userRepo, " ", $tags="Relationship")
-Rel(subscriptionCtr, subRepo, " ", $tags="Relationship")
-Rel(empLoginCtr, employeeRepo, " ", $tags="Relationship")
-Rel(subscriptionCtr, paymentRepo, " ", $tags="Relationship")
+Rel(usrLoginCtr, userRepo, "Verifies login details ", $tags="Relationship")
+Rel(profileCtr, userRepo, "View and edit account info ", $tags="Relationship")
+Rel(subscriptionCtr, subRepo, "View and edit subscription info ", $tags="Relationship")
+Rel(subscriptionCtr, paymentRepo, "View and edit payment info ", $tags="Relationship")
+Rel(empLoginCtr, employeeRepo, "Verifies login details ", $tags="Relationship")
 
 ' Relationships - Internal - Repo '
-Rel(userRepo, userSubRepo, " ", $tags="Relationship")
-Rel(subRepo, userSubRepo, " ", $tags="Relationship")
-Rel(paymentRepo, userSubRepo, " ", $tags="Relationship")
+Rel(userRepo, userSubRepo, "Links users to their active subscriptions ", $tags="Relationship")
+Rel(subRepo, userSubRepo, "Retrieves and updates subscription details for linked users ", $tags="Relationship")
+Rel(paymentRepo, userSubRepo, "Links payment records to user subscriptions ", $tags="Relationship")
 
 ' Relationships - Database '
 Rel(userRepo, database, "Queries User table", $tags="Relationship")
