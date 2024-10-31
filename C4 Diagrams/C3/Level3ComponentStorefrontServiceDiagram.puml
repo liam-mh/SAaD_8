@@ -1,0 +1,71 @@
+@startuml
+!ENABLE_ALL_PLANT_ELEMENTS = 1
+!theme C4_united from https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/themes
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+title C4 Level 3: Advanced Media Library System - Component Diagram - Storefront Service
+skinparam defaultFontSize 16
+
+
+' Define colour coding '
+UpdateBoundaryStyle($bgColor="#E0B6BD", $fontColor="brown", $borderColor="brown")
+AddRelTag("Relationship", $textColor="black", $lineColor="black", $lineStyle="dashed")
+AddElementTag("apiGateway", $bgColor="#A9D18E", $fontColor="black", $borderColor="black", $legendText="API Gateway (Node.js/Express.js)")
+AddElementTag("controller", $bgColor="#9DC3E6", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Controller (Node.js/Express.js)")
+AddElementTag("service", $bgColor="#89B6E4", $fontColor="black", $borderColor="black",$shape=RectangleShape(), $legendText="Service (Node.js/Express.js)")
+AddElementTag("repo", $bgColor="#75A8E1", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Entity (MySQL)")
+AddElementTag("database", $bgColor="#4D8DDB", $fontColor="black", $borderColor="black", $legendText="Database (Azure MySQL)")
+
+Container(apiGateway, "API Gateway", "Node.js/Express.js", "Routes external traffic to the appropriate internal service.", $tags="apiGateway", $baseShape="hexagon")
+
+Container_Boundary(storefront, "Storefront Service") {
+    Component(mediaCtr, "Media Controller", "Node.js/Express.js", "Manages requests for Media table.", $tags="controller")
+    Component(branchCtr, "Branch Controller", "Node.js/Express.js", "Manages requests for Branch table.", $tags="controller")
+    Component(mediaHistCtr, "MediaHistory Controller", "Node.js/Express.js", "Manages requests for MediaHistory table.", $tags="controller")
+    Component(mediaReqCtr, "NewMediaRequest Controller", "Node.js/Express.js", "Manages requests for NewMediaRequest table.", $tags="controller")
+    Component(wishlistCtr, "Wishlist Controller", "Node.js/Express.js", "Manages requests for Wishlist table.", $tags="controller")
+
+    Component(mediaService, "Media Service", "Node.js/Express.js", "Provides management of media info as well as features such as search.", $tags="service")
+    Component(branchService, "Branch Service", "Node.js/Express.js", "Handles management of branch details.", $tags="service")
+    Component(mediaHistService, "MediaHistory Service", "Node.js/Express.js", "Handles management for the rental history of media.", $tags="service")
+    Component(mediaReqService, "NewMediaRequest Service", "Node.js/Express.js", "Provides funcitonality for requesting new media.", $tags="service")
+    Component(wishlistService, "Wishlist Service", "Node.js/Express.js", "Provides functionality for a media wishlist.", $tags="service")
+
+    Component(mediaRepo, "Media Entity", "MySQL", "Handles SQL statements for media details.", $tags="repo")
+    Component(branchRepo, "Branch Entity", "MySQL", "Handles SQL statements for branch info.", $tags="repo")
+    Component(mediaHistRepo, "MediaHistory Entity", "MySQL", "Handles SQL statements for the rental history of media.", $tags="repo")
+    Component(mediaReqRepo, "NewMediaRequest Entity", "MySQL", "Handles SQL statements for requests for new media.", $tags="repo")
+    Component(wishlistRepo, "Wishlist Entity", "MySQL", "Handles SQL statements for member's media wishlists.", $tags="repo")
+}
+
+ContainerDb(database, "Database", "Azure MySQL", "Stores all tables the system requires e.g. media data, user data, inventory data.", $tags="database")
+
+' Relationships - API Gateway to Controller '
+Rel(apiGateway, mediaCtr, "Handles API calls for media related functionality ", $tags="Relationship")
+Rel(apiGateway, branchCtr, "Handles API calls for branch related functionality ", $tags="Relationship")
+Rel(apiGateway, mediaHistCtr, "Handles API calls for media rental history ", $tags="Relationship")
+Rel(apiGateway, mediaReqCtr, "Handles API calls for requesting new media ", $tags="Relationship")
+Rel(apiGateway, wishlistCtr, "Handles API calls for media wishlist functionality ", $tags="Relationship")
+
+' Relationships - Internal - Controller to Service '
+Rel(mediaCtr, mediaService, " ", $tags="Relationship")
+Rel(branchCtr, branchService, " ", $tags="Relationship")
+Rel(mediaHistCtr, mediaHistService, " ", $tags="Relationship")
+Rel(wishlistCtr, wishlistService, " ", $tags="Relationship")
+Rel(mediaReqCtr, mediaReqService, " ", $tags="Relationship")
+
+' Relationships - Internal - Service to Repo '
+Rel(mediaService, mediaRepo, " ", $tags="Relationship")
+Rel(branchService, branchRepo, " ", $tags="Relationship")
+Rel(mediaHistService, mediaHistRepo, " ", $tags="Relationship")
+Rel(mediaReqService, mediaReqRepo, " ", $tags="Relationship")
+Rel(wishlistService, wishlistRepo, " ", $tags="Relationship")
+
+' Relationships - Internal - Repo to Database '
+Rel(mediaRepo, database, "CRUD operations on Media table ", $tags="Relationship")
+Rel(branchRepo, database, "CRUD operations on Branch table ", $tags="Relationship")
+Rel(mediaHistRepo, database, "CRUD operations on MediaHistory table ", $tags="Relationship")
+Rel(mediaReqRepo, database, "CRUD operations on NewMediaRequest table ", $tags="Relationship")
+Rel(wishlistRepo, database, "CRUD operations on Wishlist table ", $tags="Relationship")
+
+SHOW_LEGEND(true)
+@enduml
