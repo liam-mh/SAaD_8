@@ -9,55 +9,63 @@ skinparam defaultFontSize 16
 ' Define colour coding '
 UpdateBoundaryStyle($bgColor="#E0B6BD", $fontColor="brown", $borderColor="brown")
 AddRelTag("Relationship", $textColor="black", $lineColor="black", $lineStyle="dashed")
-AddElementTag("esb", $bgColor="#00FBFF", $fontColor="black", $borderColor="black", $legendText="Enterprise Service Bus (ESB)")
-AddElementTag("controller", $bgColor="#9DC3E6", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Service Controller (Node.js/Express.js)")
-AddElementTag("repo", $bgColor="#75A8E1", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Service Repository (MySQL)")
+AddElementTag("apiGateway", $bgColor="#A9D18E", $fontColor="black", $borderColor="black", $legendText="API Gateway (Node.js/Express.js)")
+AddElementTag("controller", $bgColor="#9DC3E6", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Controller (Node.js/Express.js)")
+AddElementTag("service", $bgColor="#89B6E4", $fontColor="black", $borderColor="black",$shape=RectangleShape(), $legendText="Service (Node.js/Express.js)")
+AddElementTag("repo", $bgColor="#75A8E1", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Entity (MySQL)")
 AddElementTag("database", $bgColor="#4D8DDB", $fontColor="black", $borderColor="black", $legendText="Database (Azure MySQL)")
 
-Container(esb, "Enterprise Service Bus", " ", "Manages communication between services and handles routing, transformation, and mediation.", $tags="esb", $baseShape="storage")
+Container(apiGateway, "API Gateway", "Node.js/Express.js", "Routes external traffic to the appropriate internal service.", $tags="apiGateway", $baseShape="hexagon")
 
 Container_Boundary(account, "Account Service") {
-    Component(registrationCtr, "Registration Controller", "Node.js/Express.js", "Provides account creation functionality.", $tags="controller")
-    Component(usrLoginCtr, "User Login Controller", "Node.js/Express.js", "Handles user sign-in and security functionality.", $tags="controller")
-    Component(profileCtr, "Profile Controller", "Node.js/Express.js", "Handles functionality for editing account details such as contact details, password or address.", $tags="controller")
-    Component(subscriptionCtr, "Subscription Controller", "Node.js/Express.js", "Handles management of subscriptions and payment history.", $tags="controller")
-    Component(empLoginCtr, "Employee Login Controller", "Node.js/Express.js", "Handles employee sign-in and security functionality.", $tags="controller")
+    Component(usrCtr, "Member Controller", "Node.js/Express.js", "Manages input for Member table.", $tags="controller")
+    Component(paymentCtr, "Payment Controller", "Node.js/Express.js", "Manages input for Payment table.", $tags="controller")
+    Component(subscriptionCtr, "Subscription Controller", "Node.js/Express.js", "Manages input for Subscription table.", $tags="controller")
+    Component(empCtr, "Employee Controller", "Node.js/Express.js", "Manages input for Employee table.", $tags="controller")
+    Component(userSubCtr, "MemberSubcription Controller", "Node.js/Express.js", "Manages input for MemberSubscription table.", $tags="controller")
 
-    Component(userRepo, "User Repository", "MySQL", "Handles SQL statements for user accounts.", $tags="repo")
-    Component(subRepo, "Subscription Repository", "MySQL", "Handles SQL statements for subscription info.", $tags="repo")
-    Component(userSubRepo, "User-Subscription Repository", "MySQL", "Handles SQL statements for user subscriptions.", $tags="repo")
-    Component(employeeRepo, "Employee Repository", "MySQL", "Handles SQL statements for employee accounts.", $tags="repo")
-    Component(paymentRepo, "Payment Repository", "MySQL", "Handles SQL statements for user payment info.", $tags="repo")
+    Component(usrService, "Member Service", "Node.js/Express.js", "Provides account creation, member sign-in and security functionality.", $tags="service")
+    Component(paymentService, "Payment Service", "Node.js/Express.js", "Handles management of payment details.", $tags="service")
+    Component(subService, "Subscription Service", "Node.js/Express.js", "Handles management of subscriptions.", $tags="service")
+    Component(empService, "Employee Service", "Node.js/Express.js", "Provides sign-in and security functionality for employees.", $tags="service")
+    Component(usrSubService, "MemberSubscription Service", "Node.js/Express.js", "Handles relations between members, subscriptions and payments.", $tags="service")
+
+    Component(userRepo, "Member Entity", "MySQL", "Handles SQL statements for member accounts.", $tags="repo")
+    Component(subRepo, "Subscription Entity", "MySQL", "Handles SQL statements for subscription info.", $tags="repo")
+    Component(userSubRepo, "MemberSubscription Entity", "MySQL", "Handles SQL statements for member subscriptions.", $tags="repo")
+    Component(employeeRepo, "Employee Entity", "MySQL", "Handles SQL statements for employee accounts.", $tags="repo")
+    Component(paymentRepo, "Payment Entity", "MySQL", "Handles SQL statements for member payment info.", $tags="repo")
 }
 
 ContainerDb(database, "Database", "Azure MySQL", "Stores all tables the system requires e.g. media data, user data, inventory data.", $tags="database")
 
-' Relationships - ESB '
-Rel(esb, registrationCtr, "Handles API calls when registering an account", $tags="Relationship")
-Rel(esb, usrLoginCtr, "Handles API calls when users log into their account", $tags="Relationship")
-Rel(esb, profileCtr, "Handles API calls when users edit their account", $tags="Relationship")
-Rel(esb, subscriptionCtr, "Handles API calls for viewing and managing subscriptions and payments", $tags="Relationship")
-Rel(esb, empLoginCtr, "Handles API calls when employees log into their account", $tags="Relationship")
+' Relationships - API Gateway to Controller '
+Rel(apiGateway, usrCtr, "Handles API calls for member related functionality", $tags="Relationship")
+Rel(apiGateway, paymentCtr, "Handles API calls for payment related functionality", $tags="Relationship")
+Rel(apiGateway, subscriptionCtr, "Handles API calls for subscription related functionality", $tags="Relationship")
+Rel(apiGateway, empCtr, "Handles API calls for employee related functionality", $tags="Relationship")
+Rel(apiGateway, userSubCtr, "Handles API calls for specific member subscription and payment functionality", $tags="Relationship")
 
-' Relationships - Internal - Controller '
-Rel(registrationCtr, userRepo, "Adds new user to database", $tags="Relationship")
-Rel(usrLoginCtr, userRepo, "Verifies login details ", $tags="Relationship")
-Rel(profileCtr, userRepo, "View and edit account info ", $tags="Relationship")
-Rel(subscriptionCtr, subRepo, "View and edit subscription info ", $tags="Relationship")
-Rel(subscriptionCtr, paymentRepo, "View and edit payment info ", $tags="Relationship")
-Rel(empLoginCtr, employeeRepo, "Verifies login details ", $tags="Relationship")
+' Relationships - Internal - Controller to Service '
+Rel(usrCtr, usrService, " ", $tags="Relationship")
+Rel(paymentCtr, paymentService, " ", $tags="Relationship")
+Rel(subscriptionCtr, subService, " ", $tags="Relationship")
+Rel(userSubCtr, usrSubService, " ", $tags="Relationship")
+Rel(empCtr, empService, " ", $tags="Relationship")
 
-' Relationships - Internal - Repo '
-Rel(userRepo, userSubRepo, "Links users to their active subscriptions ", $tags="Relationship")
-Rel(subRepo, userSubRepo, "Retrieves and updates subscription details for linked users ", $tags="Relationship")
-Rel(paymentRepo, userSubRepo, "Links payment records to user subscriptions ", $tags="Relationship")
+' Relationships - Internal - Service to Repo '
+Rel(usrService, userRepo, " ", $tags="Relationship")
+Rel(paymentService, paymentRepo, " ", $tags="Relationship")
+Rel(subService, subRepo, " ", $tags="Relationship")
+Rel(empService, employeeRepo, " ", $tags="Relationship")
+Rel(usrSubService, userSubRepo, " ", $tags="Relationship")
 
-' Relationships - Database '
-Rel(userRepo, database, "Queries User table", $tags="Relationship")
-Rel(subRepo, database, "Queries Subscription table", $tags="Relationship")
-Rel(userSubRepo, database, "Queries UserSubscriptions table", $tags="Relationship")
-Rel(employeeRepo, database, "Queries Employee table", $tags="Relationship")
-Rel(paymentRepo, database, "Queries Payment table", $tags="Relationship")
+' Relationships - Internal - Repo to Database '
+Rel(userRepo, database, "CRUD operations on Member table", $tags="Relationship")
+Rel(subRepo, database, "CRUD operations on Subscription table", $tags="Relationship")
+Rel(userSubRepo, database, "CRUD operations on MemberSubscriptions table", $tags="Relationship")
+Rel(employeeRepo, database, "CRUD operations on Employee table", $tags="Relationship")
+Rel(paymentRepo, database, "CRUD operations on Payment table", $tags="Relationship")
 
 SHOW_LEGEND(true)
 @enduml
