@@ -33,26 +33,41 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ${{ env.NODE_VERSION }}
+        service: 
+          - 'api-gateway'
+          - 'services/account-service'
+          - 'services/notification-service'
+          - 'services/procurement-service'
+          - 'services/storefront-service'
+          - 'client'
+    name: Service ${{ matrix.service }}
+    
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+          cache-dependency-path: 'Application/${{ matrix.service }}/package-lock.json'
 
-    - name: npm install, build, and test
-      run: |
-        npm install
-        npm run build --if-present
-        npm run test --if-present
+      - name: Install dependencies
+        run: npm ci
+        working-directory: Application/${{ matrix.service }}
 
-    - name: Upload artifact for deployment job
-      uses: actions/upload-artifact@v3
-      with:
-        name: node-app
-        path: .
+      - name: Run tests
+        run: npm test
+        working-directory: Application/${{ matrix.service }}
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: node-app
+          path: .
 
   deploy:
     permissions:
