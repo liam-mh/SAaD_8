@@ -35,7 +35,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ${{ env.NODE_VERSION }}
         service: 
           - 'api-gateway'
           - 'services/account-service'
@@ -51,7 +50,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           cache-dependency-path: 'Application/${{ matrix.service }}/package-lock.json'
 
