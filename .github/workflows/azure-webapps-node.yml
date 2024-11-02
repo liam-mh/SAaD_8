@@ -68,15 +68,15 @@ jobs:
 
       - name: Archive build artifacts
         run: |
-          mkdir -p ../artifacts/
-          zip -r "../artifacts/${{ matrix.service }}.zip" ./*
-        working-directory: Application/${{ matrix.service }}
+          mkdir -p ${{ github.workspace }}/artifacts
+          zip -r "${{ github.workspace }}/artifacts/${{ matrix.service }}.zip" ./*
+          working-directory: Application/${{ matrix.service }}
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.service }}
-          path: "../artifacts/${{ matrix.service }}.zip"
+          path: "${{ github.workspace }}/artifacts/${{ matrix.service }}.zip"
 
   deploy:
     permissions:
@@ -92,19 +92,19 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: ${{ matrix.service }}
-        path: ./artifacts
+        path: "${{ github.workspace }}/artifacts"
 
     - name: Extract and combine all archives
       run: |
-        mkdir -p combined
-        for archive in ./artifacts/*.zip; do
-          unzip -o "$archive" -d combined
+        mkdir -p "${{ github.workspace }}/combined"
+        for archive in "${{ github.workspace }}/artifacts"/*.zip; do
+          unzip -o "$archive" -d "${{ github.workspace }}/combined"
         done
 
     - name: Archive all services into single zip
       run: |
-        cd combined
-        zip -r ../application.zip ./*
+        cd "${{ github.workspace }}/combined"
+        zip -r "${{ github.workspace }}/application.zip" ./*
 
     - name: 'Deploy to Azure WebApp'
       id: deploy-to-webapp
@@ -112,4 +112,4 @@ jobs:
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: application.zip
+        package: "${{ github.workspace }}/application.zip"
