@@ -69,6 +69,7 @@ jobs:
       - name: Archive build artifacts
         run: |
           mkdir -p ${{ github.workspace }}/artifacts
+          mkdir -p ${{ github.workspace }}/artifacts/services
           zip -r "${{ github.workspace }}/artifacts/${{ matrix.service }}.zip" ./*
           working-directory: Application/${{ matrix.service }}
 
