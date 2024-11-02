@@ -76,7 +76,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.service }}
-          path: "../artifacts/${{ matrix.service }}.zip"
+          path: "artifacts/"
 
   deploy:
     permissions:
