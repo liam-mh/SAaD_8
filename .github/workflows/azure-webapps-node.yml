@@ -68,10 +68,13 @@ jobs:
 
       - name: Archive build artifacts
         run: |
-          mkdir -p ../artifacts/
-          mkdir -p ../artifacts/services/
-          zip -r "../artifacts/${{ matrix.service }}.zip" ./*
+          mkdir -p ../../artifacts/
+          mkdir -p ../../artifacts/services/
+          zip -r "../../artifacts/${{ matrix.service }}.zip" ./*
         working-directory: Application/${{ matrix.service }}
+
+      - name: Verify artifacts
+        run: ls -R ../../artifacts  # Debug step to list contents of artifacts directory at root
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
