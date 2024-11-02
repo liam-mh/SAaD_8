@@ -35,27 +35,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service_path: 
-          - 'api-gateway'
+        service:
           - 'services/account-service'
           - 'services/notification-service'
           - 'services/procurement-service'
           - 'services/storefront-service'
-          - 'client'
-        service_name:
           - 'api-gateway'
-          - 'services-account-service'
-          - 'services-notification-service'
-          - 'services-procurement-service'
-          - 'services-storefront-service'
           - 'client'
-    name: Service ${{ matrix.service_name }}
+    name: Service ${{ matrix.service//\//- }}
     
     steps:
       - uses: actions/checkout@v4
 
       - name: Install dependencies
-        working-directory: Application/${{ matrix.service_path }}
+        working-directory: Application/${{ matrix.service }}
         run: npm install
 
       - name: Set up Node.js
@@ -63,27 +56,27 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: 'Application/${{ matrix.service_path }}/package-lock.json'
+          cache-dependency-path: 'Application/${{ matrix.service }}/package-lock.json'
 
       #- name: Build scripts
-      #  working-directory: Application/${{ matrix.service_path }}
+      #  working-directory: Application/${{ matrix.service }}
       #  run: npm run build --if-present
 
       #- name: Run tests
-      #  working-directory: Application/${{ matrix.service_path }}
+      #  working-directory: Application/${{ matrix.service }}
       #  run: npm run test --if-present
 
       - name: Archive build artifacts
-        working-directory: Application/${{ matrix.service_path }}
+        working-directory: Application/${{ matrix.service }}
         run: |
           mkdir -p ${{ github.workspace }}/artifacts
-          zip -r "${{ github.workspace }}/artifacts/${{ matrix.service_name }}.zip" ./*
+          zip -r "${{ github.workspace }}/artifacts/${{ matrix.service//\//- }}.zip" ./*
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.service_name }}
-          path: "${{ github.workspace }}/artifacts/${{ matrix.service_name }}.zip"
+          name: ${{ matrix.service//\//- }}
+          path: "${{ github.workspace }}/artifacts/${{ matrix.service//\//- }}.zip"
 
   deploy:
     permissions:
@@ -98,7 +91,7 @@ jobs:
     - name: Download artifact from build job
       uses: actions/download-artifact@v3
       with:
-        name: ${{ matrix.service_name }}
+        name: ${{ matrix.service//\//- }}
         path: "${{ github.workspace }}/artifacts"
 
     - name: Extract and combine all archives
