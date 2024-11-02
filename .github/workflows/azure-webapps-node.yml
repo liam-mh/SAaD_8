@@ -70,13 +70,13 @@ jobs:
         run: |
           mkdir -p ../artifacts/
           zip -r "../artifacts/${{ matrix.service }}.zip" ./*
-        #working-directory: Application/${{ matrix.service }}
+        working-directory: Application/${{ matrix.service }}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.service }}
-          path: "artifacts/${{ matrix.service }}.zip"
+          path: "../artifacts/${{ matrix.service }}.zip"
 
   deploy:
     permissions:
