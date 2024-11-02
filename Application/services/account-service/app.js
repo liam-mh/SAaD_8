@@ -1,9 +1,10 @@
 const express = require('express');
-const userRoutes = require('./routes');
+const memberRoutes = require('./routes');
+const config = require('../../config/env');
 const app = express();
 
 app.use(express.json());
-app.use('/api', userRoutes);
+app.use('/api', memberRoutes);
 
-const PORT = process.env.PORT || 4001; // Different port for each service
+const PORT = config.ACCOUNT_SERVICE_PORT;
 app.listen(PORT, () => console.log(`Account Service running on port ${PORT}`));

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { fetchMembers } from '../services/memberService';
 
 const IndexPage = () => {
   const [users, setUsers] = useState([]);
@@ -6,23 +7,18 @@ const IndexPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        // Fetching from API Gateway
-        const response = await fetch('http://localhost:4000/api/account/user'); // Call the API Gateway directly
-        if (!response.ok) {
-          throw new Error('Failed to fetch users');
+    const loadMembers = async () => {
+        try {
+            const data = await fetchMembers(); 
+            setUsers(data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
         }
-        const data = await response.json();
-        setUsers(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
     };
 
-    fetchUsers();
+    loadMembers();
   }, []);
 
   if (loading) return <p>Loading...</p>;

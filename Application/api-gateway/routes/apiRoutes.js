@@ -1,19 +1,18 @@
 const express = require('express');
 const axios = require('axios');
+const config = require('../config');
 const router = express.Router();
 // const apiController = require('../controllers/apiController');
 
-
-// Define routes for each microservice
-const accountServicePORT = 4001;
-
 router.use('/account', async (req, res) => {
     try {
-        const originalUrl = req.originalUrl.replace('/account', '')
-        const forwardUrl = `http://localhost:${accountServicePORT + originalUrl}`;
-        // console.log(`Forwarding request to: ${forwardUrl}`);
+        const originalUrl = req.originalUrl.replace('/api/account', '')
+        const forwardUrl = config.ACCOUNT_SERVICE_API + originalUrl;
+        console.log(`Forwarding request to: ${forwardUrl}`);
 
-        // Forward the request to the account service
+        console.log(originalUrl);
+        console.log(config.ACCOUNT_SERVICE_API);
+
         const response = await axios({
             method: req.method,
             url: forwardUrl,

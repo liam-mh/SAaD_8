@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Function to read user data from JSON file
-const readUserData = () => {
+const readMemberData = () => {
     return new Promise((resolve, reject) => {
         const filePath = path.join(__dirname, 'testUsers.json'); // Path to your JSON file
 
@@ -21,5 +21,5 @@ const readUserData = () => {
 };
 
 module.exports = {
-    readUserData
+    readMemberData
 };

@@ -1,7 +1,5 @@
-import axios from 'axios';
+const config = require('../config.json');
 
-const API_BASE_URL = 'http://localhost:3000/api'; // Adjust this as necessary
-
-export const loginUser = async (email, password) => {
-    return axios.post(`${API_BASE_URL}/account/login`, { email, password });
+module.exports = { 
+    API_GATEWAY: config.API_GATEWAY
 };

@@ -1,8 +1,8 @@
-const userEntity = require('../entity/userEntity');
+const memberEntity = require('../entity/memberEntity');
 
-const getUsers = async () => {
+const getMembers = async () => {
     try {
-        const users = await userEntity.readUserData();
+        const users = await memberEntity.readMemberData();
         // Additional transformation logic can go here if needed
         return users;
     } catch (error) {
@@ -11,5 +11,5 @@ const getUsers = async () => {
 };
 
 module.exports = {
-    getUsers
+    getMembers
 };

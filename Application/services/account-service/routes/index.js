@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Import user routes
-router.use('/user', require('./user'));
+router.use('/member', require('./member'));
 
 // Add more resource routes here as needed
 
