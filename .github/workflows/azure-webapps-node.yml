@@ -68,7 +68,7 @@ jobs:
 
       - name: Archive build artifacts
         run: |
-          mkdir -p ../artifacts/services
+          mkdir -p ../artifacts/${{ matrix.service }}
           zip -r "../artifacts/${{ matrix.service }}.zip" ./*
         working-directory: Application/${{ matrix.service }}
 
