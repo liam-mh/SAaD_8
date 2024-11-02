@@ -68,9 +68,9 @@ jobs:
 
       - name: Archive build artifacts
         run: |
-          mkdir -p ../artifacts/${{ matrix.service }}
+          mkdir -p ../artifacts/
           zip -r "../artifacts/${{ matrix.service }}.zip" ./*
-        working-directory: Application/${{ matrix.service }}
+        #working-directory: Application/${{ matrix.service }}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
