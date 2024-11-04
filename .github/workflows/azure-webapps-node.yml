@@ -42,7 +42,7 @@ jobs:
           - 'services/storefront-service'
           - 'api-gateway'
           - 'client'
-    name: Service ${{ matrix.service//\//- }}
+    name: Service ${{ matrix.service }}
     
     steps:
       - uses: actions/checkout@v4
@@ -70,13 +70,13 @@ jobs:
         working-directory: Application/${{ matrix.service }}
         run: |
           mkdir -p ${{ github.workspace }}/artifacts
-          zip -r "${{ github.workspace }}/artifacts/${{ matrix.service//\//- }}.zip" ./*
+          zip -r "${{ github.workspace }}/artifacts/${{ matrix.service }}.zip" ./*
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.service//\//- }}
-          path: "${{ github.workspace }}/artifacts/${{ matrix.service//\//- }}.zip"
+          name: ${{ matrix.service }}
+          path: "${{ github.workspace }}/artifacts/${{ matrix.service }}.zip"
 
   deploy:
     permissions:
@@ -91,7 +91,7 @@ jobs:
     - name: Download artifact from build job
       uses: actions/download-artifact@v3
       with:
-        name: ${{ matrix.service//\//- }}
+        name: ${{ matrix.service }}
         path: "${{ github.workspace }}/artifacts"
 
     - name: Extract and combine all archives
