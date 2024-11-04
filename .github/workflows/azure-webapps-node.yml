@@ -66,18 +66,18 @@ jobs:
       #  working-directory: Application/${{ matrix.service }}
       #  run: npm run test --if-present
 
-      - name: Archive build artifacts
-        working-directory: Application/${{ matrix.service }}
-        run: |
-          mkdir -p ${{ github.workspace }}/artifacts
-          mkdir -p ${{ github.workspace }}/artifacts/services
-          zip -r "${{ github.workspace }}/artifacts/${{ matrix.service }}.zip" ./*
+      # - name: Archive build artifacts
+      #   working-directory: Application/${{ matrix.service }}
+      #   run: |
+      #     mkdir -p ${{ github.workspace }}/artifacts
+      #     mkdir -p ${{ github.workspace }}
+      #     zip -r "${{ github.workspace }}/artifacts/${{ matrix.service }}.zip" ./*
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.service }}
-          path: "${{ github.workspace }}/artifacts/${{ matrix.service }}.zip"
+          name: node app
+          path: "${{ github.workspace }}/${{ matrix.service }}.zip"
 
   deploy:
     permissions:
@@ -92,20 +92,20 @@ jobs:
     - name: Download artifact from build job
       uses: actions/download-artifact@v3
       with:
-        name: ${{ matrix.service }}
-        path: "${{ github.workspace }}/artifacts"
+        name: node app
+        path: "${{ github.workspace }}"
 
-    - name: Extract and combine all archives
-      run: |
-        mkdir -p "${{ github.workspace }}/combined"
-        for archive in "${{ github.workspace }}/artifacts"/*.zip; do
-          unzip -o "$archive" -d "${{ github.workspace }}/combined"
-        done
+    # - name: Extract and combine all archives
+    #   run: |
+    #     mkdir -p "${{ github.workspace }}/combined"
+    #     for archive in "${{ github.workspace }}/artifacts"/*.zip; do
+    #       unzip -o "$archive" -d "${{ github.workspace }}/combined"
+    #     done
 
-    - name: Archive all services into single zip
-      run: |
-        cd "${{ github.workspace }}/combined"
-        zip -r "${{ github.workspace }}/application.zip" ./*
+    # - name: Archive all services into single zip
+    #   run: |
+    #     cd "${{ github.workspace }}/combined"
+    #     zip -r "${{ github.workspace }}/application.zip" ./*
 
     - name: 'Deploy to Azure WebApp'
       id: deploy-to-webapp
@@ -113,4 +113,4 @@ jobs:
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: "${{ github.workspace }}/application.zip"
+        package: "${{ github.workspace }}/node app"
