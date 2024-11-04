@@ -35,6 +35,4 @@ class MemberEntity extends EntityInterface {
     }
 }
 
-
-
 module.exports = MemberEntity;
