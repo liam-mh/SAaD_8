@@ -6,12 +6,11 @@ const router = express.Router();
 
 router.use('/account', async (req, res) => {
     try {
+        console.log('original url: ', req.originalUrl);
         const originalUrl = req.originalUrl.replace('/api/account', '')
+
         const forwardUrl = config.ACCOUNT_SERVICE_API + originalUrl;
         console.log(`Forwarding request to: ${forwardUrl}`);
-
-        console.log(originalUrl);
-        console.log(config.ACCOUNT_SERVICE_API);
 
         const response = await axios({
             method: req.method,
