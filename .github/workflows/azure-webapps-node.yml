@@ -70,6 +70,7 @@ jobs:
         working-directory: Application/${{ matrix.service }}
         run: |
           mkdir -p ${{ github.workspace }}/artifacts
+          mkdir -p ${{ github.workspace }}/artifacts/services
           zip -r "${{ github.workspace }}/artifacts/${{ matrix.service }}.zip" ./*
 
       - name: Upload artifact for deployment job
