@@ -8,8 +8,4 @@ const getMembers = async () => {
     } catch (error) {
         throw new Error('Error retrieving users: ' + error.message);
     }
-};
-
-module.exports = {
-    getMembers
-};
+}; 
