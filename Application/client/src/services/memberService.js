@@ -2,7 +2,7 @@ const { API_GATEWAY } = require('./apiService');
 
 const fetchMembers = async () => {
     try {
-        const response = await fetch(`${API_GATEWAY}/account/member`);
+        const response = await fetch(`${API_GATEWAY}/account/member/readRecord`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
