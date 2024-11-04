@@ -1,5 +1,5 @@
 const EntityInterface = require('../../../interfaces/entityInterface');
-const config = require('../../../../azure-db/config/dbConfig');
+const config = require('../../../../config/azure-db/dbConfig');
 
 class MemberEntity extends EntityInterface {
     constructor() {
