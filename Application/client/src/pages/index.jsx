@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchMembers } from '../services/memberService';
 
 const IndexPage = () => {
-  const [users, setUsers] = useState([]);
+  const [members, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -26,12 +26,11 @@ const IndexPage = () => {
 
   return (
     <div>
-      <h1>Welcome to the Home Page!</h1>
-      <h2>User List:</h2>
+      <h2>Current Members:</h2>
       <ul>
-        {users.map(user => (
-          <li key={user.id}>
-            Name: {user.username}, Pass: {user.password}
+        {members.map(member => (
+          <li key={member.id}>
+            ID: {member.MemberID}, Name: {member.FirstName}
           </li>
         ))}
       </ul>
