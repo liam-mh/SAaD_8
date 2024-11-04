@@ -1,19 +1,12 @@
 const mysql = require('mysql2');  // Ensure mysql2 is installed
-const fs = require('fs');
-const path = require('path');
 
 class EntityInterface {
     constructor(config, tableName) {
         this.config = config;
         this.tableName = tableName;
-
-        // Create the connection with SSL configuration
         this.connection = mysql.createConnection({
             ...this.config,
-            ssl: {
-                // Make sure to adjust the path to your SSL certificate file
-                ca: fs.readFileSync(path.join(__dirname, '../../azure-db/config/DigiCertGlobalRootCA.crt.pem')), // Ensure this path is correct
-            },
+            ssl: this.config.ssl
         });
     }
 
