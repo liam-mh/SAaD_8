@@ -1,4 +1,3 @@
-
 import ControllerInterface from "../../interfaces/controllerInterface";
 
 class MemberController extends ControllerInterface {

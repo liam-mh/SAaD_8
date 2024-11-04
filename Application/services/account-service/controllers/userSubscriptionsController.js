@@ -1,0 +1,9 @@
+import ControllerInterface from "../../interfaces/controllerInterface";
+
+class UserSubscriptionsController extends ControllerInterface {
+    constructor(userSubscriptionsService) {
+        super(userSubscriptionsService); // Pass the specific service to the base class
+      }
+}
+
+export default UserSubscriptionsController;

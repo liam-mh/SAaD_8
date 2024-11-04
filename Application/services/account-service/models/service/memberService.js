@@ -1,11 +1,9 @@
-const memberEntity = require('../entity/memberEntity');
+import ServiceInterface from "../../interfaces/ServiceInterface";
 
-const getMembers = async () => {
-    try {
-        const users = await memberEntity.readMemberData();
-        // Additional transformation logic can go here if needed
-        return users;
-    } catch (error) {
-        throw new Error('Error retrieving users: ' + error.message);
-    }
-}; 
+class MemberService extends ServiceInterface {
+    constructor(memberEntity) {
+        super(memberEntity); // Pass the specific service to the base class
+      }
+}
+
+export default MemberService;
