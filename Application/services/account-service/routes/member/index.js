@@ -9,8 +9,8 @@
 
 const express = require('express');
 const router = express.Router();
-import MemberService from '../../models/service/memberService';
-import MemberController from '../../controllers/memberController';
+const MemberService = require('../../models/service/memberService');
+const MemberController = require('../../controllers/memberController');
 const memberEntity = require('../../entity/memberEntity')
 
 // Instantiate MemberService and pass it to MemberController

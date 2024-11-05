@@ -1,4 +1,4 @@
-import ServiceInterface from "../../interfaces/ServiceInterface";
+const ServiceInterface = require("../../interfaces/ServiceInterface");
 
 class MemberService extends ServiceInterface {
     constructor(memberEntity) {
@@ -6,4 +6,4 @@ class MemberService extends ServiceInterface {
       }
 }
 
-export default MemberService;
+module.exports = MemberService;
