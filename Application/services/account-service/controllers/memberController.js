@@ -1,4 +1,4 @@
-import ControllerInterface from "../../interfaces/controllerInterface";
+const ControllerInterface = require("../../interfaces/controllerInterface");
 
 class MemberController extends ControllerInterface {
     constructor(memberService) {
@@ -6,4 +6,4 @@ class MemberController extends ControllerInterface {
       }
 }
 
-export default MemberController;
+module.exports = MemberController;

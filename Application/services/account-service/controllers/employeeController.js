@@ -1,4 +1,4 @@
-import ControllerInterface from "../../interfaces/controllerInterface";
+const ControllerInterface = require("../../interfaces/controllerInterface");
 
 class EmployeeController extends ControllerInterface {
     constructor(employeeService) {
@@ -6,4 +6,4 @@ class EmployeeController extends ControllerInterface {
       }
 }
 
-export default EmployeeController;
+module.exports = EmployeeController;

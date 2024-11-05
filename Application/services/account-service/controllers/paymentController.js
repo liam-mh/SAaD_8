@@ -1,4 +1,4 @@
-import ControllerInterface from "../../interfaces/controllerInterface";
+const ControllerInterface = require("../../interfaces/controllerInterface");
 
 class PaymentController extends ControllerInterface {
     constructor(paymentService) {
@@ -6,4 +6,4 @@ class PaymentController extends ControllerInterface {
       }
 }
 
-export default PaymentController;
+module.exports = PaymentController;

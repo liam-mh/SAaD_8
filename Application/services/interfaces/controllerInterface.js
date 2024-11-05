@@ -118,4 +118,4 @@ class ControllerInterface {
   }
 }
 
-export default ControllerInterface;
+module.exports = ControllerInterface;

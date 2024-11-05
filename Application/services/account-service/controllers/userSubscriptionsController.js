@@ -1,4 +1,4 @@
-import ControllerInterface from "../../interfaces/controllerInterface";
+const ControllerInterface = require("../../interfaces/controllerInterface");
 
 class UserSubscriptionsController extends ControllerInterface {
     constructor(userSubscriptionsService) {
@@ -6,4 +6,4 @@ class UserSubscriptionsController extends ControllerInterface {
       }
 }
 
-export default UserSubscriptionsController;
+module.exports = UserSubscriptionsController;
