@@ -136,4 +136,4 @@ class ServiceInterface {
     }
 }
 
-export default ServiceInterface;
+module.exports = ServiceInterface;

@@ -1,4 +1,4 @@
-const ServiceInterface = require("../../interfaces/ServiceInterface");
+const ServiceInterface = require("../../../interfaces/serviceInterface")
 
 class MemberService extends ServiceInterface {
     constructor(memberEntity) {
