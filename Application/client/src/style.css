@@ -8,11 +8,22 @@
 
 .header {
     box-shadow: var(--drop-shadow);
+    background-color: white;
 }
 
-body {
+html, body {
     font-family: 'Poppins', sans-serif;
     color: var(--secondary);
+    background-color: #E0E0E0;
+    height: 100%;
+}
+
+.footer {
+    background-color: white;
+    position:absolute;
+    left:0;
+    bottom:0;
+    right:0;
 }
 
 .box {
