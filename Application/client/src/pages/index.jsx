@@ -35,6 +35,11 @@ const IndexPage = () => {
           </li>
         ))}
       </ul>
+      <div id='whats-new'>
+        {/* Whats new component */}
+      </div>
+      <h2 id="top-picks">Top Picks</h2> 
+      <h2 id="all">All</h2>  
     </div>
   );
 };
