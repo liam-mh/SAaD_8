@@ -9,7 +9,7 @@ class ControllerInterface {
    * @param {Service} service - Specific Service based on derived Controller
    */
   constructor(service) {
-    if (this.constructor === Controller) {
+    if (this.constructor === ControllerInterface) {
       throw new Error(
         "Controller is an abstract class and cannot be instantiated directly."
       );

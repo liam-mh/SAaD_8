@@ -1,5 +1,5 @@
 const mysql = require('mysql2');  // Ensure mysql2 is installed
-const dbConfig = require('../../azure-db/config/dbConfig')
+const dbConfig = require('../../config/azure-db/dbConfig')
 
 class EntityInterface {
     config = dbConfig
