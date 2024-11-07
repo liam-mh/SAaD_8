@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Form from 'react-bootstrap/Form';
@@ -17,18 +18,22 @@ function Header({ localBranch = {}, basketNum }) {
           </Col>
           <Col className="text-end">
             <p className="d-inline">Need </p>
-            <a href="https://example.com" className="d-inline">Help?</a>
+              <Link to="/help">
+                <span>Help?</span>
+              </Link>
           </Col>
         </Row>
         {/* Logo and Search */}
         <Row className='pt-1'>
           <Col className='d-flex'>
-            <img 
+            <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+              <img 
                 src="/AML-logo.png" 
                 alt="Advanced Media Library Logo"
                 style={{ height: '40px' }} 
-            />
-            <h2 style={{ color: 'var(--primary)' }}>Advanced Media Library</h2>
+              />
+              <h2 style={{ color: 'var(--primary)', marginLeft: '10px' }}>Advanced Media Library</h2>
+            </Link>
           </Col>
           <Col>
             <Form className="d-flex">
@@ -64,8 +69,8 @@ function Header({ localBranch = {}, basketNum }) {
           </Col>
           <Col>
             <Nav className="justify-content-end">
-              <Nav.Link className="nav-link-secondary" href="#library">My Library</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#account">Account</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to="/account#library">My Library</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to="/account#account">Account</Nav.Link>
             </Nav>
           </Col>
         </Row>
