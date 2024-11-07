@@ -1,4 +1,4 @@
-const ControllerInterface = require("../../interfaces/controllerInterface");
+const ControllerInterface = require("../../../interfaces/controllerInterface");
 
 class PaymentController extends ControllerInterface {
     constructor(paymentService) {
