@@ -97,7 +97,7 @@ class ControllerInterface {
    * @returns
    */
   updateField(primaryKey, field, newValue) {
-    return this.service.updateFieldByQuery(primaryKey, column);
+    return this.service.updateFieldByQuery(primaryKey, column, newValue);
   }
 
   /**
