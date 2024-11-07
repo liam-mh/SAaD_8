@@ -11,7 +11,7 @@ class ServiceInterface {
      */
 
     constructor(entity) {
-        if (this.constructor === Service) {
+        if (this.constructor === ServiceInterface) {
             throw new Error("Cannot instantiate abstract class directly.");
         }
 

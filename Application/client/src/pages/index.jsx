@@ -30,8 +30,8 @@ const IndexPage = () => {
       <h2>User List:</h2>
       <ul>
         {users.map(user => (
-          <li key={user.id}>
-            Name: {user.username}, Pass: {user.password}
+          <li key={user.MemberID}>
+            ID: {user.MemberID}, First Name: {user.FirstName}
           </li>
         ))}
       </ul>
