@@ -32,7 +32,7 @@ class ControllerInterface {
   // ------------------------------------- Read Methods ---------------------------------------------------
   /**
    * Read and return a record.
-   * @param {String} primaryKey - Primary key for the record to read.
+   * @param {Int} primaryKey - Primary key for the record to read.
    * @returns
    */
   readRecord(primaryKey) {
@@ -50,7 +50,7 @@ class ControllerInterface {
 
   /**
    * Reads and returns a single field matching the PK and column.
-   * @param {String} primaryKey - Primary key for the record.
+   * @param {Int} primaryKey - Primary key for the record.
    * @param {String} column - Column to be returned.
    * @returns
    */
@@ -60,7 +60,7 @@ class ControllerInterface {
 
   /**
    * Reads and returns multiple fields based on column identifiers.
-   * @param {String} primaryKey - Primary key for the record.
+   * @param {Int} primaryKey - Primary key for the record.
    * @param {Array} columns - columns that should be returned
    * @returns
    */
@@ -71,7 +71,7 @@ class ControllerInterface {
   // ------------------------------------- Update Methods ---------------------------------------------------
   /**
    * Update a records fields using parallel arrays.
-   * @param {String} primaryKey - Primary key for the record to update.
+   * @param {Int} primaryKey - Primary key for the record to update.
    * @param {Array} columns - Array of columns.
    * @param {Array} newValues - Array of new values.
    * @returns
@@ -92,21 +92,32 @@ class ControllerInterface {
 
   /**
    * Update a field in a single record.
-   * @param {String} primaryKey
+   * @param {Int} primaryKey
    * @param {String} column
    * @returns
    */
-  updateField(primaryKey, column) {
+  updateField(primaryKey, field, newValue) {
     return this.service.updateFieldByQuery(primaryKey, column);
   }
 
   /**
+   * 
+   * @param {Int} primaryKey - Primary key of record to update.
+   * @param {Array} fields - Array of fields to be updated.
+   * @param {Array} newValues - Array of new values to update fields with.
+   * @returns 
+   */
+  updateFields(primaryKey, fields, newValues) {
+    return this.service.updateFieldByQuery(primaryKey, fields, newValues)
+  }
+
+  /**
    * Delete a single record
-   * @param {String} primaryKey
+   * @param {Int} primaryKey
    * @returns
    */
   deleteRecord(primaryKey) {
-    return this.service.deletRecord(primaryKey);
+    return this.service.deleteRecordByQuery(primaryKey);
   }
 
   /**
@@ -114,7 +125,7 @@ class ControllerInterface {
    * @param {Array} primaryKeys
    */
   deleteRecords(primaryKeys) {
-    this.deleteRecords(primaryKeys);
+    return this.service.deleteRecordsByQuery(primaryKeys);
   }
 }
 

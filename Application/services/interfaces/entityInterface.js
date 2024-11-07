@@ -25,7 +25,7 @@ class EntityInterface {
         });
     }
     
-    async create(data) {
+    async createByQuery(data) {
         const columns = Object.keys(data).join(', ');
         const values = Object.values(data);
         const placeholders = values.map(() => '?').join(', ');
@@ -44,7 +44,7 @@ class EntityInterface {
         });
     }
 
-    async read(conditions = '', values = []) {
+    async readByQuery(conditions = '', values = []) {
         const query = `SELECT * FROM ${this.tableName} ${conditions}`;
         return new Promise((resolve, reject) => {
             this.connection.query(query, values, (err, results) => {
@@ -58,7 +58,7 @@ class EntityInterface {
         });
     }
 
-    async update(data, conditions, values) {
+    async updateByQuery(data, conditions, values) {
         const updates = Object.entries(data)
             .map(([key]) => `${key} = ?`)
             .join(', ');
@@ -78,7 +78,7 @@ class EntityInterface {
         });
     }
 
-    async delete(conditions, values) {
+    async deleteByQuery(conditions, values) {
         const query = `DELETE FROM ${this.tableName} WHERE ${conditions}`;
         return new Promise((resolve, reject) => {
             this.connection.query(query, values, (err, results) => {
