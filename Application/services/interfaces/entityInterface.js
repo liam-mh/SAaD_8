@@ -1,8 +1,9 @@
 const mysql = require('mysql2');  // Ensure mysql2 is installed
+const dbConfig = require('../../azure-db/config/dbConfig')
 
 class EntityInterface {
-    constructor(config, tableName) {
-        this.config = config;
+    config = dbConfig
+    constructor(tableName) {
         this.tableName = tableName;
         this.connection = mysql.createConnection({
             ...this.config,
@@ -23,7 +24,7 @@ class EntityInterface {
             });
         });
     }
-
+    
     async create(data) {
         const columns = Object.keys(data).join(', ');
         const values = Object.values(data);
