@@ -3,8 +3,8 @@ const MemberEntity = require("../../../account-service/micro-services/member/mem
 
 class MemberService extends ServiceInterface {
   constructor() {
-    super(MemberEntity);
-    console.log("Member Service") // Pass the specific service to the base class
+    const entity = new MemberEntity();
+    super(entity);
   }
 }
 

@@ -4,8 +4,8 @@ const MemberService = require("./memberService");
 
 class MemberController extends ControllerInterface {
   constructor() {
-    super(MemberService); // Pass the specific service to the base class
-    console.log('Member Controller')
+    const service = new MemberService();
+    super(service); // Pass the specific service to the base class
   }
   
 }

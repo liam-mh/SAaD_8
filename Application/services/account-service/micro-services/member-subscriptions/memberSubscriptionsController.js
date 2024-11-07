@@ -1,7 +1,8 @@
 const ControllerInterface = require("../../../interfaces/controllerInterface");
 
-class UserSubscriptionsController extends ControllerInterface {
-  constructor(userSubscriptionsService) {
+
+class MemberSubscriptionsController extends ControllerInterface {
+  constructor(memberSubscriptionsService) {
     super(userSubscriptionsService); // Pass the specific service to the base class
   }
 }
