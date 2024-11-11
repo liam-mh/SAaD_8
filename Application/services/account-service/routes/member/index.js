@@ -1,8 +1,17 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const memberController = require('../../controllers/memberController');
+const MemberController = require("../../micro-services/member/memberController");
 
-// routes
-router.get('/', memberController.getMembers); // Get all members
+
+// Instantiate Member Contoller/Service/Entity and inject dependency.
+const memberController = new MemberController();
+
+// Define routes and use memberController to handle requests
+router.get("/", (req, res) => {
+  memberController
+    .readRecords([])
+    .then((members) => res.json(members))
+    .catch((error) => res.status(500).json({ error: error.message }));
+});
 
 module.exports = router;
