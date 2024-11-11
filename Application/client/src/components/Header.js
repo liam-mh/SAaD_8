@@ -9,10 +9,10 @@ import Col from 'react-bootstrap/Col';
 
 function Header({ localBranch = {}, basketNum }) {
   return (
-    <header className="header mb-3">
+    <header className="header">
       <Container fluid>
         {/* Branch and Help */}
-        <Row className="my-1 border-bottom border-secondary">
+        <Row className="border-bottom border-secondary">
           <Col>
             <span>Your local store: <strong>{ localBranch.FirstLineAddress || 'First Line'}, { localBranch.City || 'City' }</strong></span>
           </Col>
@@ -30,24 +30,24 @@ function Header({ localBranch = {}, basketNum }) {
               <img 
                 src="/AML-logo.png" 
                 alt="Advanced Media Library Logo"
-                style={{ height: '40px' }} 
+                style={{ height: '3rem' }} 
               />
-              <h2 style={{ color: 'var(--primary)', marginLeft: '10px' }}>Advanced Media Library</h2>
+              <h2 style={{ color: 'var(--primary)', marginLeft: '0.5rem', marginTop: '0.5rem', fontWeight: '600' }}>Advanced Media Library</h2>
             </Link>
           </Col>
-          <Col>
-            <Form className="d-flex">
-              <Form.Control type="text" placeholder="Search products..." className="form-secondary" />
-              <Button className="button-secondary me-2">Search</Button>
-              <Button className="button-secondary">Basket</Button>
+          <Col className="d-flex justify-content-end">
+            <Form className="d-flex align-items-center">
+              <Form.Control type="text" placeholder="Search products..." className="form-secondary" style={{borderRadius: '5px 0 0 5px'}}/>
+              <Button className="button-secondary me-2" style={{borderRadius: '0 5px 5px 0'}}>Search</Button>
+              <Button className="button-secondary" style={{borderRadius: '5px 0 0 5px'}}>Basket</Button>
               <span 
                 style={{ 
                   backgroundColor: 'var(--primary)', 
                   color: 'white', 
-                  padding: '0 0.5rem',
+                  padding: '0.5rem 1rem',
                   display: 'inline-flex', 
                   alignItems: 'center', 
-                  borderRadius: '5px'
+                  borderRadius: '0 5px 5px 0',
                 }}
               >
                 {basketNum || '0'}
