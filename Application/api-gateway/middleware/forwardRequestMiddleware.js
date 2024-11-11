@@ -9,6 +9,8 @@ const axios = require('axios');
  */
 const forwardRequest = (serviceApi, isRedirect = false) => {
     return async(req, res, next) => {
+        console.log('SERVICE API:', serviceApi);
+        console.log('ORIGINAL URL:', req.originalUrl);
         const forwardUrl = isRedirect ? redirectUrl(serviceApi, req.originalUrl) : serviceApi;
 
     try {
