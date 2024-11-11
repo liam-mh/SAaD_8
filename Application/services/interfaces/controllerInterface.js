@@ -36,7 +36,7 @@ class ControllerInterface {
    * @returns
    */
   readRecord(primaryKey) {
-    return this.service.getFieldByQuery(primaryKey);
+    return this.service.readFieldByQuery(primaryKey);
   }
 
   /**
