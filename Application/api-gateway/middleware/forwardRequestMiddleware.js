@@ -7,8 +7,9 @@ const axios = require('axios');
  * @param {string} serviceApi - The base URL of the target service.
  * @param {boolean} isRedirect - Specifies if the request path should be appended to the service API URL.
  */
-const forwardRequest = async (req, res, serviceApi, isRedirect = false) => {
-    const forwardUrl = isRedirect ? redirectUrl(serviceApi, req.originalUrl) : serviceApi;
+const forwardRequest = (serviceApi, isRedirect = false) => {
+    return async(req, res, next) => {
+        const forwardUrl = isRedirect ? redirectUrl(serviceApi, req.originalUrl) : serviceApi;
 
     try {
         const response = await axios({
@@ -27,6 +28,7 @@ const forwardRequest = async (req, res, serviceApi, isRedirect = false) => {
             details: error.response?.data || 'Service unavailable',
         });
     }
+    };
 };
 
 /**
