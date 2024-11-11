@@ -23,6 +23,7 @@ html, body {
 .header {
     box-shadow: var(--drop-shadow);
     background-color: white;
+    margin-bottom: 1.5rem;
 }
 
 .footer {
@@ -35,12 +36,11 @@ html, body {
     box-shadow: var(--drop-shadow);
     border-radius: var(--border-radius);
     overflow: hidden;
+    width: auto;
 }
-
 .content-panel {
     padding: 1rem;
 }
-
 .content-panel-no-padding {
     margin: 0%;
 }
@@ -53,13 +53,40 @@ html, body {
 }
 
 /* BUTTONS, FORMS ------------------------------------------------------------------------------ */
-.button-primary {
-    border: var(--primary);
+.form-secondary {
+    border: 2px solid var(--secondary);
+}
+
+.highlight-primary, 
+.highlight-secondary,
+.highlight-primary-outline,
+.highlight-secondary-outline,
+.button-primary,
+.button-secondary,
+.button-primary-outline,
+.button-secondary-outline {
+    padding: 0.5rem 1rem;            
+    display: inline-flex;            
+    align-items: center;
+    justify-content: center;              
+    border-radius: var(--border-radius);        
+    font-weight: bold;                
+    text-align: center;                          
+}
+
+.button-primary,
+.highlight-primary {
+    border: 2px solid var(--primary);
     background-color: var(--primary);
     color: white;
 }
+.button-primary:hover {
+    background-color: var(--primary-dark);
+}
 
-.button-primary-outline {
+
+.button-primary-outline,
+.highlight-primary-outline {
     border: 2px solid var(--primary);
     background-color: white;
     color: var(--primary);
@@ -70,19 +97,27 @@ html, body {
     color: white;
 }
 
-.button-secondary {
-    border: 2px solid var(--secondary);
-    background-color: var(--secondary);
-    color: white;
-}
-.button-secondary:hover {
-    border: 2px solid var(--secondary);
-    background-color: var(--secondary-light);
+.button-secondary,
+.highlight-secondary {
+    border: 2px solid var(--secondary); 
+    background-color: var(--secondary); 
     color: white;
 }
 
-.form-secondary {
+.button-secondary:hover {
+    background-color: var(--secondary-light); 
+}
+
+.button-secondary-outline,
+.highlight-secondary-outline {
     border: 2px solid var(--secondary);
+    background-color: white;
+    color: var(--secondary);
+}
+
+.button-secondary-outline:hover {
+    background-color: var(--secondary);
+    color: white;
 }
 
 /* NAVIGATION ---------------------------------------------------------------------------------- */

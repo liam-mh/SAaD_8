@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Form from 'react-bootstrap/Form';
@@ -9,7 +9,7 @@ import Col from 'react-bootstrap/Col';
 
 function Header({ localBranch = {}, basketNum }) {
   return (
-    <header className="header">
+    <header className="header" style={ useLocation().pathname === '/' ? { marginBottom: '0' } : {} }>
       <Container fluid>
         {/* Branch and Help */}
         <Row className="border-bottom border-secondary">
@@ -40,18 +40,7 @@ function Header({ localBranch = {}, basketNum }) {
               <Form.Control type="text" placeholder="Search products..." className="form-secondary" style={{borderRadius: '5px 0 0 5px'}}/>
               <Button className="button-secondary me-2" style={{borderRadius: '0 5px 5px 0'}}>Search</Button>
               <Button className="button-secondary" style={{borderRadius: '5px 0 0 5px'}}>Basket</Button>
-              <span 
-                style={{ 
-                  backgroundColor: 'var(--primary)', 
-                  color: 'white', 
-                  padding: '0.5rem 1rem',
-                  display: 'inline-flex', 
-                  alignItems: 'center', 
-                  borderRadius: '0 5px 5px 0',
-                }}
-              >
-                {basketNum || '0'}
-              </span>
+              <span className='highlight-primary' style={{ borderRadius: '0 5px 5px 0' }}>{basketNum || '0'}</span>
             </Form>
           </Col>
         </Row>
