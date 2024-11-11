@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import IndexPage from './pages/index';
 import HelpPage from './pages/help';
 import AccountPage from './pages/account';
+import MediaPage from './pages/media';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<IndexPage />} />
         <Route path="/help" element={<HelpPage />} />
         <Route path="/account" element={<AccountPage />} />
+        <Route path="/media" element={<MediaPage />} />
       </Routes>
       <Footer />
     </Router>
