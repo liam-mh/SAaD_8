@@ -5,8 +5,9 @@ import Card from 'react-bootstrap/Card';
 
 function MediaCard({ isSearchResult = false, media }) {
   const buttonText = isSearchResult ? "Shop" : "Add To Basket";
+  const state = { mediaType: media.Type, mediaTitle: media.Title };
   const cardLink = !isSearchResult ? (
-    <Card.Link className="nav-link-secondary" as={Link} to='/media-item'>
+    <Card.Link className="nav-link-secondary" as={Link} to={'/media'} state={state}>
       More Information
     </Card.Link>
   ) : null;
@@ -18,7 +19,7 @@ function MediaCard({ isSearchResult = false, media }) {
         alt={media.Title} 
         style={{
           width: '100%', 
-          height: '16rem',
+          aspectRatio: '1',
           objectFit: 'contain'
         }}
       />
@@ -34,7 +35,7 @@ function MediaCard({ isSearchResult = false, media }) {
         
         <div style={{ flexGrow: 1 }} />
         {cardLink}
-        <Button className='button-primary-outline' style={{ marginTop: '0.5rem', width: '100%' }}>
+        <Button className='button-primary-outline' style={{ marginTop: '0.5rem', width: '100%' }} as={Link} to={'/media'} state={state}>
           {buttonText}
         </Button>
       </Card.Body>
