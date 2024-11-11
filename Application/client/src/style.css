@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+/* ROOT VARIABLES ------------------------------------------------------------------------------ */
+:root {
+    --primary: #26c8bc;
+    --primary-dark: color-mix(in srgb, var(--primary) 75%, black 40%);    
+    --secondary: #132054; 
+    --secondary-light: color-mix(in srgb, var(--secondary) 75%, white 40%);
+    --drop-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
+    --border-radius: 0.5rem;
+}
+
+/* GLOBAL STYLES ------------------------------------------------------------------------------- */
+html, body {
+    font-size: small;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 10%;
+    color: var(--secondary);
+    background-color: #E0E0E0;
+    height: 100%;
+}
+
+.header {
+    box-shadow: var(--drop-shadow);
+    background-color: white;
+}
+
+.footer {
+    background-color: white;
+}
+
+/* CONTENT PANELS ------------------------------------------------------------------------------ */
+.content-panel, .content-panel-no-padding {
+    background-color: white;
+    box-shadow: var(--drop-shadow);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.content-panel {
+    padding: 1rem;
+}
+
+.content-panel-no-padding {
+    margin: 0%;
+}
+
+.card-media-type {
+    background-color: var(--secondary); 
+    color: white;
+    text-align: center;
+    font-size: 0.8rem;
+}
+
+/* BUTTONS, FORMS ------------------------------------------------------------------------------ */
+.button-primary {
+    border: var(--primary);
+    background-color: var(--primary);
+    color: white;
+}
+
+.button-primary-outline {
+    border: 2px solid var(--primary);
+    background-color: white;
+    color: var(--primary);
+}
+.button-primary-outline:hover{
+    border: 2px solid var(--primary);
+    background-color: var(--primary);
+    color: white;
+}
+
+.button-secondary {
+    border: 2px solid var(--secondary);
+    background-color: var(--secondary);
+    color: white;
+}
+.button-secondary:hover {
+    border: 2px solid var(--secondary);
+    background-color: var(--secondary-light);
+    color: white;
+}
+
+.form-secondary {
+    border: 2px solid var(--secondary);
+}
+
+/* NAVIGATION ---------------------------------------------------------------------------------- */
+a {
+    color: var(--primary);
+    text-decoration: none;
+}
+a:hover {
+    color: var(--primary-dark);
+}
+
+.nav-link-secondary {
+    color: var(--secondary);
+}
+.nav-link-secondary:hover {
+    color: var(--secondary-light);
+}
+
+/* CAROUSEL ------------------------------------------------------------------------------------ */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-image: none; 
+    width: 1rem;
+    height: 1rem;
+    border: solid 3px transparent; 
+    position: absolute;
+    bottom: 2rem;
+    border-right-color: var(--secondary); 
+    border-top-color: var(--secondary);
+}
+.carousel-control-prev-icon {
+    transform: rotate(-135deg);
+    left: 0;
+}
+.carousel-control-next-icon {
+    transform: rotate(45deg);
+    right: 0;
+}
+
+.carousel-indicators {
+    display: none;
+}
+
+.whats-new {
+    box-shadow: inset var(--drop-shadow);
+    background: linear-gradient(to bottom right, var(--primary), var(--primary-dark));
+    width: 100vw;
+}
+.h1-whats-new {
+    text-shadow: var(--drop-shadow);
+    color: white;
+    font-size: 4rem;
+    padding-right: 4rem;
+    font-weight: 600;
+}
+
+/* PAGINATION ---------------------------------------------------------------------------------- */
+.pagination .page-item .page-link {
+    color: var(--secondary); 
+    border-color: var(--secondary); 
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--secondary);
+    color: white;
+    border-color: var(--secondary);
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: var(--secondary-light); 
+    color: white; 
+    border-color: var(--secondary);
+}
+
+.pagination .page-item.disabled .page-link {
+    color: var(--secondary); 
+    opacity: 0.5; 
+}
