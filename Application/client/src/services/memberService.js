@@ -1,19 +1,19 @@
-const { API_GATEWAY } = require('./apiService');
+const fetchFromApiGateway = require('./apiService');
 
-const fetchMembers = async () => {
+/**
+ * Fetch members from the account service.
+ * @returns {Promise<object>} - The data returned from the account service.
+ */
+const getAll = async () => {
     try {
-        const response = await fetch(`${API_GATEWAY}/account/member`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        return data; 
+        const data = await fetchFromApiGateway('/account/member/readRecords');
+        return data;
     } catch (error) {
         console.error("Error fetching members:", error);
-        throw error; 
+        throw error;
     }
 };
 
 module.exports = { 
-    fetchMembers
+    getAll
 };

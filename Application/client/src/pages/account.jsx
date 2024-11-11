@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { getAll } from '../services/memberService';
 
 const AccountPage = () => {
+  const [allMembers, setAll] = useState([]);
+
+  useEffect(() => {
+    async function loadData() {
+        const allItems = await getAll();
+        setAll(allItems);
+    }
+    
+    loadData();
+  }, []);
   return (
     <>
       <h1>Account Management</h1>
@@ -8,6 +19,9 @@ const AccountPage = () => {
       <h2 id="subscription">My Subcription</h2>
       <h2 id="library">My Library</h2>
       <h2 id="wishlist">My Wishlist</h2>
+
+      <h1>TEST FOR API SERVICE</h1>
+      {allMembers.map((member) => (member.FirstName))}
     </>
   );
 };
