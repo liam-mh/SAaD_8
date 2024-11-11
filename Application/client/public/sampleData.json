@@ -1,0 +1,602 @@
+[
+    {
+        "MediaID": "0000000001",
+        "Type": "Book",
+        "Title": "The Great Gatsby",
+        "Description": "The Great Gatsby is a classic American novel by F. Scott Fitzgerald that explores themes of decadence, idealism, resistance to change, social upheaval, and excess, creating a portrait of the Jazz Age or the Roaring Twenties in the United States.",
+        "PublishDate": "10-04-1925",
+        "Author": "F. Scott Fitzgerald",
+        "Genre": "Fiction",
+        "Artwork": "the-great-gatsby-cover.jpg"
+    },
+    {
+        "MediaID": "0000000002",
+        "Type": "Book",
+        "Title": "1984",
+        "Description": "1984, written by George Orwell, is a dystopian novel that explores the dangers of totalitarianism, surveillance, and government control. The story is set in a future society where the government, led by Big Brother, constantly watches and manipulates its citizens.",
+        "PublishDate": "08-06-1949",
+        "Author": "George Orwell",
+        "Genre": "Dystopian, Political Fiction",
+        "Artwork": "1984-cover.jpg"
+    },
+    {
+        "MediaID": "0000000003",
+        "Type": "Book",
+        "Title": "To Kill a Mockingbird",
+        "Description": "To Kill a Mockingbird, written by Harper Lee, is a classic novel that explores themes of racial injustice, morality, and the loss of innocence. Set in the 1930s South, it follows Scout Finch as she navigates the complexities of society and her father's legal defense of an innocent black man accused of raping a white woman.",
+        "PublishDate": "11-07-1960",
+        "Author": "Harper Lee",
+        "Genre": "Fiction, Historical",
+        "Artwork": "to-kill-a-mockingbird-cover.jpg"
+    },
+    {
+        "MediaID": "0000000004",
+        "Type": "Book",
+        "Title": "Moby-Dick",
+        "Description": "Moby-Dick, written by Herman Melville, is the story of Captain Ahab's obsessive quest to kill Moby Dick, the giant white whale. It is a complex tale of revenge, obsession, and the sea, exploring themes of fate, free will, and the nature of evil.",
+        "PublishDate": "18-10-1851",
+        "Author": "Herman Melville",
+        "Genre": "Fiction, Adventure",
+        "Artwork": "moby-dick-cover.jpg"
+    },
+    {
+        "MediaID": "0000000005",
+        "Type": "Book",
+        "Title": "The Catcher in the Rye",
+        "Description": "The Catcher in the Rye by J.D. Salinger is a coming-of-age novel that follows Holden Caulfield, a disillusioned teenager, as he struggles with the loss of innocence and the complexities of adulthood. Set in post-war New York, the novel touches on themes of alienation, mental health, and the challenges of growing up.",
+        "PublishDate": "16-07-1951",
+        "Author": "J.D. Salinger",
+        "Genre": "Fiction, Coming-of-Age",
+        "Artwork": "the-catcher-in-the-rye-cover.jpg"
+    },
+    {
+        "MediaID": "0000000006",
+        "Type": "Book",
+        "Title": "Pride and Prejudice",
+        "Description": "Pride and Prejudice, written by Jane Austen, is a romantic novel that explores the nature of love, marriage, and society. Set in rural England, it follows Elizabeth Bennet and her interactions with the aloof, wealthy Mr. Darcy.",
+        "PublishDate": "28-01-1813",
+        "Author": "Jane Austen",
+        "Genre": "Fiction, Romance",
+        "Artwork": "pride-and-prejudice-cover.jpg"
+    },
+    {
+        "MediaID": "0000000007",
+        "Type": "Book",
+        "Title": "The Hobbit",
+        "Description": "The Hobbit, written by J.R.R. Tolkien, is a fantasy novel that follows Bilbo Baggins as he embarks on an adventure to recover treasure guarded by the dragon Smaug. Along the way, he encounters trolls, elves, and goblins.",
+        "PublishDate": "21-09-1937",
+        "Author": "J.R.R. Tolkien",
+        "Genre": "Fantasy",
+        "Artwork": "the-hobbit-cover.jpg"
+    },
+    {
+        "MediaID": "0000000008",
+        "Type": "Book",
+        "Title": "The Odyssey",
+        "Description": "The Odyssey, written by Homer, is an epic poem that chronicles the adventures of Odysseus as he journeys home from the Trojan War, encountering gods, monsters, and temptations along the way.",
+        "PublishDate": "01-01-800 BC",
+        "Author": "Homer",
+        "Genre": "Fiction, Epic",
+        "Artwork": "the-odyssey-cover.jpg"
+    },
+    {
+        "MediaID": "0000000009",
+        "Type": "Book",
+        "Title": "Brave New World",
+        "Description": "Brave New World, written by Aldous Huxley, is a dystopian novel set in a futuristic society that has achieved apparent perfection through technology, mass production, and the suppression of individuality.",
+        "PublishDate": "01-01-1932",
+        "Author": "Aldous Huxley",
+        "Genre": "Dystopian, Science Fiction",
+        "Artwork": "brave-new-world-cover.jpg"
+    },
+    {
+        "MediaID": "0000000010",
+        "Type": "Book",
+        "Title": "War and Peace",
+        "Description": "War and Peace, written by Leo Tolstoy, is a historical novel set against the backdrop of the Napoleonic Wars, focusing on the lives of Russian aristocrats as they navigate the challenges of love, family, and war.",
+        "PublishDate": "01-01-1869",
+        "Author": "Leo Tolstoy",
+        "Genre": "Historical Fiction",
+        "Artwork": "war-and-peace-cover.jpg"
+    },
+    {
+        "MediaID": "0000000011",
+        "Type": "Journal",
+        "Title": "Nature",
+        "Description": "Nature is a scientific journal that publishes high-quality research across the sciences, including biology, chemistry, physics, and environmental sciences.",
+        "PublishDate": "12-11-2023",
+        "Author": "Various",
+        "Genre": "Educational, Science",
+        "Artwork": "nature-journal-cover.jpg"
+    },
+    {
+        "MediaID": "0000000012",
+        "Type": "Journal",
+        "Title": "The Lancet",
+        "Description": "The Lancet is a peer-reviewed medical journal that publishes original research in all fields of medicine, as well as commentary on health policy and global health.",
+        "PublishDate": "05-11-2023",
+        "Author": "Various",
+        "Genre": "Educational, Health",
+        "Artwork": "the-lancet-journal-cover.jpg"
+    },
+    {
+        "MediaID": "0000000013",
+        "Type": "Journal",
+        "Title": "Journal of Finance",
+        "Description": "The Journal of Finance is a leading academic journal in the field of financial economics, focusing on a wide range of topics such as asset pricing, corporate finance, and market behavior.",
+        "PublishDate": "10-10-2023",
+        "Author": "Various",
+        "Genre": "Educational, Finance",
+        "Artwork": "journal-of-finance-cover.jpg"
+    },
+    {
+        "MediaID": "0000000014",
+        "Type": "Journal",
+        "Title": "Science",
+        "Description": "Science is an international scientific journal that publishes original research articles, reviews, and commentaries covering all scientific disciplines.",
+        "PublishDate": "20-09-2023",
+        "Author": "Various",
+        "Genre": "Educational, Science",
+        "Artwork": "science-journal-cover.jpg"
+    },
+    {
+        "MediaID": "0000000015",
+        "Type": "Journal",
+        "Title": "IEEE Transactions on Computers",
+        "Description": "IEEE Transactions on Computers is a journal that publishes cutting-edge research on computer science and engineering, with a focus on algorithms, machine learning, and hardware systems.",
+        "PublishDate": "25-08-2023",
+        "Author": "Various",
+        "Genre": "Educational, Technology",
+        "Artwork": "ieee-journal-cover.jpg"
+    },
+    {
+        "MediaID": "0000000016",
+        "Type": "Periodical",
+        "Title": "The Economist",
+        "Description": "The Economist is an international weekly publication focusing on global political and economic news, trends, and analysis.",
+        "PublishDate": "10-10-2023",
+        "Author": "Various",
+        "Genre": "Educational, Political",
+        "Artwork": "the-economist-cover.jpg"
+    },
+    {
+        "MediaID": "0000000017",
+        "Type": "Periodical",
+        "Title": "National Geographic",
+        "Description": "National Geographic is a monthly periodical known for its stunning photography and deep coverage of science, geography, and exploration.",
+        "PublishDate": "02-11-2023",
+        "Author": "Various",
+        "Genre": "Educational, Nature",
+        "Artwork": "national-geographic-cover.jpg"
+    },
+    {
+        "MediaID": "0000000018",
+        "Type": "Periodical",
+        "Title": "TIME",
+        "Description": "TIME is a weekly news magazine that covers politics, health, science, and entertainment, providing in-depth analysis of current events.",
+        "PublishDate": "14-11-2023",
+        "Author": "Various",
+        "Genre": "Educational, News",
+        "Artwork": "time-periodical-cover.jpg"
+    },
+    {
+        "MediaID": "0000000019",
+        "Type": "Periodical",
+        "Title": "Vogue",
+        "Description": "Vogue is a fashion and lifestyle magazine that covers the latest trends in clothing, beauty, and celebrity culture.",
+        "PublishDate": "22-10-2023",
+        "Author": "Various",
+        "Genre": "Entertainment, Fashion",
+        "Artwork": "vogue-periodical-cover.jpg"
+    },
+    {
+        "MediaID": "0000000020",
+        "Type": "Periodical",
+        "Title": "Forbes",
+        "Description": "Forbes is a business magazine that publishes stories on finance, investing, entrepreneurship, and leadership.",
+        "PublishDate": "18-09-2023",
+        "Author": "Various",
+        "Genre": "Educational, Business",
+        "Artwork": "forbes-periodical-cover.jpg"
+    },
+    {
+        "MediaID": "0000000021",
+        "Type": "CD",
+        "Title": "Thriller",
+        "Description": "Thriller is Michael Jackson's iconic album, which includes hit songs like 'Billie Jean' and 'Beat It'. It is one of the best-selling albums of all time.",
+        "PublishDate": "30-11-1982",
+        "Author": "Michael Jackson",
+        "Genre": "Pop, Thriller",
+        "Artwork": "thriller-cd-cover.jpg"
+    },
+    {
+        "MediaID": "0000000022",
+        "Type": "CD",
+        "Title": "Back in Black",
+        "Description": "Back in Black is AC/DC's landmark album, featuring hits like 'You Shook Me All Night Long' and 'Hells Bells'. It remains one of the best-selling albums in history.",
+        "PublishDate": "25-07-1980",
+        "Author": "AC/DC",
+        "Genre": "Rock, Hard Rock",
+        "Artwork": "back-in-black-cd-cover.jpg"
+    },
+    {
+        "MediaID": "0000000023",
+        "Type": "CD",
+        "Title": "Abbey Road",
+        "Description": "Abbey Road, released by The Beatles in 1969, is considered one of the greatest albums of all time. It includes timeless tracks like 'Come Together' and 'Here Comes the Sun'.",
+        "PublishDate": "26-09-1969",
+        "Author": "The Beatles",
+        "Genre": "Rock, Classic Rock",
+        "Artwork": "abbey-road-cd-cover.jpg"
+    },
+    {
+        "MediaID": "0000000024",
+        "Type": "CD",
+        "Title": "Hotel California",
+        "Description": "Hotel California by The Eagles is an iconic album that blends rock with country and features the famous title track, known for its intricate guitar solos.",
+        "PublishDate": "08-12-1976",
+        "Author": "The Eagles",
+        "Genre": "Rock, Classic Rock",
+        "Artwork": "hotel-california-cd-cover.jpg"
+    },
+    {
+        "MediaID": "0000000025",
+        "Type": "CD",
+        "Title": "The Dark Side of the Moon",
+        "Description": "The Dark Side of the Moon by Pink Floyd is a groundbreaking concept album that explores themes of mental illness, greed, and the human condition.",
+        "PublishDate": "01-03-1973",
+        "Author": "Pink Floyd",
+        "Genre": "Progressive Rock",
+        "Artwork": "dark-side-of-the-moon-cd-cover.jpg"
+    },
+    {
+        "MediaID": "0000000026",
+        "Type": "DVD",
+        "Title": "The Shawshank Redemption",
+        "Description": "The Shawshank Redemption tells the story of Andy Dufresne, a man wrongly imprisoned for the murder of his wife. It's a tale of hope, friendship, and the endurance of the human spirit.",
+        "PublishDate": "14-09-1994",
+        "Author": "Frank Darabont",
+        "Genre": "Drama",
+        "Artwork": "shawshank-redemption-dvd-cover.jpg"
+    },
+    {
+        "MediaID": "0000000027",
+        "Type": "DVD",
+        "Title": "The Godfather",
+        "Description": "The Godfather is a crime drama about the powerful Corleone mafia family, exploring themes of power, loyalty, and revenge.",
+        "PublishDate": "24-03-1972",
+        "Author": "Francis Ford Coppola",
+        "Genre": "Crime, Drama",
+        "Artwork": "godfather-dvd-cover.jpg"
+    },
+    {
+        "MediaID": "0000000028",
+        "Type": "DVD",
+        "Title": "The Dark Knight",
+        "Description": "The Dark Knight, directed by Christopher Nolan, is a superhero film about Batman's efforts to stop the Joker from destroying Gotham City.",
+        "PublishDate": "18-07-2008",
+        "Author": "Christopher Nolan",
+        "Genre": "Action, Thriller",
+        "Artwork": "dark-knight-dvd-cover.jpg"
+    },
+    {
+        "MediaID": "0000000029",
+        "Type": "DVD",
+        "Title": "Forrest Gump",
+        "Description": "Forrest Gump tells the story of a man with a low IQ who leads an extraordinary life, witnessing and impacting key moments in American history.",
+        "PublishDate": "06-07-1994",
+        "Author": "Robert Zemeckis",
+        "Genre": "Drama, Romance",
+        "Artwork": "forrest-gump-dvd-cover.jpg"
+    },
+    {
+        "MediaID": "0000000030",
+        "Type": "DVD",
+        "Title": "Pulp Fiction",
+        "Description": "Pulp Fiction, directed by Quentin Tarantino, is a crime drama with interconnected storylines that explore themes of redemption, fate, and violence.",
+        "PublishDate": "14-10-1994",
+        "Author": "Quentin Tarantino",
+        "Genre": "Crime, Drama",
+        "Artwork": "pulp-fiction-dvd-cover.jpg"
+    },
+    {
+        "MediaID": "0000000031",
+        "Type": "Game",
+        "Title": "The Last of Us",
+        "Description": "The Last of Us is an action-adventure game that follows Joel and Ellie as they navigate a post-apocalyptic world, facing dangers from both infected creatures and hostile humans.",
+        "PublishDate": "14-06-2013",
+        "Author": "Naughty Dog",
+        "Genre": "Action, Adventure",
+        "Artwork": "the-last-of-us-game-cover.jpg"
+    },
+    {
+        "MediaID": "0000000032",
+        "Type": "Game",
+        "Title": "Minecraft",
+        "Description": "Minecraft is a sandbox game where players can build and explore procedurally generated worlds, gathering resources, crafting tools, and surviving against hostile mobs.",
+        "PublishDate": "18-11-2011",
+        "Author": "Mojang Studios",
+        "Genre": "Adventure, Sandbox",
+        "Artwork": "minecraft-game-cover.jpg"
+    },
+    {
+        "MediaID": "0000000033",
+        "Type": "Game",
+        "Title": "Red Dead Redemption 2",
+        "Description": "Red Dead Redemption 2 is an action-adventure game set in the late 1800s, where players control Arthur Morgan, a member of the Van der Linde gang, navigating a wild frontier.",
+        "PublishDate": "26-10-2018",
+        "Author": "Rockstar Games",
+        "Genre": "Action, Adventure",
+        "Artwork": "red-dead-redemption-2-cover.jpg"
+    },
+    {
+        "MediaID": "0000000034",
+        "Type": "Game",
+        "Title": "The Witcher 3: Wild Hunt",
+        "Description": "The Witcher 3: Wild Hunt is an open-world role-playing game where players control Geralt of Rivia, a monster hunter, as he embarks on an epic journey.",
+        "PublishDate": "19-05-2015",
+        "Author": "CD Projekt Red",
+        "Genre": "Fantasy, Action",
+        "Artwork": "the-witcher-3-game-cover.jpg"
+    },
+    {
+        "MediaID": "0000000035",
+        "Type": "Game",
+        "Title": "Fortnite",
+        "Description": "Fortnite is an online multiplayer game where players battle to be the last one standing in a battle royale mode or build creative structures in a sandbox environment.",
+        "PublishDate": "25-07-2017",
+        "Author": "Epic Games",
+        "Genre": "Action, Battle Royale",
+        "Artwork": "fortnite-game-cover.jpg"
+    },
+    {
+        "MediaID": "0000000036",
+        "Type": "Game",
+        "Title": "Cyberpunk 2077",
+        "Description": "Cyberpunk 2077 is an open-world RPG set in a dystopian future where players control V, a mercenary with customizable abilities, navigating the neon-lit streets of Night City.",
+        "PublishDate": "10-12-2020",
+        "Author": "CD Projekt Red",
+        "Genre": "Action, RPG, Sci-Fi",
+        "Artwork": "cyberpunk-2077-game-cover.jpg"
+    },
+    {
+        "MediaID": "0000000037",
+        "Type": "Game",
+        "Title": "Grand Theft Auto V",
+        "Description": "Grand Theft Auto V is an open-world action-adventure game that follows three criminals as they plan heists and engage in crime across the fictional city of Los Santos.",
+        "PublishDate": "17-09-2013",
+        "Author": "Rockstar Games",
+        "Genre": "Action, Adventure, Crime",
+        "Artwork": "grand-theft-auto-v-cover.jpg"
+    },
+    {
+        "MediaID": "0000000038",
+        "Type": "Game",
+        "Title": "Call of Duty: Modern Warfare",
+        "Description": "Call of Duty: Modern Warfare is a first-person shooter game that follows a covert team as they navigate global conflict in a realistic, gritty world.",
+        "PublishDate": "25-10-2019",
+        "Author": "Infinity Ward",
+        "Genre": "Action, Shooter",
+        "Artwork": "call-of-duty-modern-warfare-cover.jpg"
+    },
+    {
+        "MediaID": "0000000039",
+        "Type": "Game",
+        "Title": "Apex Legends",
+        "Description": "Apex Legends is a free-to-play battle royale game where players team up in squads to be the last one standing, using unique heroes with individual abilities.",
+        "PublishDate": "04-02-2019",
+        "Author": "Respawn Entertainment",
+        "Genre": "Action, Battle Royale",
+        "Artwork": "apex-legends-game-cover.jpg"
+    },
+    {
+        "MediaID": "0000000040",
+        "Type": "Game",
+        "Title": "Overwatch",
+        "Description": "Overwatch is a team-based multiplayer first-person shooter where players select heroes with unique abilities and fight to complete objectives.",
+        "PublishDate": "24-05-2016",
+        "Author": "Blizzard Entertainment",
+        "Genre": "Action, Shooter, Team-Based",
+        "Artwork": "overwatch-game-cover.jpg"
+    },
+    {
+        "MediaID": "0000000041",
+        "Type": "Periodical",
+        "Title": "Forbes",
+        "Description": "A bi-weekly magazine focused on business, investing, technology, and entrepreneurship.",
+        "PublishDate": "01-10-2020",
+        "Author": "Forbes Media",
+        "Genre": "Business, Finance",
+        "Artwork": "forbes.jpg"
+    },
+    {
+        "MediaID": "0000000042",
+        "Type": "Periodical",
+        "Title": "Vogue",
+        "Description": "A monthly fashion and lifestyle magazine focusing on style, beauty, and culture.",
+        "PublishDate": "01-09-2020",
+        "Author": "Condé Nast",
+        "Genre": "Fashion, Culture",
+        "Artwork": "vogue.jpg"
+    },
+    {
+        "MediaID": "0000000043",
+        "Type": "Periodical",
+        "Title": "National Geographic Kids",
+        "Description": "A monthly magazine offering fun and educational content for children, including nature, science, and history.",
+        "PublishDate": "12-06-2020",
+        "Author": "National Geographic Society",
+        "Genre": "Educational, Children",
+        "Artwork": "nat-geo-kids.jpg"
+    },
+    {
+        "MediaID": "0000000044",
+        "Type": "Periodical",
+        "Title": "Sports Illustrated",
+        "Description": "A sports magazine that covers news, events, and features on athletes and sports-related topics.",
+        "PublishDate": "30-06-2020",
+        "Author": "Sports Illustrated",
+        "Genre": "Sports",
+        "Artwork": "sports-illustrated.jpg"
+    },
+    {
+        "MediaID": "0000000045",
+        "Type": "Periodical",
+        "Title": "Rolling Stone",
+        "Description": "A music and pop culture magazine that also features articles on politics, entertainment, and current events.",
+        "PublishDate": "05-08-2020",
+        "Author": "Rolling Stone LLC",
+        "Genre": "Music, Entertainment",
+        "Artwork": "rolling-stone.jpg"
+    },
+    {
+        "MediaID": "0000000046",
+        "Type": "Periodical",
+        "Title": "GQ",
+        "Description": "A men's fashion, style, and culture magazine, featuring articles on grooming, lifestyle, and entertainment.",
+        "PublishDate": "15-09-2020",
+        "Author": "Condé Nast",
+        "Genre": "Fashion, Lifestyle",
+        "Artwork": "gq.jpg"
+    },
+    {
+        "MediaID": "0000000047",
+        "Type": "Periodical",
+        "Title": "Better Homes & Gardens",
+        "Description": "A lifestyle magazine focused on home, gardening, cooking, and personal style.",
+        "PublishDate": "01-08-2020",
+        "Author": "Meredith Corporation",
+        "Genre": "Home, Lifestyle",
+        "Artwork": "better-homes-gardens.jpg"
+    },
+    {
+        "MediaID": "0000000048",
+        "Type": "Periodical",
+        "Title": "Time",
+        "Description": "A well-known weekly magazine that covers national and international news, politics, and culture.",
+        "PublishDate": "07-09-2020",
+        "Author": "Time Inc.",
+        "Genre": "News, Current Affairs",
+        "Artwork": "time.jpg"
+    },
+    {
+        "MediaID": "0000000049",
+        "Type": "Periodical",
+        "Title": "The New Yorker",
+        "Description": "A weekly magazine of reportage, commentary, criticism, essays, fiction, satire, cartoons, and poetry.",
+        "PublishDate": "24-08-2020",
+        "Author": "Condé Nast",
+        "Genre": "Literature, Current Affairs",
+        "Artwork": "new-yorker.jpg"
+    },
+    {
+        "MediaID": "0000000050",
+        "Type": "Periodical",
+        "Title": "The Wall Street Journal",
+        "Description": "A daily newspaper that focuses on business and economic news, along with political and current affairs.",
+        "PublishDate": "14-09-2020",
+        "Author": "Dow Jones & Company",
+        "Genre": "Business, Finance",
+        "Artwork": "wsj.jpg"
+    },
+    {
+        "MediaID": "0000000051",
+        "Type": "Journal",
+        "Title": "Harvard Business Review",
+        "Description": "A leading management journal that covers topics on leadership, business strategy, and organizational behavior.",
+        "PublishDate": "01-08-2020",
+        "Author": "Harvard Business Publishing",
+        "Genre": "Business, Leadership",
+        "Artwork": "harvard-business-review.jpg"
+    },
+    {
+        "MediaID": "0000000052",
+        "Type": "Journal",
+        "Title": "The Economist",
+        "Description": "A bi-weekly international news magazine that covers economics, business, science, and politics.",
+        "PublishDate": "21-08-2020",
+        "Author": "The Economist Group",
+        "Genre": "Current Affairs, Business",
+        "Artwork": "economist.jpg"
+    },
+    {
+        "MediaID": "0000000053",
+        "Type": "Journal",
+        "Title": "MIT Technology Review",
+        "Description": "A publication that highlights the latest in technology and innovation.",
+        "PublishDate": "17-09-2020",
+        "Author": "MIT",
+        "Genre": "Technology, Innovation",
+        "Artwork": "mit-technology-review.jpg"
+    },
+    {
+        "MediaID": "0000000054",
+        "Type": "Journal",
+        "Title": "Foreign Affairs",
+        "Description": "A magazine focused on American foreign policy and international relations.",
+        "PublishDate": "10-07-2020",
+        "Author": "Council on Foreign Relations",
+        "Genre": "Politics, International Relations",
+        "Artwork": "foreign-affairs.jpg"
+    },
+    {
+        "MediaID": "0000000055",
+        "Type": "Journal",
+        "Title": "Scientific American",
+        "Description": "A science magazine that publishes research and articles across the fields of biology, physics, and technology.",
+        "PublishDate": "05-08-2020",
+        "Author": "Springer Nature",
+        "Genre": "Science, Technology",
+        "Artwork": "scientific-american.jpg"
+    },
+    {
+        "MediaID": "0000000056",
+        "Type": "Journal",
+        "Title": "Popular Mechanics",
+        "Description": "A journal focused on innovations in technology and mechanical engineering.",
+        "PublishDate": "15-09-2020",
+        "Author": "Hachette Media",
+        "Genre": "Technology, Engineering",
+        "Artwork": "popular-mechanics.jpg"
+    },
+    {
+        "MediaID": "0000000057",
+        "Type": "Journal",
+        "Title": "Journal of Consumer Research",
+        "Description": "A journal dedicated to the study of consumer behavior and marketing.",
+        "PublishDate": "13-07-2020",
+        "Author": "Oxford University Press",
+        "Genre": "Business, Marketing",
+        "Artwork": "consumer-research.jpg"
+    },
+    {
+        "MediaID": "0000000058",
+        "Type": "Journal",
+        "Title": "The Wall Street Journal",
+        "Description": "A daily business-focused newspaper offering global and domestic news in finance, economics, and beyond.",
+        "PublishDate": "30-06-2020",
+        "Author": "Dow Jones & Company",
+        "Genre": "News, Finance",
+        "Artwork": "wsj-journal.jpg"
+    },
+    {
+        "MediaID": "0000000059",
+        "Type": "Journal",
+        "Title": "Nature Reviews Molecular Cell Biology",
+        "Description": "A leading journal covering molecular biology, cellular biology, and biochemistry.",
+        "PublishDate": "25-08-2020",
+        "Author": "Springer Nature",
+        "Genre": "Science, Biology",
+        "Artwork": "nature-reviews.jpg"
+    },
+    {
+        "MediaID": "0000000060",
+        "Type": "Journal",
+        "Title": "The Journal of Political Economy",
+        "Description": "A journal covering the intersection of economics and political science.",
+        "PublishDate": "12-06-2020",
+        "Author": "University of Chicago Press",
+        "Genre": "Economics, Political Science",
+        "Artwork": "journal-of-political-economy.jpg"
+    }
+]
