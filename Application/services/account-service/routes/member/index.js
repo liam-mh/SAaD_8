@@ -7,7 +7,7 @@ const MemberController = require("../../micro-services/member/memberController")
 const memberController = new MemberController();
 
 // Define routes and use memberController to handle requests
-router.get("/", (req, res) => {
+router.get("/readRecords", (req, res) => {
   memberController
     .readRecords([])
     .then((members) => res.json(members))
