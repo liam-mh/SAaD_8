@@ -21,7 +21,7 @@ const forwardRequest = (serviceApi, isRedirect = false) => {
         
         res.status(response.status).json(response.data);
     } catch (error) {
-        console.error(`Error forwarding request to ${serviceApi}:`, error);
+        //console.error(`Error forwarding request to ${serviceApi}:`, error);
         const status = error.response ? error.response.status : 500;
         res.status(status).json({
             error: error.message,
@@ -44,7 +44,6 @@ const redirectUrl = (serviceApi, originalUrl) => {
     
     const target = originalUrl.replace(/^\/api\/\w+/, '');
     const forwardUrl = `${serviceApi}${target}`;
-    console.log(`Forwarding request to: ${forwardUrl}`);
     return forwardUrl;
 };
 

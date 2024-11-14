@@ -44,8 +44,8 @@ class ControllerInterface {
    * @param {Array} fieldIdentifiers - Array of field identifiers.
    * @returns
    */
-  readRecords(fieldIdentifiers) {
-    return this.service.readRecordsByQuery(fieldIdentifiers);
+  readRecords(fieldIdentifiers, allFlag) {
+    return this.service.readRecordsByQuery(fieldIdentifiers, allFlag);
   }
 
   /**
@@ -71,13 +71,11 @@ class ControllerInterface {
   // ------------------------------------- Update Methods ---------------------------------------------------
   /**
    * Update a records fields using parallel arrays.
-   * @param {Int} primaryKey - Primary key for the record to update.
-   * @param {Array} columns - Array of columns.
    * @param {Array} newValues - Array of new values.
    * @returns
    */
-  updateRecord(primaryKey, columns, newValues) {
-    return this.service.updateRecordByQuery(primaryKey, columns, newValues);
+  updateRecord(newValues) {
+    return this.service.updateRecordByQuery(newValues);
   }
 
   /**

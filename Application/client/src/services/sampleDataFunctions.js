@@ -43,6 +43,20 @@ async function getByDate() {
     return result; // Return all the most recent items per type
 }
 
+/*
+* TODO - for real media service we could...
+*   SELECT * 
+    FROM media
+    WHERE mediaid IN (
+    SELECT MIN(mediaid) 
+    FROM media 
+    GROUP BY title, type 
+    )
+    ORDER BY RAND() 
+    LIMIT 5;
+
+* call getMedia with a randFive flag.
+*/
 // Function to pick 5 random items
 async function getRandomFive() {
     const mediaData = await getAll(); // Fetch data asynchronously
@@ -50,13 +64,12 @@ async function getRandomFive() {
     return shuffled.slice(0, 5);
 }
 
-// Function to get all media items with the same title
+// Function to get all media items with the same title 
 async function getByTitle(title) {
     const mediaData = await getAll(); // Fetch data asynchronously
     
     // Filter media items by matching title
     const filteredItems = mediaData.filter(media => media.Title && media.Title.toLowerCase() === title.toLowerCase());
-    console.log(filteredItems); 
     return filteredItems; // Return all items with the same title
 }
 

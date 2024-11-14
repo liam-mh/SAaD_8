@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { fetchMembers } from '../services/memberService';
 import WhatsNewCarousel from '../components/WhatsNewCarousel';
 import MediaCard from '../components/MediaCard';
 import Container from 'react-bootstrap/esm/Container';

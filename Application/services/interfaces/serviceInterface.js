@@ -10,12 +10,13 @@ class ServiceInterface {
      * @param {Entity} entity - Specific Entity based on derived Service 
      */
 
-    constructor(entity) {
+    constructor(entity, object) {
         if (this.constructor === ServiceInterface) {
             throw new Error("Cannot instantiate abstract class directly.");
         }
-
-        this.entity = entity; // Inject the specific entity instance
+        // Inject specific instances
+        this.entity = entity; 
+        this.object = object
     }
 
     // Common methods that all services can use
@@ -27,26 +28,25 @@ class ServiceInterface {
      * @returns 
      */
     createRecordByQuery(recordValues) {
-        return this.entity.createByQuery(recordValues);
+        this.object.createObjectFromArray(recordValues);
+        return this.entity.createByQuery(this.object);
+        
     }
 
     // ------------------------------------- Read Methods ---------------------------------------------------
-    /**
-     * Read and return a record.
-     * @param {Int} primaryKey - Primary key for the record to read.
-     * @returns 
-     */
-    readRecordByQuery(primaryKey) {
-        return this.entity.readByQuery(primaryKey);
-    }
 
     /**
      * Reads and returns multiple records based on matching field values.
      * @param {Array} fieldIdentifiers - Array of field identifiers.
      * @returns 
      */
-    readRecordsByQuery(fieldIdentifiers) {
-        return this.entity.readByQuery(fieldIdentifiers);
+    readRecordsByQuery(fieldIdentifiers, allFlag) {
+        
+        if(allFlag){
+            return this.entity.readByQuery("*");
+        }
+        this.object.createObjectFromArray(fieldIdentifiers);
+        return this.entity.readByQuery(this.object);
     }
 
     /**
@@ -72,14 +72,13 @@ class ServiceInterface {
     // ------------------------------------- Update Methods ---------------------------------------------------
 
     /**
-     * Updates a record's fields.
-     * @param {Int} primaryKey - Primary key for the record to be updated.
-     * @param {Array} columns - Array of columns.
+     * Create Object with new values then pass to entity to update DB.
      * @param {Array} newValues - Array of new values.
      * @returns 
      */
-    updateRecordByQuery(primaryKey, columns, newValues) {
-        return this.entity.updateByQuery(primaryKey, columns, newValues);
+    updateRecordByQuery(newValues) {
+        this.object.createObjectFromArray(newValues);
+        return this.entity.updateByQuery(this.object);
     }
 
     /**
@@ -120,7 +119,7 @@ class ServiceInterface {
     /**
      * Delete a single record.
      * @param {Int} primaryKey - Primary key of the record to be deleted.
-     * @returns 
+     * @returns {Promise<Object>} - Returns result object.
      */
     deleteRecordByQuery(primaryKey) {
         return this.entity.deleteByQuery(primaryKey);
