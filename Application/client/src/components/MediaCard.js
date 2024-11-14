@@ -3,9 +3,14 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 
+import { generateImageSrc } from '../services/memberService';
+
 function MediaCard({ isSearchResult = false, media }) {
   const buttonText = isSearchResult ? "Shop" : "Add To Basket";
   const state = { mediaType: media.Type, mediaTitle: media.Title };
+
+  const mediaArtwork = generateImageSrc(media.Title, media.Type); 
+
   const cardLink = !isSearchResult ? (
     <Card.Link className="nav-link-secondary" as={Link} to={'/media'} state={state}>
       More Information
@@ -15,7 +20,7 @@ function MediaCard({ isSearchResult = false, media }) {
   return (
     <Card className='content-panel-no-padding' style={{ width: '17rem', height: '100%' }}>
       <Card.Img 
-        src={media.Artwork} 
+        src={mediaArtwork} 
         alt={media.Title} 
         style={{
           width: '100%', 

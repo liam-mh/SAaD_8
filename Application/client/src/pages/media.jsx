@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/esm/Col';
 import BranchStockCard from '../components/BranchStockCard';
 import { useLocation } from 'react-router-dom';
 import { getByTitle } from '../services/sampleDataFunctions';
+import { generateImageSrc } from '../services/memberService';
 
 const MediaPage = () => {
 
@@ -26,14 +27,16 @@ const MediaPage = () => {
   // Access the first media item, if it exists
   const mediaItem = media.length > 0 ? media[0] : null;
 
+  const mediaArtwork = generateImageSrc(mediaTitle, mediaType);
+
   return (
     <>
       <Container fluid='lg'>
         <Row>
           <Col className='content-panel g-0' style={{ paddingRight: '1.5rem' }}>
-            {mediaItem && mediaItem.Artwork ? (
+            {mediaItem ? (
               <img 
-                src={mediaItem.Artwork} 
+                src={mediaArtwork} 
                 alt={mediaItem.Title || 'Media Image'} 
                 style={{ width: '100%', aspectRatio: '1' , objectFit: 'contain' }} 
               />

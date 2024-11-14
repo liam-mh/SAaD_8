@@ -7,7 +7,7 @@ const axios = require('axios');
  * @param {string} serviceApi - The base URL of the target service.
  * @param {boolean} isRedirect - Specifies if the request path should be appended to the service API URL.
  */
-const forwardRequest = (serviceApi, isRedirect = false) => {
+const forwardRequest = (serviceApi, isRedirect = true) => {
     return async(req, res, next) => {
         console.log('SERVICE API:', serviceApi);
         console.log('ORIGINAL URL:', req.originalUrl);
