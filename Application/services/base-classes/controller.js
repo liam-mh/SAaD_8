@@ -2,14 +2,14 @@
  * Abstract Controller class
  *
  */
-class ControllerInterface {
+class Contoller {
   notificationService;
   /**
    * Constructor
    * @param {Service} service - Specific Service based on derived Controller
    */
   constructor(service) {
-    if (this.constructor === ControllerInterface) {
+    if (this.constructor === Contoller) {
       throw new Error(
         "Controller is an abstract class and cannot be instantiated directly."
       );
@@ -127,4 +127,4 @@ class ControllerInterface {
   }
 }
 
-module.exports = ControllerInterface;
+module.exports = Contoller;

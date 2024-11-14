@@ -2,20 +2,22 @@
  *  Abstract Service class
  */
 
-class ServiceInterface {
+const DbHandler = require("./dbHandler");
+
+class Service {
 
     notificationService;
     /**
      * Constructor
-     * @param {Entity} entity - Specific Entity based on derived Service 
+     * @param {DbHandler} dbHandler - Specific database handler based on derived Service.
      */
 
-    constructor(entity, object) {
-        if (this.constructor === ServiceInterface) {
+    constructor(dbHandler, object) {
+        if (this.constructor === Service) {
             throw new Error("Cannot instantiate abstract class directly.");
         }
         // Inject specific instances
-        this.entity = entity; 
+        this.dbHandler = dbHandler; 
         this.object = object
     }
 
@@ -29,7 +31,7 @@ class ServiceInterface {
      */
     createRecordByQuery(recordValues) {
         this.object.createObjectFromArray(recordValues);
-        return this.entity.createByQuery(this.object);
+        return this.dbHandler.createByQuery(this.object);
         
     }
 
@@ -43,10 +45,10 @@ class ServiceInterface {
     readRecordsByQuery(fieldIdentifiers, allFlag) {
         
         if(allFlag){
-            return this.entity.readByQuery("*");
+            return this.dbHandler.readByQuery("*");
         }
         this.object.createObjectFromArray(fieldIdentifiers);
-        return this.entity.readByQuery(this.object);
+        return this.dbHandler.readByQuery(this.object);
     }
 
     /**
@@ -56,7 +58,7 @@ class ServiceInterface {
      * @returns 
      */
     readFieldByQuery(primaryKey, column) {
-        return this.entity.readByQuery(primaryKey, column);
+        return this.dbHandler.readByQuery(primaryKey, column);
     }
 
     /**
@@ -66,19 +68,19 @@ class ServiceInterface {
      * @returns 
      */
     readFieldsByQuery(primaryKey, columns) {
-        return this.entity.readByQuery(primaryKey, columns);
+        return this.dbHandler.readByQuery(primaryKey, columns);
     }
 
     // ------------------------------------- Update Methods ---------------------------------------------------
 
     /**
-     * Create Object with new values then pass to entity to update DB.
+     * Create Object with new values then pass to dbHandler to update DB.
      * @param {Array} newValues - Array of new values.
      * @returns 
      */
     updateRecordByQuery(newValues) {
         this.object.createObjectFromArray(newValues);
-        return this.entity.updateByQuery(this.object);
+        return this.dbHandler.updateByQuery(this.object);
     }
 
     /**
@@ -89,7 +91,7 @@ class ServiceInterface {
      * @returns 
      */
     updateRecordsByQuery(primaryKeys, columns, newValues) {
-        return this.entity.updateByQuery(primaryKeys, columns, newValues);
+        return this.dbHandler.updateByQuery(primaryKeys, columns, newValues);
     }
 
     /**
@@ -100,7 +102,7 @@ class ServiceInterface {
      * @returns 
      */
     updateFieldByQuery(primaryKey, field, newValue) {
-        return this.entity.updateByQuery(primaryKey, field, newValue);
+        return this.dbHandler.updateByQuery(primaryKey, field, newValue);
     }
 
     /**
@@ -111,7 +113,7 @@ class ServiceInterface {
      * @returns 
      */
     updateFieldsByQuery(primaryKey, fields, newValues) {
-        return this.entity.updateByQuery(primaryKey, fields, newValues);
+        return this.dbHandler.updateByQuery(primaryKey, fields, newValues);
     }
 
     // ------------------------------------- Delete Methods ---------------------------------------------------
@@ -122,7 +124,7 @@ class ServiceInterface {
      * @returns {Promise<Object>} - Returns result object.
      */
     deleteRecordByQuery(primaryKey) {
-        return this.entity.deleteByQuery(primaryKey);
+        return this.dbHandler.deleteByQuery(primaryKey);
     }
 
     /**
@@ -131,8 +133,8 @@ class ServiceInterface {
      * @returns 
      */
     deleteRecordsByQuery(primaryKeys) {
-        return this.entity.deleteByQuery(primaryKeys);
+        return this.dbHandler.deleteByQuery(primaryKeys);
     }
 }
 
-module.exports = ServiceInterface;
+module.exports = Service;

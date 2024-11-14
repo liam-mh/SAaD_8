@@ -5,7 +5,7 @@ const dbConfig = require('../../config/azure-db/dbConfig')
  * Base entity class.
  * Dependency injection - relative table to access.
  */
-class EntityInterface {
+class DbHandler {
     config = dbConfig
     constructor(tableName, pk) {
         this.tableName = tableName;
@@ -175,4 +175,4 @@ class EntityInterface {
     }
 }
 
-module.exports = EntityInterface;
+module.exports = DbHandler;

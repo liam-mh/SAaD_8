@@ -1,14 +1,14 @@
-const ServiceInterface = require("../../../interfaces/serviceInterface");
-const MemberEntity = require("../../../account-service/micro-services/member/memberEntity");
-const MemberObject = require("./memberObject")
+const Service = require("../../../base-classes/service");
+const MemberDbHandler = require("../../../account-service/micro-services/member/memberDbHandler");
+const MemberObject = require("./memberObject");
 
-class MemberService extends ServiceInterface {
+class MemberService extends Service {
   tableName = "Member";
 
   constructor() {
-    const entity = new MemberEntity();
+    const dbHandler = new MemberDbHandler();
     const object = new MemberObject();
-    super(entity, object);
+    super(dbHandler, object);
   }
 }
 

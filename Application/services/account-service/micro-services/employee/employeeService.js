@@ -1,9 +1,13 @@
-const ServiceInterface = require('../../../interfaces/serviceInterface')
-const EmployeeEntity = require("../employee/employeeEntity");
+const Service = require('../../../base-classes/service');
+const EmployeeDbHandler = require("./employeDbHandler");
+const EmployeeObject = require("./employeeObject")
 
-class EmployeeService extends ServiceInterface {
+
+class EmployeeService extends Service {
     constructor() {
-        super(EmployeeEntity); // Pass the specific service to the base class
+        const dbHandler = new EmployeeDbHandler();
+        const object = new EmployeeObject();
+        super(dbHandler, object); 
       }
 }
 
