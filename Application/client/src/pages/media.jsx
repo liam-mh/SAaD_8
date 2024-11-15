@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/esm/Col';
 import BranchStockCard from '../components/BranchStockCard';
 import { useLocation } from 'react-router-dom';
 import { getByTitle } from '../services/sampleDataFunctions';
-import { generateImageSrc } from '../services/memberService';
+import { generateImageSrc } from '../services/mediaService';
 
 const MediaPage = () => {
 

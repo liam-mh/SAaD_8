@@ -2,8 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-
-import { generateImageSrc } from '../services/memberService';
+import { generateImageSrc } from '../services/mediaService';
 
 function MediaCard({ isSearchResult = false, media }) {
   const buttonText = isSearchResult ? "Shop" : "Add To Basket";
