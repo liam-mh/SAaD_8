@@ -7,4 +7,4 @@ app.use(express.json());
 app.use('/api', memberRoutes);
 
 const PORT = config.ACCOUNT_SERVICE_PORT;
-app.listen(PORT, () => console.log(`Account Service running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Account Service running on port ${PORT}`)); 
