@@ -95,6 +95,7 @@ class DbHandler {
                     console.error('Error reading data:', err);
                     reject(err);
                 } else {
+                    console.log(results);
                     resolve(results);
                 }
             });

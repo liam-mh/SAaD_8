@@ -7,7 +7,7 @@ class MemberObject extends AbstractObject {
     this.firstName = null;
     this.surname = null;
     this.email = null;
-    this.firstLineAddress
+    this.firstLineAddress = null;
     this.city = null;
     this.postcode = null;
     this.branchID = null;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getMembers, createMember, updateMember, deleteMember } from '../services/memberService';
+import { getEmployee } from '../services/employeeService';
 
 const AccountPage = () => {
   const [allMembers, setAll] = useState([]);
@@ -8,7 +9,7 @@ const AccountPage = () => {
   useEffect(() => {
     async function loadData() {
       try {
-        const allItems = await getMembers([], true);
+        const allItems = await getEmployee([], true);
         setAll(Array.isArray(allItems.data) ? allItems.data : []);
       } catch (error) {
         console.error("Error loading members:", error);

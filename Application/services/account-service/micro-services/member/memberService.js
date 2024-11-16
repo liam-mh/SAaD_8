@@ -3,8 +3,6 @@ const MemberDbHandler = require("../../../account-service/micro-services/member/
 const MemberObject = require("./memberObject");
 
 class MemberService extends Service {
-  tableName = "Member";
-
   constructor() {
     const dbHandler = new MemberDbHandler();
     const object = new MemberObject();
