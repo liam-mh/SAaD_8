@@ -52,6 +52,32 @@ html, body {
     font-size: 0.8rem;
 }
 
+.notification-banner,
+.notification-banner-alert {
+    width: 100vw; 
+    color: white;
+    font-weight: bold;
+    margin-left: 0;
+    margin-right: 0;
+    transform: translateY(-1.5rem);
+    box-shadow: inset var(--drop-shadow), var(--drop-shadow);
+    padding: 0.5rem;
+}
+.notification-banner {
+    background-color: var(--primary);
+}
+.notification-banner-alert {
+    background-color: red; 
+}
+.notification-banner a,
+.notification-banner-alert a {
+    color: white;
+}
+.notification-banner a:hover,
+.notification-banner-alert a:hover {
+    color: #E0E0E0;
+}
+
 /* BUTTONS, FORMS ------------------------------------------------------------------------------ */
 .form-secondary {
     border: 2px solid var(--secondary);
