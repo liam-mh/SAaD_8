@@ -7,6 +7,7 @@ import BranchStockCard from '../components/BranchStockCard';
 import NotificationBanner from '../components/NotificationBanner';
 import { useLocation } from 'react-router-dom';
 import { getByTitle } from '../services/sampleDataFunctions';
+import { generateImageSrc } from '../services/mediaService';
 
 const MediaPage = () => {
   const location = useLocation();
@@ -28,7 +29,9 @@ const MediaPage = () => {
   }, []);
 
   const mediaItem = media.length > 0 ? media[0] : null;
+  const mediaArtwork = generateImageSrc(mediaTitle, mediaType);
 
+  {/* Example Usage Branches */}
   const exampleBranch1 = {
     BranchID: '0001',
     FirstLineAddress: '120 example road',
@@ -41,6 +44,7 @@ const MediaPage = () => {
     City: 'Sheffield',
     Postcode: 'S5 XYZ'
   };
+  {/* END - Example Usage Branches */}
 
   return (
     <>
@@ -49,9 +53,9 @@ const MediaPage = () => {
         <Row>
           {/* Media Artwork */}
           <Col className='content-panel g-0' style={{ paddingRight: '1.5rem' }}>
-            {mediaItem && mediaItem.Artwork ? (
+            {mediaItem ? (
               <img 
-                src={mediaItem.Artwork} 
+                src={mediaArtwork} 
                 alt={mediaItem.Title || 'Media Image'} 
                 style={{ width: '100%', aspectRatio: '1', objectFit: 'contain' }} 
               />
