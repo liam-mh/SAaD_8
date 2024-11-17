@@ -50,7 +50,7 @@ function Header() {
           </Col>
           <Col className="d-flex justify-content-end">
             <Form className="d-flex align-items-center">
-              <Form.Control type="text" placeholder="Search products..." className="form-secondary" style={{borderRadius: '5px 0 0 5px'}} />
+              <Form.Control type="text" placeholder="Search products..." className="form-secondary" style={{borderRadius: '5px 0 0 5px', width: '300px'}} />
               <Button className="button-secondary me-2" style={{borderRadius: '0 5px 5px 0'}}>Search</Button>
               <Button className="button-secondary" style={{borderRadius: '5px 0 0 5px'}} as={Link} to="/basket">
                 Basket
