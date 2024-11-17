@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAll } from '../services/memberService';
+import { getMembers } from '../services/memberService';
 import LoginCard from '../components/LoginCard';
 
 const AccountPage = () => {
@@ -13,8 +13,8 @@ const AccountPage = () => {
       setError(null); // Clear any previous errors
 
       try {
-        const allItems = await getAll();
-        setAll(allItems);
+        const allItems = await getMembers([], true);
+        setAll(Array.isArray(allItems.data) ? allItems.data : []);
       } catch (error) {
         setError(error.message || 'Failed to fetch data'); // Set error message
       } finally {

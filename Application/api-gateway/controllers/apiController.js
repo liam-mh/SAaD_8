@@ -1,5 +1,5 @@
-const axios = require('axios');
-const config = require('../config');
+// const axios = require('axios');
+// const config = require('../config');
 
 const getMembersFromAccountService = async (req, res) => {
     try {

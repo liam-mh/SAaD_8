@@ -6,6 +6,6 @@ const app = express();
 app.use(express.json());
 app.use('/api', routes);
 
-const PORT = config.ACCOUNT_SERVICE_PORT;
-app.listen(PORT, () => console.log(`Account Service running on port ${PORT}`)); 
+const PORT = config.STOREFRONT_SERVICE_PORT;
+app.listen(PORT, () => console.log(`Storefront Service running on port ${PORT}`)); 
 

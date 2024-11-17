@@ -2,14 +2,14 @@
  * Abstract Controller class
  *
  */
-class ControllerInterface {
+class Contoller {
   notificationService;
   /**
    * Constructor
    * @param {Service} service - Specific Service based on derived Controller
    */
   constructor(service) {
-    if (this.constructor === ControllerInterface) {
+    if (this.constructor === Contoller) {
       throw new Error(
         "Controller is an abstract class and cannot be instantiated directly."
       );
@@ -44,8 +44,9 @@ class ControllerInterface {
    * @param {Array} fieldIdentifiers - Array of field identifiers.
    * @returns
    */
-  readRecords(fieldIdentifiers) {
-    return this.service.readRecordsByQuery(fieldIdentifiers);
+  readRecords(fieldIdentifiers, allFlag) {
+    console.log(allFlag)
+    return this.service.readRecordsByQuery(fieldIdentifiers, allFlag);
   }
 
   /**
@@ -71,13 +72,11 @@ class ControllerInterface {
   // ------------------------------------- Update Methods ---------------------------------------------------
   /**
    * Update a records fields using parallel arrays.
-   * @param {Int} primaryKey - Primary key for the record to update.
-   * @param {Array} columns - Array of columns.
    * @param {Array} newValues - Array of new values.
    * @returns
    */
-  updateRecord(primaryKey, columns, newValues) {
-    return this.service.updateRecordByQuery(primaryKey, columns, newValues);
+  updateRecord(newValues) {
+    return this.service.updateRecordByQuery(newValues);
   }
 
   /**
@@ -129,4 +128,4 @@ class ControllerInterface {
   }
 }
 
-module.exports = ControllerInterface;
+module.exports = Contoller;
