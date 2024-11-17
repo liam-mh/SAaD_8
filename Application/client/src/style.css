@@ -78,7 +78,13 @@ html, body {
     color: #E0E0E0;
 }
 
+.custom-left-border {
+    border-left: 2px solid var(--primary);
+}
 /* BUTTONS, FORMS ------------------------------------------------------------------------------ */
+.form-primary {
+    border: 2px solid var(--primary);
+}
 .form-secondary {
     border: 2px solid var(--secondary);
 }
@@ -201,7 +207,7 @@ a:hover {
 }
 
 /* Container for the carousel */
-    .carousel-container {
+.carousel-container {
     width: 700px;
     height: 200px;
     margin: auto;
@@ -209,9 +215,9 @@ a:hover {
 
 /* Category title styles */
 .category-title {
-position: absolute;
-top: 2rem;
-z-index: 10;
+    position: absolute;
+    top: 2rem;
+    z-index: 10;
 }
 
 /* Artwork container styles */

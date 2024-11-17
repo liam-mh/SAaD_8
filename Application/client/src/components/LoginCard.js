@@ -2,7 +2,11 @@ import React, { useState, useContext } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
+import { Link } from 'react-router-dom';
 import { SessionContext } from '../services/sessionContext';
+import Row from 'react-bootstrap/esm/Row';
+import Col from 'react-bootstrap/esm/Col';
+import CardImg from 'react-bootstrap/esm/CardImg';
 
 function LoginCard() {
   const [email, setEmail] = useState('');
@@ -11,7 +15,7 @@ function LoginCard() {
   const { user, setUser } = useContext(SessionContext);
 
   const handleLogin = (e) => {
-    e.preventDefault(); // Prevent form from submitting and refreshing the page
+    e.preventDefault(); 
 
     // Dummy credentials for testing
     const testEmail = 'test@example.com';
@@ -35,7 +39,7 @@ function LoginCard() {
       setUser(newUser); // Update context with user details
       setErrorMessage(''); // Clear any previous error messages
     } else {
-      setErrorMessage('Invalid email or password. Please try again.'); // Show error for invalid credentials
+      setErrorMessage('Invalid email or password. Please try again.'); 
     }
   };
 
@@ -44,48 +48,59 @@ function LoginCard() {
   };
 
   return (
-    <Card className="content-panel-no-padding">
-      <Card.Body>
-        {user ? ( // If the user is logged in
-          <div>
-            <h4>Hi {user.FirstName}!</h4>
-            <Button variant="secondary" onClick={handleLogout}>
-              Logout
-            </Button>
-          </div>
-        ) : (
-          <Form onSubmit={handleLogin}>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+    !user && (
+      <Card className="content-panel-no-padding" style={{ width: '600px' }}>
+        <Card.Body>
+          <Row>
+
+            {/* Logo */}
+            <Col xs={4} className='d-flex flex-column justify-content-center align-items-center text-center'>
+              <CardImg
+                src="/AML-logo.png" 
+                alt="Advanced Media Library Logo" 
+                style={{ height: '8rem', width: 'auto' }} 
               />
-            </Form.Group>
+              <h2 style={{ color: 'var(--primary)', fontWeight: '600' }}>AML</h2>
+            </Col>
 
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </Form.Group>
+            {/* Input Form */}
+            <Col className='custom-left-border justify-content-center align-items-center text-center'>
+              <h4 className='py-4'>Login to your account</h4>
+              <div className="d-flex justify-content-center" style={{ width: '100%' }}>
+                <Form onSubmit={handleLogin} style={{ width: '80%' }}>
+                  <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <Form.Control 
+                      className="form-primary"
+                      type="email"
+                      placeholder="Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3" controlId="formBasicPassword">
+                    <Form.Control 
+                      className="form-primary"
+                      type="password"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </Form.Group>
+                  {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+                  <Button className="button-primary" type="submit">
+                    Login
+                  </Button>
+                </Form>
+              </div>
+              <p className='py-4'>New here? <Link to="/account#register">Sign up</Link></p>
+            </Col>
 
-            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>} {/* Error message */}
-
-            <Button variant="primary" type="submit">
-              Login
-            </Button>
-          </Form>
-        )}
-      </Card.Body>
-    </Card>
+          </Row>
+        </Card.Body>
+      </Card>
+    )
   );
 }
 
