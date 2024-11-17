@@ -9,4 +9,3 @@ const resources = ['member', 'employee', 'member-subscription', 'subscription', 
 handleRoutes(router, 'account-service', resources);
 
 module.exports = router;
-
