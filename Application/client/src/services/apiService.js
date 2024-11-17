@@ -11,7 +11,6 @@ const API_GATEWAY = config.API_GATEWAY;
 const fetchFromApiGateway = async (endpoint, options = {}) => {
     try {
         const response = await fetch(`${API_GATEWAY}${endpoint}`, options);
-        
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
