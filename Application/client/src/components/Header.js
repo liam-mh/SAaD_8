@@ -13,8 +13,16 @@ function Header() {
   const basketNum = basket.length;
   const localBranch = {};
 
+  const location = useLocation();
+  const headerClass = 
+    location.pathname === '/' || 
+    location.pathname === '/help' || 
+    location.pathname.startsWith('/employee') 
+    ? 'header mb-0' 
+    : 'header';
+  
   return (
-    <header className="header" style={ useLocation().pathname === '/' ? { marginBottom: '0' } : {} }>
+    <header className={headerClass}>
       <Container fluid>
         <Row className="border-bottom border-secondary">
           <Col>

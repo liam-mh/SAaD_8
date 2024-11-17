@@ -20,6 +20,12 @@ html, body {
     height: 100%;
 }
 
+.white-background {
+    background-color: white;
+    box-shadow: inset var(--drop-shadow);
+    min-height: 100vh;
+}
+
 .header {
     box-shadow: var(--drop-shadow);
     background-color: white;
@@ -28,6 +34,7 @@ html, body {
 
 .footer {
     background-color: white;
+    margin-top: 1.5rem;
 }
 
 /* CONTENT PANELS ------------------------------------------------------------------------------ */
@@ -78,9 +85,13 @@ html, body {
     color: #E0E0E0;
 }
 
-.custom-left-border {
+.left-border-primary {
     border-left: 2px solid var(--primary);
 }
+.bottom-border-primary {
+    border-bottom: 2px solid var(--primary);
+}
+
 /* BUTTONS, FORMS ------------------------------------------------------------------------------ */
 .form-primary {
     border: 2px solid var(--primary);
