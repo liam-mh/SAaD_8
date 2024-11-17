@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -24,77 +25,34 @@ function WhatsNewCarousel({ media }) {
 
   return (
     <Container fluid>
-      <div style={{ width: '700px', height: '200px', margin: 'auto' }}> {/* Custom carousel size */}
+      <div className="carousel-container">
         <Carousel>
           {slides.map((slide, index) => (
             <Carousel.Item key={index}>
               <Row>
                 <Col xs={2}>
-                  {/* Category Title */}
-                  <div className="category-title" style={{ position: 'absolute', top: '2rem', zIndex: 10 }}>
+                  <div className="category-title">
                     <h4>{slide.title}</h4>
                   </div>
                 </Col>
                 <Col>
-                  {/* Display the items in each slide */}
                   <Row className="justify-content-center g-0">
                     {slide.items.map((item, idx) => (
                       <Col key={idx} md={4}>
-                        <div
-                          className="artwork-container"
-                          style={{
-                            position: 'relative',
-                            width: '100%',
-                            height: '200px',
-                            overflow: 'hidden',
-                            backgroundColor: '#E0E0E0'
-                          }}
+                        <Link
+                          to="/media"
+                          state={{ mediaType: item.Type, mediaTitle: item.Title }}
+                          className="carousel-link"
                         >
-                          {/* Actual Artwork */}
-                          <img
-                            src={generateImageSrc(item.Title, item.Type)} 
-                            alt={item.Title}
-                            style={{
-                              width: '100%',
-                              height: '100%',
-                              objectFit: 'cover',
-                              position: 'absolute',
-                              top: 0,
-                              left: 0,
-                              border: 'none',     
-                              outline: 'none', 
-                            }}
-                          />
-                          {/* Masked Rhombus Effect */}
-                          <div
-                            style={{
-                              content: "''",
-                              position: 'absolute',
-                              top: 0,
-                              left: -0.5,
-                              width: '100%',
-                              height: '100%',
-                              backgroundColor: 'white', 
-                              clipPath: 'polygon(0 0, 10% 0, 0 100%, 0 100%)', 
-                              transformOrigin: 'center',
-                              zIndex: 1,
-                            }}
-                          />
-                          <div
-                            style={{
-                              content: "''",
-                              position: 'absolute',
-                              top: 0,
-                              left: 0.5,
-                              width: '100%',
-                              height: '100%',
-                              backgroundColor: 'white', 
-                              clipPath: 'polygon(100% 0, 100% 0, 90% 100%, 100% 100%)', 
-                              transformOrigin: 'center',
-                              zIndex: 1,
-                            }}
-                          />
-                        </div>
+                          <div className="artwork-container">
+                            <img
+                              src={generateImageSrc(item.Title, item.Type)} 
+                              alt={item.Title}
+                            />
+                            <div className="mask-left"></div>
+                            <div className="mask-right"></div>
+                          </div>
+                        </Link>
                       </Col>
                     ))}
                   </Row>
