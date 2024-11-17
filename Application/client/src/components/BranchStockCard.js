@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { SessionContext } from '../services/sessionContext';
 
 function BranchStockCard({ branch, media, isInStock = true }) {
+    if (!media) { return <p>Loading media information...</p>; }
     const { basket, setBasket } = useContext(SessionContext);
 
     const isInBasket = basket.some(item => 

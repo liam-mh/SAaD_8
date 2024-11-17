@@ -21,12 +21,12 @@ const MediaPage = () => {
         const filteredMedia = mediaItem.filter(item => item.Type === mediaType);
         setMedia(filteredMedia); 
       } else {
-        setMedia(mediaItems);
+        setMedia(mediaItem);
       }
     }
-    
+  
     loadData();
-  }, []);
+  }, [mediaTitle, mediaType]);
 
   const mediaItem = media.length > 0 ? media[0] : null;
   const mediaArtwork = mediaItem ? generateImageSrc(mediaItem.Title, mediaItem.Type) : null;
