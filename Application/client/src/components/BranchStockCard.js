@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { SessionContext } from '../services/sessionContext';
 
-function BranchStockCard({ branch, media, isInStock = true }) {
+function BranchStockCard({ branch, media, isInStock = true, onAddToBasket }) {
     if (!media) { return <p>Loading media information...</p>; }
     const { basket, setBasket } = useContext(SessionContext);
 
@@ -15,6 +15,7 @@ function BranchStockCard({ branch, media, isInStock = true }) {
         e.preventDefault();
         if (!isInBasket) {
             setBasket([...basket, { ...media, BranchID: branch.BranchID }]); 
+            onAddToBasket(media.Title);
         }
     };
 

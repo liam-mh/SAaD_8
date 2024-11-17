@@ -13,6 +13,8 @@ const MediaPage = () => {
   const location = useLocation();
   const { mediaType = "default-type", mediaTitle = "default-title" } = location.state || {};
   const [media, setMedia] = useState([]);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationText, setNotificationText] = useState('');
 
   useEffect(() => {
     async function loadData() {
@@ -31,6 +33,11 @@ const MediaPage = () => {
   const mediaItem = media.length > 0 ? media[0] : null;
   const mediaArtwork = mediaItem ? generateImageSrc(mediaItem.Title, mediaItem.Type) : null;
 
+  const handleAddToBasket = (addedMediaTitle) => {
+    setNotificationText(addedMediaTitle);
+    setShowNotification(true);
+  };
+
   {/* Example Usage Branches */}
   const exampleBranch1 = {
     BranchID: '0001',
@@ -48,7 +55,7 @@ const MediaPage = () => {
 
   return (
     <>
-      <NotificationBanner mediaTitle={mediaTitle} />
+      {showNotification && <NotificationBanner mediaTitle={notificationText} />}
       <Container fluid='lg'>
         <Row>
           {/* Media Artwork */}
@@ -91,13 +98,13 @@ const MediaPage = () => {
             {/* Local Branch */}
             <Row className='pt-3 g-0'>
               <h3 id="stock">Stock At Local Branch</h3>
-              <BranchStockCard branch={exampleBranch1} media={mediaItem} />
+              <BranchStockCard branch={exampleBranch1} media={mediaItem} onAddToBasket={handleAddToBasket} />
             </Row>
 
             {/* Suggested Branch */}
             <Row className='pt-3 g-0'>
               <h3 id="stock">Stock At Suggested Branches</h3>
-              <BranchStockCard branch={exampleBranch2} media={mediaItem} />
+              <BranchStockCard branch={exampleBranch2} media={mediaItem} onAddToBasket={handleAddToBasket} />
             </Row>
 
           </Col>
