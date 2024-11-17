@@ -3,7 +3,7 @@ const AbstractObject = require("../../../base-classes/abstractObject");
 class MemberObject extends AbstractObject {
   constructor() {
     super();
-    this.employeeID = null;
+    this.memberID = null;
     this.firstName = null;
     this.surname = null;
     this.email = null;
@@ -11,7 +11,7 @@ class MemberObject extends AbstractObject {
     this.city = null;
     this.postcode = null;
     this.branchID = null;
-    this.role = null;
+    this.registerDate = null;
   }
 
   /**
@@ -34,7 +34,8 @@ class MemberObject extends AbstractObject {
       this.city,
       this.postcode,
       this.branchID,
-      this.role,
+      this.registerDate
+      ,
     ] = arr;
   }
 }

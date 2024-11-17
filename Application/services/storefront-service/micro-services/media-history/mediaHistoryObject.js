@@ -2,6 +2,7 @@ const AbstractObject = require("../../../base-classes/abstractObject");
 
 class MediaHistoryObject extends AbstractObject{
     constructor(){
+        super();
         this.historyID = null;
         this.mediaID = null;
         this.branchID = null;

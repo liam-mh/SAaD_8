@@ -7,7 +7,7 @@ class MemberSubscriptionObject extends AbstractObject {
     this.subscriptionID = null;
     this.subscriptionDate = null;
     this.remainingTokens = null;
-    this.overdueDept = null;
+    this.overdueDebt = null;
   }
 
   /**
@@ -26,7 +26,7 @@ class MemberSubscriptionObject extends AbstractObject {
         this.subscriptionID,
         this.subscriptionDate,
         this.remainingTokens,
-        this.overdueDept
+        this.overdueDebt
     ] = arr;
   }
 }

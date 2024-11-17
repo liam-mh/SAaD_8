@@ -10,7 +10,7 @@ const getEmployee = async (fields, allFlag = false) => {
     try {
         const fieldsParam = encodeURIComponent(JSON.stringify(fields)); // Serialize and encode fields array
         const allFlagParam = encodeURIComponent(allFlag);  // Convert allFlag to a query param
-        const url = `/account/member/readRecords?fields=${fieldsParam}&allFlag=${allFlagParam}`;
+        const url = `/account/employee/readRecords?fields=${fieldsParam}&allFlag=${allFlagParam}`;
         
         const response = await fetchFromApiGateway(url, {
             method: 'GET', 
@@ -25,6 +25,31 @@ const getEmployee = async (fields, allFlag = false) => {
     }
 };
 
+/**
+ * Create a new member in the account service.
+ * @param {Array} employeeData - Array of member values in order.
+ * @returns {Promise<object>} - The data returned from the account service.
+ */
+const createEmployee = async (employeeData) => {
+    try {
+        const data = await fetchFromApiGateway(`/account/member-subscription/createRecord`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(employeeData), 
+        });
+        return data;
+    } catch (error) {
+        console.error("Error creating member: ", error);
+        throw error;
+    }
+};
+
+
+
+
 module.exports = {
     getEmployee,
+    createEmployee
 }

@@ -3,7 +3,7 @@ const AbstractObject = require("../../../base-classes/abstractObject");
 class EmployeeObject extends AbstractObject {
   constructor() {
     super();
-    this.memberID = null;
+    this.employeeID = null;
     this.firstName = null;
     this.surname = null;
     this.email = null;
@@ -11,12 +11,12 @@ class EmployeeObject extends AbstractObject {
     this.city = null;
     this.postcode = null;
     this.branchID = null;
-    this.registerDate = null;
+    this.role = null;
   }
 
   /**
    * @override
-   * @param {*} arr - array to create a member object from.
+   * @param {Array} arr - array to create a employee object from.
    */
   createObjectFromArray(arr) {
     // Check if array has the expected length to assign to properties.
@@ -26,7 +26,7 @@ class EmployeeObject extends AbstractObject {
 
     // Assign each element in the array to the respective property.
     [
-      this.memberID,
+      this.employeeID,
       this.firstName,
       this.surname,
       this.email,
@@ -34,7 +34,7 @@ class EmployeeObject extends AbstractObject {
       this.city,
       this.postcode,
       this.branchID,
-      this.registerDate,
+      this.role,
     ] = arr;
   }
 }

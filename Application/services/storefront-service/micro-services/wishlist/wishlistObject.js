@@ -2,6 +2,7 @@ const AbstractObject = require("../../../base-classes/abstractObject");
 
 class WishlistObject extends AbstractObject{
     constructor(){
+        super();
         this.wishlistID = null;
         this.memberID = null;
         this.title = null;

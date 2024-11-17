@@ -2,6 +2,7 @@ const AbstractObject = require("../../../base-classes/abstractObject");
 
 class MediaObject extends AbstractObject{
     constructor(){
+        super();
         this.mediaID = null;
         this.type = null;
         this.description = null;

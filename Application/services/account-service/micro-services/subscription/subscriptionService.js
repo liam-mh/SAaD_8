@@ -1,5 +1,5 @@
 const Service = require("../../../base-classes/service");
-const SubscriptionDbHandler = require("../member/memberDbHandler");
+const SubscriptionDbHandler = require("../subscription/subscriptionDbHandler");
 const SubsciptionObject = require("./subscriptionObject")
 
 class SubscriptionService extends Service {

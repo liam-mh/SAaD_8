@@ -45,6 +45,7 @@ class Contoller {
    * @returns
    */
   readRecords(fieldIdentifiers, allFlag) {
+    console.log(allFlag)
     return this.service.readRecordsByQuery(fieldIdentifiers, allFlag);
   }
 

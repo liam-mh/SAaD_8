@@ -53,6 +53,7 @@ class DbHandler {
                     reject(err);
                 } else {
                     console.log('Data inserted successfully');
+                    console.log(results);
                     resolve(results);
                 }
             });

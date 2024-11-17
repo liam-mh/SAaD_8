@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getMembers, createMember, updateMember, deleteMember } from '../services/memberService';
-import { getEmployee } from '../services/employeeService';
+import { getEmployee, createEmployee } from '../services/employeeService';
 
 const AccountPage = () => {
   const [allMembers, setAll] = useState([]);
@@ -9,8 +9,9 @@ const AccountPage = () => {
   useEffect(() => {
     async function loadData() {
       try {
-        const allItems = await getEmployee([], true);
+        const allItems = await getMembers([], true);
         setAll(Array.isArray(allItems.data) ? allItems.data : []);
+        console.log(allItems.data)
       } catch (error) {
         console.error("Error loading members:", error);
         setAll([]);  // Set to empty array on error
@@ -28,7 +29,6 @@ const AccountPage = () => {
       <h2 id="library">My Library</h2>
       <h2 id="wishlist">My Wishlist</h2>
       <h1>TEST FOR API SERVICE</h1>
-      {allMembers.map((member) => (member.FirstName))}
     </>
   );
 };

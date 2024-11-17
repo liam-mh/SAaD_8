@@ -2,7 +2,8 @@ const AbstractObject = require("../../../base-classes/abstractObject");
 
 class BranchObject extends AbstractObject{
     constructor(){
-        this.BranchID = null;
+        super();
+        this.branchID = null;
         this.firstLineAddress = null;
         this.poscode = null;
         this.city = null;
@@ -11,7 +12,7 @@ class BranchObject extends AbstractObject{
     
     /**
      * @override
-     * @param {*} arr - array to create a branch object from.
+     * @param {Array} arr - array to create a branch object from.
      */
     createObjectFromArray(arr) {
         // Check if array has the expected length to assign to properties.
@@ -21,7 +22,7 @@ class BranchObject extends AbstractObject{
 
         // Assign each element in the array to the respective property.
         [
-            this.BranchID,
+            this.branchID,
             this.firstLineAddress,
             this.poscode,
             this.city,
