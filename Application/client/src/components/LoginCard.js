@@ -64,7 +64,7 @@ function LoginCard() {
             </Col>
 
             {/* Input Form */}
-            <Col className='custom-left-border justify-content-center align-items-center text-center'>
+            <Col className='left-border-primary justify-content-center align-items-center text-center'>
               <h4 className='py-4'>Login to your account</h4>
               <div className="d-flex justify-content-center" style={{ width: '100%' }}>
                 <Form onSubmit={handleLogin} style={{ width: '80%' }}>

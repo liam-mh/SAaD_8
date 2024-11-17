@@ -78,7 +78,7 @@ html, body {
     color: #E0E0E0;
 }
 
-.custom-left-border {
+.left-border-primary {
     border-left: 2px solid var(--primary);
 }
 /* BUTTONS, FORMS ------------------------------------------------------------------------------ */
