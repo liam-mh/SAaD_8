@@ -209,13 +209,14 @@ a:hover {
     background: linear-gradient(to bottom right, var(--primary), var(--primary-dark));
     width: 100vw;
 }
-.h1-whats-new {
+#whats-new h1 {
     text-shadow: var(--drop-shadow);
     color: white;
     font-size: 4rem;
     padding-right: 4rem;
-    font-weight: 600;
+    font-weight: bolder;
 }
+
 
 /* Container for the carousel */
 .carousel-container {
