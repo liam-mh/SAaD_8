@@ -26,7 +26,7 @@ const MediaPage = () => {
     }
   
     loadData();
-  }, [mediaTitle, mediaType]);
+  }, []);
 
   const mediaItem = media.length > 0 ? media[0] : null;
   const mediaArtwork = mediaItem ? generateImageSrc(mediaItem.Title, mediaItem.Type) : null;
