@@ -14,12 +14,12 @@ class MediaHistoryObject extends AbstractObject{
     
     /**
      * @override
-     * @param {*} arr - array to create a media history object from.
+     * @param {Array} arr - array to create a media history object from.
      */
     createObjectFromArray(arr) {
         // Check if array has the expected length to assign to properties.
-        if (arr.length !== 7) {
-        throw new Error("Array must have exactly 7 elements.");
+        if (arr.length !== 8) {
+        throw new Error("Array must have exactly 8 elements.");
         }
 
         // Assign each element in the array to the respective property.

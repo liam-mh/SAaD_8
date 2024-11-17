@@ -13,7 +13,7 @@ class MediaObject extends AbstractObject{
     
     /**
      * @override
-     * @param {*} arr - array to create a media object from.
+     * @param {Array} arr - array to create a media object from.
      */
     createObjectFromArray(arr) {
         // Check if array has the expected length to assign to properties.
