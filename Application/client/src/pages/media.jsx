@@ -29,7 +29,7 @@ const MediaPage = () => {
   }, []);
 
   const mediaItem = media.length > 0 ? media[0] : null;
-  const mediaArtwork = mediaTitle && mediaType ? generateImageSrc(mediaTitle, mediaType) : null;
+  const mediaArtwork = mediaItem ? generateImageSrc(mediaItem.Title, mediaItem.Type) : null;
 
   {/* Example Usage Branches */}
   const exampleBranch1 = {
