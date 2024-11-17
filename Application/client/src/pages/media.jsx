@@ -11,7 +11,7 @@ import { generateImageSrc } from '../services/mediaService';
 
 const MediaPage = () => {
   const location = useLocation();
-  const { mediaType, mediaTitle } = location.state || {};
+  const { mediaType = "default-type", mediaTitle = "default-title" } = location.state || {};
   const [media, setMedia] = useState([]);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const MediaPage = () => {
   }, []);
 
   const mediaItem = media.length > 0 ? media[0] : null;
-  const mediaArtwork = generateImageSrc(mediaTitle, mediaType);
+  const mediaArtwork = mediaTitle && mediaType ? generateImageSrc(mediaTitle, mediaType) : null;
 
   {/* Example Usage Branches */}
   const exampleBranch1 = {
