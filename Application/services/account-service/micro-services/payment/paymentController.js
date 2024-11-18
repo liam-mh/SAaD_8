@@ -1,8 +1,10 @@
-const ControllerInterface = require("../../../interfaces/controllerInterface");
+const Controller = require("../../../base-classes/controller")
+const PaymentService = require("./paymentService");
 
-class PaymentController extends ControllerInterface {
-    constructor(paymentService) {
-        super(paymentService); // Pass the specific service to the base class
+class PaymentController extends Controller {
+    constructor() {
+        const service = new PaymentService();
+        super(service); // Pass the specific service to the base class
       }
 }
 

@@ -2,20 +2,23 @@
  *  Abstract Service class
  */
 
-class ServiceInterface {
+const DbHandler = require("./dbHandler");
+
+class Service {
 
     notificationService;
     /**
      * Constructor
-     * @param {Entity} entity - Specific Entity based on derived Service 
+     * @param {DbHandler} dbHandler - Specific database handler based on derived Service.
      */
 
-    constructor(entity) {
-        if (this.constructor === ServiceInterface) {
+    constructor(dbHandler, object) {
+        if (this.constructor === Service) {
             throw new Error("Cannot instantiate abstract class directly.");
         }
-
-        this.entity = entity; // Inject the specific entity instance
+        // Inject specific instances
+        this.dbHandler = dbHandler; 
+        this.object = object
     }
 
     // Common methods that all services can use
@@ -27,26 +30,25 @@ class ServiceInterface {
      * @returns 
      */
     createRecordByQuery(recordValues) {
-        return this.entity.createByQuery(recordValues);
+        this.object.createObjectFromArray(recordValues);
+        return this.dbHandler.createByQuery(this.object);
+        
     }
 
     // ------------------------------------- Read Methods ---------------------------------------------------
-    /**
-     * Read and return a record.
-     * @param {Int} primaryKey - Primary key for the record to read.
-     * @returns 
-     */
-    readRecordByQuery(primaryKey) {
-        return this.entity.readByQuery(primaryKey);
-    }
 
     /**
      * Reads and returns multiple records based on matching field values.
      * @param {Array} fieldIdentifiers - Array of field identifiers.
      * @returns 
      */
-    readRecordsByQuery(fieldIdentifiers) {
-        return this.entity.readByQuery(fieldIdentifiers);
+    readRecordsByQuery(fieldIdentifiers, allFlag) {
+        
+        if(allFlag){
+            return this.dbHandler.readByQuery("*");
+        }
+        this.object.createObjectFromArray(fieldIdentifiers);
+        return this.dbHandler.readByQuery(this.object);
     }
 
     /**
@@ -56,7 +58,7 @@ class ServiceInterface {
      * @returns 
      */
     readFieldByQuery(primaryKey, column) {
-        return this.entity.readByQuery(primaryKey, column);
+        return this.dbHandler.readByQuery(primaryKey, column);
     }
 
     /**
@@ -66,20 +68,19 @@ class ServiceInterface {
      * @returns 
      */
     readFieldsByQuery(primaryKey, columns) {
-        return this.entity.readByQuery(primaryKey, columns);
+        return this.dbHandler.readByQuery(primaryKey, columns);
     }
 
     // ------------------------------------- Update Methods ---------------------------------------------------
 
     /**
-     * Updates a record's fields.
-     * @param {Int} primaryKey - Primary key for the record to be updated.
-     * @param {Array} columns - Array of columns.
+     * Create Object with new values then pass to dbHandler to update DB.
      * @param {Array} newValues - Array of new values.
      * @returns 
      */
-    updateRecordByQuery(primaryKey, columns, newValues) {
-        return this.entity.updateByQuery(primaryKey, columns, newValues);
+    updateRecordByQuery(newValues) {
+        this.object.createObjectFromArray(newValues);
+        return this.dbHandler.updateByQuery(this.object);
     }
 
     /**
@@ -90,7 +91,7 @@ class ServiceInterface {
      * @returns 
      */
     updateRecordsByQuery(primaryKeys, columns, newValues) {
-        return this.entity.updateByQuery(primaryKeys, columns, newValues);
+        return this.dbHandler.updateByQuery(primaryKeys, columns, newValues);
     }
 
     /**
@@ -101,7 +102,7 @@ class ServiceInterface {
      * @returns 
      */
     updateFieldByQuery(primaryKey, field, newValue) {
-        return this.entity.updateByQuery(primaryKey, field, newValue);
+        return this.dbHandler.updateByQuery(primaryKey, field, newValue);
     }
 
     /**
@@ -112,7 +113,7 @@ class ServiceInterface {
      * @returns 
      */
     updateFieldsByQuery(primaryKey, fields, newValues) {
-        return this.entity.updateByQuery(primaryKey, fields, newValues);
+        return this.dbHandler.updateByQuery(primaryKey, fields, newValues);
     }
 
     // ------------------------------------- Delete Methods ---------------------------------------------------
@@ -120,10 +121,10 @@ class ServiceInterface {
     /**
      * Delete a single record.
      * @param {Int} primaryKey - Primary key of the record to be deleted.
-     * @returns 
+     * @returns {Promise<Object>} - Returns result object.
      */
     deleteRecordByQuery(primaryKey) {
-        return this.entity.deleteByQuery(primaryKey);
+        return this.dbHandler.deleteByQuery(primaryKey);
     }
 
     /**
@@ -132,8 +133,8 @@ class ServiceInterface {
      * @returns 
      */
     deleteRecordsByQuery(primaryKeys) {
-        return this.entity.deleteByQuery(primaryKeys);
+        return this.dbHandler.deleteByQuery(primaryKeys);
     }
 }
 
-module.exports = ServiceInterface;
+module.exports = Service;

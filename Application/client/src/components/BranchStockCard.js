@@ -1,28 +1,53 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import React, { useContext } from 'react';
+import { SessionContext } from '../services/sessionContext';
 
-function BranchStockCard({ branch, isInStock = true }) {
-    const text = isInStock ? 'Add To Basket' : 'Out Of Stock';
+function BranchStockCard({ branch, media, isInStock = true, onAddToBasket }) {
+    if (!media) { return <p>Loading media information...</p>; }
+    const { basket, setBasket } = useContext(SessionContext);
+
+    const isInBasket = basket.some(item => 
+        item.Title === media.Title && 
+        item.Type === media.Type && 
+        item.BranchID === branch.BranchID
+    );
+
+    const handleAddToBasket = (e) => {
+        e.preventDefault();
+        if (!isInBasket) {
+            setBasket([...basket, { ...media, BranchID: branch.BranchID }]); 
+            onAddToBasket(media.Title);
+        }
+    };
+
+    const handleRemoveFromBasket = (e) => {
+        e.preventDefault();
+        setBasket(basket.filter(item => 
+            !(item.Title === media.Title && item.Type === media.Type && item.BranchID === branch.BranchID)
+        ));
+    };
 
     return (
-        <div className='content-panel'>
+        <div className="content-panel">
             <span>
-                { branch.FirstLineAddress || 'First Line'}<br />
-                { branch.City || 'City' }<br />
-                { branch.Postcode || 'Postcode' }<br />
+                {branch.FirstLineAddress || 'First Line'}<br />
+                {branch.City || 'City'}<br />
+                {branch.Postcode || 'Postcode'}<br />
             </span>
 
-            {/* Conditional rendering based on stock status */}
             {isInStock ? (
-                <button className="button-primary">{text}</button>
+                <div>
+                    {isInBasket ? (
+                        <button className="button-secondary" onClick={handleRemoveFromBasket}>
+                            Remove from Basket
+                        </button>
+                    ) : (
+                        <button className="button-primary" onClick={handleAddToBasket}>
+                            Add to Basket
+                        </button>
+                    )}
+                </div>
             ) : (
-                <span className='highlight-secondary-outline'>{text}</span>
+                <span className="highlight-secondary-outline">Out Of Stock</span>
             )}
         </div>
     );

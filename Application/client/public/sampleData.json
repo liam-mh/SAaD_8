@@ -17,7 +17,7 @@
         "PublishDate": "08-06-1949",
         "Author": "George Orwell",
         "Genre": "Dystopian, Political Fiction",
-        "Artwork": "1984-cover.jpg"
+        "Artwork": ""
     },
     {
         "MediaID": "0000000003",
@@ -530,26 +530,6 @@
         "Artwork": "mit-technology-review.jpg"
     },
     {
-        "MediaID": "0000000054",
-        "Type": "Journal",
-        "Title": "Foreign Affairs",
-        "Description": "A magazine focused on American foreign policy and international relations.",
-        "PublishDate": "10-07-2020",
-        "Author": "Council on Foreign Relations",
-        "Genre": "Politics, International Relations",
-        "Artwork": "foreign-affairs.jpg"
-    },
-    {
-        "MediaID": "0000000055",
-        "Type": "Journal",
-        "Title": "Scientific American",
-        "Description": "A science magazine that publishes research and articles across the fields of biology, physics, and technology.",
-        "PublishDate": "05-08-2020",
-        "Author": "Springer Nature",
-        "Genre": "Science, Technology",
-        "Artwork": "scientific-american.jpg"
-    },
-    {
         "MediaID": "0000000056",
         "Type": "Journal",
         "Title": "Popular Mechanics",
@@ -560,43 +540,125 @@
         "Artwork": "popular-mechanics.jpg"
     },
     {
-        "MediaID": "0000000057",
-        "Type": "Journal",
-        "Title": "Journal of Consumer Research",
-        "Description": "A journal dedicated to the study of consumer behavior and marketing.",
-        "PublishDate": "13-07-2020",
-        "Author": "Oxford University Press",
-        "Genre": "Business, Marketing",
-        "Artwork": "consumer-research.jpg"
+        "MediaID": "0000000061",
+        "Type": "DVD",
+        "Title": "The Boy in the Striped Pyjamas",
+        "Description": "A poignant novel set during World War II, following the friendship between two boys on opposite sides of a concentration camp fence.",
+        "PublishDate": "05-01-2006",
+        "Author": "John Boyne",
+        "Genre": "Historical Fiction, War, Young Adult",
+        "Artwork": ""
     },
     {
-        "MediaID": "0000000058",
-        "Type": "Journal",
-        "Title": "The Wall Street Journal",
-        "Description": "A daily business-focused newspaper offering global and domestic news in finance, economics, and beyond.",
-        "PublishDate": "30-06-2020",
-        "Author": "Dow Jones & Company",
-        "Genre": "News, Finance",
-        "Artwork": "wsj-journal.jpg"
+        "MediaID": "0000000062",
+        "Type": "Book",
+        "Title": "Leviathan Wakes",
+        "Description": "A science fiction novel set in a future where humanity has colonized the solar system, following the adventures of a spaceship crew and a detective who uncover a conspiracy.",
+        "PublishDate": "02-06-2011",
+        "Author": "James S.A. Corey",
+        "Genre": "Science Fiction",
+        "Artwork": ""
     },
     {
-        "MediaID": "0000000059",
-        "Type": "Journal",
-        "Title": "Nature Reviews Molecular Cell Biology",
-        "Description": "A leading journal covering molecular biology, cellular biology, and biochemistry.",
-        "PublishDate": "25-08-2020",
-        "Author": "Springer Nature",
-        "Genre": "Science, Biology",
-        "Artwork": "nature-reviews.jpg"
+        "MediaID": "0000000063",
+        "Type": "Book",
+        "Title": "Caliban's War",
+        "Description": "The second book in The Expanse series, following the aftermath of the events in Leviathan Wakes as tensions escalate between Mars, Earth, and the Belt.",
+        "PublishDate": "26-06-2012",
+        "Author": "James S.A. Corey",
+        "Genre": "Science Fiction",
+        "Artwork": ""
     },
     {
-        "MediaID": "0000000060",
-        "Type": "Journal",
-        "Title": "The Journal of Political Economy",
-        "Description": "A journal covering the intersection of economics and political science.",
-        "PublishDate": "12-06-2020",
-        "Author": "University of Chicago Press",
-        "Genre": "Economics, Political Science",
-        "Artwork": "journal-of-political-economy.jpg"
+        "MediaID": "0000000064",
+        "Type": "Book",
+        "Title": "Abaddon's Gate",
+        "Description": "The third book in The Expanse series, where humanity faces a mysterious alien portal and the possibilities and dangers it brings.",
+        "PublishDate": "04-06-2013",
+        "Author": "James S.A. Corey",
+        "Genre": "Science Fiction",
+        "Artwork": ""
+    },
+    {
+        "MediaID": "0000000065",
+        "Type": "Book",
+        "Title": "Cibola Burn",
+        "Description": "The fourth installment in The Expanse series, where humanity begins to explore beyond the Ring Gates, leading to conflict over new territory.",
+        "PublishDate": "17-06-2014",
+        "Author": "James S.A. Corey",
+        "Genre": "Science Fiction",
+        "Artwork": ""
+    },
+    {
+        "MediaID": "0000000066",
+        "Type": "Book",
+        "Title": "Nemesis Games",
+        "Description": "The fifth book in The Expanse series, focusing on the fractured crew of the Rocinante as they each face personal challenges and a new threat to humanity.",
+        "PublishDate": "02-06-2015",
+        "Author": "James S.A. Corey",
+        "Genre": "Science Fiction",
+        "Artwork": ""
+    },
+    {
+        "MediaID": "0000000067",
+        "Type": "Book",
+        "Title": "Babylon's Ashes",
+        "Description": "The sixth book in The Expanse series, as Earth, Mars, and the Belt are embroiled in a full-scale war with a powerful new faction.",
+        "PublishDate": "06-12-2016",
+        "Author": "James S.A. Corey",
+        "Genre": "Science Fiction",
+        "Artwork": ""
+    },
+    {
+        "MediaID": "0000000068",
+        "Type": "Book",
+        "Title": "Persepolis Rising",
+        "Description": "The seventh book in The Expanse series, set after a time jump, where the Rocinante crew faces a new superpower that has emerged to reshape humanity's future.",
+        "PublishDate": "05-12-2017",
+        "Author": "James S.A. Corey",
+        "Genre": "Science Fiction",
+        "Artwork": ""
+    },
+    {
+        "MediaID": "0000000069",
+        "Type": "Book",
+        "Title": "Tiamat's Wrath",
+        "Description": "The eighth book in The Expanse series, where humanity struggles under a new authoritarian regime and the Rocinante crew fights for survival.",
+        "PublishDate": "26-03-2019",
+        "Author": "James S.A. Corey",
+        "Genre": "Science Fiction",
+        "Artwork": ""
+    },
+    {
+        "MediaID": "0000000070",
+        "Type": "Book",
+        "Title": "Leviathan Falls",
+        "Description": "The ninth and final book in The Expanse series, concluding the epic saga as humanity's fate hangs in the balance.",
+        "PublishDate": "30-11-2021",
+        "Author": "James S.A. Corey",
+        "Genre": "Science Fiction",
+        "Artwork": ""
+    },
+    {
+        "MediaID": "0000000071",
+        "Type": "Book",
+        "Title": "Memory's Legion",
+        "Description": "A collection of all The Expanse short stories, providing deeper insight into the series' characters and universe.",
+        "PublishDate": "15-03-2022",
+        "Author": "James S.A. Corey",
+        "Genre": "Science Fiction",
+        "Artwork": ""
+    },
+    {
+        "MediaID": "0000000072",
+        "Type": "Book",
+        "Title": "Project Hail Mary",
+        "Description": "A gripping science fiction novel about a lone astronaut on a mission to save humanity from an extinction-level threat.",
+        "PublishDate": "04-05-2021",
+        "Author": "Andy Weir",
+        "Genre": "Science Fiction",
+        "Artwork": ""
     }
+    
+    
 ]

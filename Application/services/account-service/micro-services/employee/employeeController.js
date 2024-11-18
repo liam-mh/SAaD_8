@@ -1,9 +1,14 @@
-const ControllerInterface = require("../../../interfaces/controllerInterface");
-const EmployeeService = require("../employee/employeeService")
+const Controller = require("../../../base-classes/controller");
+const EmployeeService = require("./employeeService")
 
-class EmployeeController extends ControllerInterface {
+/**
+ * Controller for employee related requests.
+ * Injects its service dependency into the controller base class.
+ */
+class EmployeeController extends Controller {
   constructor() { 
-    super(EmployeeService); // Pass the specific service to the base class
+    const service = new EmployeeService();
+    super(service); 
   }
 }
 
