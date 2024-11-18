@@ -1,9 +1,11 @@
 const express = require('express');
+const handleRoutes = require('../../utils/routeHandler');
 const router = express.Router();
 
-// Import user routes
-router.use('/member', require('./member'));
+// Define resources for the account service
+const resources = ['member', 'employee', 'member-subscription', 'subscription', 'payment'];
 
-// Add more resource routes here as needed
+// Use the route handler utility.
+handleRoutes(router, 'account-service', resources);
 
 module.exports = router;

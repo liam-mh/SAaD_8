@@ -1,9 +1,9 @@
-const axios = require('axios');
-const config = require('../config');
+// const axios = require('axios');
+// const config = require('../config');
 
 const getMembersFromAccountService = async (req, res) => {
     try {
-        const response = await axios.get(`${config.ACCOUNT_SERVICE_API}/account`);
+        const response = await axios.get(`${config.ACCOUNT_SERVICE_API}/account/member/readRecords`);
         res.json(response.data);
     } catch (error) {
         console.error('Error fetching users from account service:', error);
