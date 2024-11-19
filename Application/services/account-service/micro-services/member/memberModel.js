@@ -17,6 +17,7 @@ const Member = sequelize.define('Member', {
       isEmail: true,
     },
   },
+  Password: DataTypes.STRING(255),
   FirstLineAddress: DataTypes.STRING(255),
   City: DataTypes.STRING(100),
   Postcode: DataTypes.STRING(20),

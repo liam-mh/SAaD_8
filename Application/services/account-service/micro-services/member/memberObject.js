@@ -3,15 +3,16 @@ const AbstractObject = require("../../../base-classes/abstractObject");
 class MemberObject extends AbstractObject {
   constructor() {
     super();
-    this.memberID = null;
-    this.firstName = null;
-    this.surname = null;
-    this.email = null;
-    this.firstLineAddress = null;
-    this.city = null;
-    this.postcode = null;
-    this.branchID = null;
-    this.registerDate = null;
+    this.MemberID = null;
+    this.FirstName = null;
+    this.Surname = null;
+    this.Email = null;
+    this.Password = null;
+    this.FirstLineAddress = null;
+    this.City = null;
+    this.Postcode = null;
+    this.BranchID = null;
+    this.RegisterDate = null;
   }
 
   /**
@@ -20,21 +21,22 @@ class MemberObject extends AbstractObject {
    */
   createObjectFromArray(arr) {
     // Check if array has the expected length to assign to properties.
-    if (arr.length !== 9) {
-      throw new Error("Array must have exactly 9 elements.");
+    if (arr.length !== 10) {
+      throw new Error("Array must have exactly 10 elements.");
     }
 
     // Assign each element in the array to the respective property.
     [
-      this.employeeID,
-      this.firstName,
-      this.surname,
-      this.email,
-      this.firstLineAddress,
-      this.city,
-      this.postcode,
-      this.branchID,
-      this.registerDate
+      this.MemberID,
+      this.FirstName,
+      this.Surname,
+      this.Email,
+      this.Password,
+      this.FirstLineAddress,
+      this.City,
+      this.Postcode,
+      this.BranchID,
+      this.RegisterDate
       ,
     ] = arr;
   }
