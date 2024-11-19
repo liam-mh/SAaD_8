@@ -1,20 +1,17 @@
 const mysql = require('mysql2');  // Ensure mysql2 is installed
-const dbConfig = require('../../config/azure-db/dbConfig')
+const Member = require('../account-service/micro-services/member/memberModel');
 
 /**
  * Base entity class.
  * Dependency injection - relative table to access.
  */
 class DbHandler {
-    config = dbConfig
+
     constructor(tableName, pk) {
         this.tableName = tableName;
         this.pk = pk;
-        this.connection = mysql.createConnection({
-            ...this.config,
-            ssl: this.config.ssl
-        });
     }
+
 
     /**
      * Connect to the DB.
@@ -67,40 +64,30 @@ class DbHandler {
      * @returns {Promise<object>} - Table records or error.
      */
     async readByQuery(dataObject) {
-        let whereClause;
-        const values = [];
+        let returnedData;
         
         // Get all records (No where clause)... TODO - Here we will check for the all property instead.
         if(dataObject === "*"){
-            whereClause = ''
+            returnedData = await Member.findAll();
+            return returnedData;
         }
         // Get records based on dataObject properties.
         else{
-            const conditions = [];
-    
+            const whereClause = {}
+
             for (const [key, value] of Object.entries(dataObject)) {
                 // Check if the property is not null or undefined and add to conditions
                 if (value !== null && value !== undefined) {
-                    conditions.push(`${key} = ?`);
-                    values.push(value);
+                    whereClause[key] = value;
                 }
             }
-            whereClause = `WHERE ${conditions.join(' AND ')}`;
+
+            returnedData = await Member.findAll({
+                where: whereClause
+            })
         }
-        
-        const query = `SELECT * FROM ${this.tableName} ${whereClause}`;
-        
-        return new Promise((resolve, reject) => {
-            this.connection.query(query, values, (err, results) => {
-                if (err) {
-                    console.error('Error reading data:', err);
-                    reject(err);
-                } else {
-                    console.log(results);
-                    resolve(results);
-                }
-            });
-        });
+
+        return returnedData;
     }
     
 
