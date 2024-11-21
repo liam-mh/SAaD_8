@@ -87,12 +87,17 @@ async function autoComplete(input) {
 }
 
 async function getBySearch(input) {
-    const mediaData = await getAll();
+    if (!input.trim()) { // Check if input is empty or just whitespace
+        return []; // Return an empty array when there's no search term
+    }
+
+    const mediaData = await getAll(); // Fetch the data from your service
+
     const filteredResults = mediaData.filter(item => 
-        item.Title.toLowerCase().includes(input.toLowerCase()) || 
-        item.Author.toLowerCase().includes(input.toLowerCase())
+        item.Title.toLowerCase().includes(input.toLowerCase()) ||
+        item.Author.toLowerCase().includes(input.toLowerCase()) // Include author search
     );
-    
+
     return filteredResults;
 }
 
