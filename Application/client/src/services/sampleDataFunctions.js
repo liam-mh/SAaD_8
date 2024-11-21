@@ -73,11 +73,26 @@ async function getByTitle(title) {
     return filteredItems; // Return all items with the same title
 }
 
+async function autoComplete(input) {
+    const mediaData = await getAll();
+    // Filter the mediaData to find matches for the input term in the Title
+    const filteredResults = mediaData
+        .filter(item => item.Title.toLowerCase().includes(input.toLowerCase()))
+        .map(item => ({
+            Title: item.Title,
+            Type: item.Type
+        }));
+
+    return filteredResults;
+}
+
+
 
 // Exporting the functions
 export {
     getAll,
     getByDate,
     getRandomFive,
-    getByTitle
+    getByTitle,
+    autoComplete
 };
