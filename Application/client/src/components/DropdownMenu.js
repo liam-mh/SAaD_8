@@ -1,17 +1,31 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 
+import { autoComplete } from '../services/sampleDataFunctions';
+
 function DropdownMenu({ searchText, setSearchText }) {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = async (e) => {
     const value = e.target.value;
     setSearchText(value);
-    setShowDropdown(value.length > 0);
+
+    if (value.length >= 3) {
+      const results = await autoComplete(value);
+      setFilteredData(results);
+      setShowDropdown(results.length > 0); 
+    } else {
+      setFilteredData([]);
+      setShowDropdown(false); 
+    }
   };
 
   const handleBlur = () => {
-    setTimeout(() => setShowDropdown(false), 200); // Small delay to allow clicks
+    setTimeout(() => {
+      setShowDropdown(false); 
+      setFilteredData([]); 
+    }, 200); 
   };
 
   return (
@@ -23,14 +37,17 @@ function DropdownMenu({ searchText, setSearchText }) {
         value={searchText}
         onChange={handleInputChange}
         onBlur={handleBlur}
-        onFocus={() => setShowDropdown(searchText.length > 0)}
+        onFocus={() => setShowDropdown(filteredData.length > 0)}
       />
       {showDropdown && (
         <div className="dropdown-menu search-dropdown show">
-          {/* Replace with dynamic suggestions */}
-          <div className="dropdown-item">Suggested Result 1</div>
-          <div className="dropdown-item">Suggested Result 2</div>
-          <div className="dropdown-item">Suggested Result 3</div>
+          {filteredData.map((item, index) => (
+            <div key={index} className="dropdown-item">
+              <span>
+                {item.Title}: <strong>{item.Type}</strong>
+              </span>
+            </div>
+          ))}
         </div>
       )}
     </div>
