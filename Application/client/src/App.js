@@ -9,6 +9,7 @@ import HelpPage from './pages/help';
 import AccountPage from './pages/account';
 import MediaPage from './pages/media';
 import BasketPage from './pages/basket';
+import SearchPage from './pages/search';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/account" element={<AccountPage />} />
           <Route path="/media" element={<MediaPage />} />
           <Route path="/basket" element={<BasketPage />} />
+          <Route path="/search" element={<SearchPage />} />
         </Routes>
         <Footer />
       </Router>
