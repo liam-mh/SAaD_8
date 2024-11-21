@@ -38,7 +38,7 @@ html, body {
 }
 
 /* CONTENT PANELS ------------------------------------------------------------------------------ */
-.content-panel, .content-panel-no-padding {
+.content-panel, .content-panel-no-padding, .search-dropdown {
     background-color: white;
     box-shadow: var(--drop-shadow);
     border-radius: var(--border-radius);
@@ -59,6 +59,40 @@ html, body {
     font-size: 0.8rem;
 }
 
+.search-wrapper {
+    position: relative;
+    width: 400px; 
+}
+.search-input {
+    border-radius: 5px 0 0 5px;
+    width: 100%;
+    border: 2px solid var(--secondary);
+    padding: 0.5rem 1rem;  
+}
+
+/* Autosearch dropdown */
+.search-dropdown {
+    position: absolute;
+    top: 110%; 
+    left: 0;   
+    width: 100%; 
+    z-index: 1050;
+    background: var(--secondary);
+    color: white;
+}
+  
+.search-dropdown .dropdown-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    color: inherit;
+}
+  
+.search-dropdown .dropdown-item:hover {
+    background-color: var(--secondary-light);
+}
+  
+
+/* Notification Bar */
 .notification-banner,
 .notification-banner-alert {
     width: 100vw; 
