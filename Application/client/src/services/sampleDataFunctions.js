@@ -86,6 +86,15 @@ async function autoComplete(input) {
     return filteredResults;
 }
 
+async function getBySearch(input) {
+    const mediaData = await getAll();
+    const filteredResults = mediaData.filter(item => 
+        item.Title.toLowerCase().includes(input.toLowerCase()) || 
+        item.Author.toLowerCase().includes(input.toLowerCase())
+    );
+    
+    return filteredResults;
+}
 
 
 // Exporting the functions
@@ -94,5 +103,6 @@ export {
     getByDate,
     getRandomFive,
     getByTitle,
-    autoComplete
+    autoComplete,
+    getBySearch
 };
