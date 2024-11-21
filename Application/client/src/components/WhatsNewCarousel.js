@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Carousel from 'react-bootstrap/Carousel';
-import { generateImageSrc } from '../services/mediaService';
+const mediaFrontEndService = require('../services/mediaFrontEndService');
 
 function WhatsNewCarousel({ media }) {
   const dvds = media.filter(item => item.Type === 'DVD');
@@ -46,7 +46,7 @@ function WhatsNewCarousel({ media }) {
                         >
                           <div className="artwork-container">
                             <img
-                              src={generateImageSrc(item.Title, item.Type)} 
+                              src={mediaFrontEndService.generateImageSrc(item.Title, item.Type)} 
                               alt={item.Title}
                             />
                             <div className="mask-left"></div>
