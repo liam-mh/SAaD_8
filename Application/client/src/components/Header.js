@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { SessionContext } from '../services/sessionContext';
+import DropdownMenu from './DropdownMenu';
 
 function Header() {
   const { basket } = useContext(SessionContext) || {}; 
@@ -22,17 +23,6 @@ function Header() {
     : 'header';
 
   const [searchText, setSearchText] = useState('');
-  const [showDropdown, setShowDropdown] = useState(false);
-
-  // Handle search dropdown
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    setSearchText(value);
-    setShowDropdown(value.length > 0); 
-  };
-  const handleBlur = () => {
-    setTimeout(() => setShowDropdown(false), 200); 
-  };
   
   return (
     <header className={headerClass}>
@@ -63,25 +53,7 @@ function Header() {
           </Col>
           <Col className="d-flex justify-content-end">
             <Form className="d-flex align-items-center">
-              <div className="search-wrapper"> 
-                <Form.Control 
-                  type="text" 
-                  placeholder="Search products..." 
-                  className="search-input" 
-                  value={searchText}
-                  onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  onFocus={() => setShowDropdown(searchText.length > 0)} 
-                />
-                {showDropdown && (
-                  <div className="dropdown-menu search-dropdown show">
-                    {/* Dummy suggestions */}
-                    <div className="dropdown-item">Suggested Result 1</div>
-                    <div className="dropdown-item">Suggested Result 2</div>
-                    <div className="dropdown-item">Suggested Result 3</div>
-                  </div>
-                )}
-              </div>
+              <DropdownMenu searchText={searchText} setSearchText={setSearchText} /> 
               <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }}>Search</Button>
               <Button className="button-secondary" style={{ borderRadius: '5px 0 0 5px' }} as={Link} to="/basket">
                 Basket
