@@ -1,10 +1,8 @@
 const FrontEndService = require("./frontEndService");
 
 class MediaFrontEndService extends FrontEndService{
-    route = '/storefront/media';
-
     constructor() {
-        super(this.route);
+        super('/storefront/media');
     }
 
     generateImageSrc = (mediaTitle, mediaType) => {

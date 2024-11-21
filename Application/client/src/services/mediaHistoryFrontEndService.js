@@ -1,10 +1,8 @@
 const FrontEndService = require("./frontEndService");
 
 class MediaHistoryFrontEndService extends FrontEndService{
-    route = '/storefront/media-history';
-
     constructor(){
-        super(this.route);
+        super('/storefront/media-history');
     }
 }
 
