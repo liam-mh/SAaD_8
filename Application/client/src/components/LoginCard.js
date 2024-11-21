@@ -19,7 +19,7 @@ function LoginCard() {
 
     // Dummy credentials for testing
     const testEmail = 'test@example.com';
-    const testPassword = 'pass';
+    const testPassword = 'password123';
 
     if (email === testEmail && password === testPassword) {
       // Simulate user details on successful login
