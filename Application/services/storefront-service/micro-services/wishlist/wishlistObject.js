@@ -1,6 +1,6 @@
-const AbstractObject = require("../../../base-classes/abstractObject");
+const Object = require("../../../base-classes/object");
 
-class WishlistObject extends AbstractObject{
+class WishlistObject extends Object{
     constructor(){
         super();
         this.wishlistID = null;
@@ -9,27 +9,6 @@ class WishlistObject extends AbstractObject{
         this.type = null;
         this.dateTime = null;
         this.widhType = null;
-    }
-    
-    /**
-     * @override
-     * @param {Array} arr - array to create a wishlist object from.
-     */
-    createObjectFromArray(arr) {
-        // Check if array has the expected length to assign to properties.
-        if (arr.length !== 6) {
-        throw new Error("Array must have exactly 6 elements.");
-        }
-
-        // Assign each element in the array to the respective property.
-        [
-            this.wishlistID,
-            this.memberID,
-            this.title,
-            this.type,
-            this.dateTime,
-            this.widhType
-        ] = arr;
     }
 }
 

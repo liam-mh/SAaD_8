@@ -1,5 +1,6 @@
-import React from 'react';
+
 import LoginCard from '../components/LoginCard';
+const memberFrontendService = require('../services/memberFrontEndService')
 
 const AccountPage = () => {
   return (

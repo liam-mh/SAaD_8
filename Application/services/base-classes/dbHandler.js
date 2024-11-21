@@ -53,7 +53,6 @@ class DbHandler {
                     reject(err);
                 } else {
                     console.log('Data inserted successfully');
-                    console.log(results);
                     resolve(results);
                 }
             });
@@ -96,7 +95,7 @@ class DbHandler {
                     console.error('Error reading data:', err);
                     reject(err);
                 } else {
-                    console.log(results);
+                    console.log(results)
                     resolve(results);
                 }
             });
