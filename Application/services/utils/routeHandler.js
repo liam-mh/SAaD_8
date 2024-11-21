@@ -2,7 +2,7 @@ const path = require('path');
 
 /**
  * Converts kebab-case to camelCase.
- * @param {String} resource - The resource name in kebab-case.
+ * @param {String} resource - The resource name.
  * @returns {String} The resource name in camelCase.
  */
 const toCamelCase = (resource) =>
@@ -10,7 +10,7 @@ const toCamelCase = (resource) =>
 
 /**
  * Dynamically loads a controller based on the resource.
- * @param {String} resource - The resource name in kebab-case.
+ * @param {String} resource - The resource name.
  * @param {String} serviceName - The name of the service.
  * @returns {Object} Controller class.
  */
@@ -33,7 +33,7 @@ const getController = (resource, serviceName) => {
  * Registers CRUD routes for a given resource.
  * @param {Object} router - Express router instance.
  * @param {String} serviceName - The service name.
- * @param {Array} resources - Array of resource names in kebab-case.
+ * @param {Array} resources - Array of resource names.
  */
 const handleRoutes = (router, serviceName, resources) => {
     resources.forEach((resource) => {
@@ -42,8 +42,10 @@ const handleRoutes = (router, serviceName, resources) => {
 
         router.get(`/${resource}/readRecords`, async (req, res) => {
             try {
-                const { searchFields, allFlag } = req.query;
-                const records = await controllerInstance.readRecords(searchFields, allFlag);
+                const { fields, allFlag } = req.query;
+                const parsedFields = JSON.parse(fields);
+                const parsedAllFlag = allFlag === 'true';
+                const records = await controllerInstance.readRecords(parsedFields, parsedAllFlag);
                 res.status(200).json({ message: 'Records retrieved successfully', data: records });
             } catch (error) {
                 console.error(`Error reading records for ${resource}:`, error);

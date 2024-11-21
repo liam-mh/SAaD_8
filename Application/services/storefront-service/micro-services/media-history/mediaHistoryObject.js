@@ -1,6 +1,6 @@
-const AbstractObject = require("../../../base-classes/abstractObject");
+const Object = require("../../../base-classes/object");
 
-class MediaHistoryObject extends AbstractObject{
+class MediaHistoryObject extends Object{
     constructor(){
         super();
         this.historyID = null;
@@ -11,29 +11,6 @@ class MediaHistoryObject extends AbstractObject{
         this.rentStart = null;
         this.rentEnd = null;
         this.actualReturn = null;
-    }
-    
-    /**
-     * @override
-     * @param {Array} arr - array to create a media history object from.
-     */
-    createObjectFromArray(arr) {
-        // Check if array has the expected length to assign to properties.
-        if (arr.length !== 8) {
-        throw new Error("Array must have exactly 8 elements.");
-        }
-
-        // Assign each element in the array to the respective property.
-        [
-            this.historyID,
-            this.mediaID,
-            this.branchID,
-            this.employeeID,
-            this.active,
-            this.rentStart,
-            this.rentEnd,
-            this.actualReturn,
-        ] = arr;
     }
 }
 

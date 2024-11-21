@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getMembers } from '../services/memberService';
 import LoginCard from '../components/LoginCard';
+const memberFrontendService = require('../services/memberFrontEndService')
 
 const AccountPage = () => {
   const [allMembers, setAll] = useState([]);
@@ -11,9 +11,11 @@ const AccountPage = () => {
     const loadData = async () => {
       setIsLoading(true); // Set loading state to true
       setError(null); // Clear any previous errors
+      const members = await memberFrontendService.get('/readRecords', { fields: {firstName: "John"}, allFlag: false });
+      console.log(members.data)
 
       try {
-        const allItems = await getMembers([], true);
+        //const allItems = await getMembers([], true);
         setAll(Array.isArray(allItems.data) ? allItems.data : []);
       } catch (error) {
         setError(error.message || 'Failed to fetch data'); // Set error message
