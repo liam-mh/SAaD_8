@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
-
 import { autoComplete } from '../services/sampleDataFunctions';
 
 function DropdownMenu({ searchText, setSearchText }) {
@@ -14,18 +14,18 @@ function DropdownMenu({ searchText, setSearchText }) {
     if (value.length >= 3) {
       const results = await autoComplete(value);
       setFilteredData(results);
-      setShowDropdown(results.length > 0); 
+      setShowDropdown(results.length > 0);
     } else {
       setFilteredData([]);
-      setShowDropdown(false); 
+      setShowDropdown(false);
     }
   };
 
   const handleBlur = () => {
     setTimeout(() => {
-      setShowDropdown(false); 
-      setFilteredData([]); 
-    }, 200); 
+      setShowDropdown(false);
+      setFilteredData([]);
+    }, 200);
   };
 
   return (
@@ -41,12 +41,17 @@ function DropdownMenu({ searchText, setSearchText }) {
       />
       {showDropdown && (
         <div className="dropdown-menu search-dropdown show">
-          {filteredData.map((item, index) => (
-            <div key={index} className="dropdown-item">
-              <span>
-                {item.Title}: <strong>{item.Type}</strong>
-              </span>
-            </div>
+          {filteredData.map((media, index) => (
+            <Link
+              key={index}
+              to={'/media'}
+              state={{ mediaType: media.Type, mediaTitle: media.Title }}
+              className="dropdown-item"
+            >
+              <div>
+                {media.Title}: <strong>{media.Type}</strong>
+              </div>
+            </Link>
           ))}
         </div>
       )}
