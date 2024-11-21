@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { SessionContextProvider } from './services/sessionContext';
+import ScrollToSection from './services/scrollToSection';
 import Header from './components/Header';
 import Footer from './components/Footer';
 // Pages
@@ -15,6 +16,7 @@ function App() {
   return (
     <SessionContextProvider>
       <Router>
+        <ScrollToSection />
         <Header />
         <Routes>
           <Route path="/" element={<IndexPage />} />
