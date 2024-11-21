@@ -86,6 +86,20 @@ async function autoComplete(input) {
     return filteredResults;
 }
 
+async function getBySearch(input) {
+    if (!input.trim()) { // Check if input is empty or just whitespace
+        return []; // Return an empty array when there's no search term
+    }
+
+    const mediaData = await getAll(); // Fetch the data from your service
+
+    const filteredResults = mediaData.filter(item => 
+        item.Title.toLowerCase().includes(input.toLowerCase()) ||
+        item.Author.toLowerCase().includes(input.toLowerCase()) // Include author search
+    );
+
+    return filteredResults;
+}
 
 
 // Exporting the functions
@@ -94,5 +108,6 @@ export {
     getByDate,
     getRandomFive,
     getByTitle,
-    autoComplete
+    autoComplete,
+    getBySearch
 };

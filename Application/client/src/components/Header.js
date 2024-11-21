@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -23,6 +23,9 @@ function Header() {
     : 'header';
 
   const [searchText, setSearchText] = useState('');
+  useEffect(() => {
+    setSearchText('');
+  }, [location]);
   
   return (
     <header className={headerClass}>
