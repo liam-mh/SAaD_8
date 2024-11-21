@@ -1,4 +1,7 @@
 const mysql = require('mysql2');  // Ensure mysql2 is installed
+// Import Sequelize instance
+const sequelize = require('../../config/sequelize');
+// Import all table models
 const Member = require('../account-service/micro-services/member/memberModel');
 
 /**
@@ -11,7 +14,6 @@ class DbHandler {
         this.tableName = tableName;
         this.pk = pk;
     }
-
 
     /**
      * Connect to the DB.
@@ -33,61 +35,103 @@ class DbHandler {
     /**
      * Creates a record in the relative table.
      * @param {Object} dataObject - Object relative to the calling service.
-     * @returns {Promise} - Resolves with the query result or rejects with an error.
+     * @returns {Model} - Resolves with a model object containing the data added to the table or an error.
      */
     async createByQuery(dataObject) {
-        // Create query.
-        const columns = Object.keys(dataObject).join(', ');
-        const values = Object.values(dataObject);
-        const placeholders = values.map(() => '?').join(', ');
-        const query = `INSERT INTO ${this.tableName} (${columns}) VALUES (${placeholders})`;
+        // Ensure DB schema is in sync
+        await sequelize.sync({ force: false })
 
-        // Insert into DB.
-        return new Promise((resolve, reject) => {
-            this.connection.query(query, values, (err, results) => {
-                if (err) {
-                    console.error('Error inserting data:', err);
-                    reject(err);
-                } else {
-                    console.log('Data inserted successfully');
-                    console.log(results);
-                    resolve(results);
-                }
-            });
-        });
+        // Dynamically retrieve model
+        const currentModel = sequelize.model(this.tableName);
+        if (!currentModel) {
+            throw new Error(`Model for table '${this.tableName}' not found.`);
+        }
+
+        // Prepare data for insertion
+        const insertData = { ...dataObject };
+        delete insertData.MemberID;
+        if (Object.keys(insertData).length === 0) {
+            throw new Error("No valid data provided for insertion.");
+        }
+
+        // Attempt insertion
+        try {
+            const dbInsert = await currentModel.create(insertData);
+            return dbInsert;
+        } catch (error) {
+            // Sequelize-specific errors
+            if (error instanceof sequelize.ValidationError) {
+                console.error("Validation Error: ", error.errors);
+                throw new Error("Validation failed. Check your input data.");
+            }
+
+            if (error instanceof sequelize.DatabaseError) {
+                console.error("Database Error: ", error.message);
+                throw new Error("A database error occurred. Please try again later.");
+            }
+
+            // Other errors
+            console.error("Unexpected Error: ", error.message);
+            throw new Error("An unexpected error occurred: " + error.message);
+        }
     }
 
     //TODO - dont like the dual param... this should be a flag or a property on the object (all = true)
     /**
      * Read a record or records from the DB based on relative objects properties.
      * @param {Object || String} dataObject - Data object or "*". 
-     * @returns {Promise<object>} - Table records or error.
+     * @returns {Model} - Model object containing returned data or error.
      */
-    async readByQuery(dataObject) {
-        let returnedData;
-        
-        // Get all records (No where clause)... TODO - Here we will check for the all property instead.
-        if(dataObject === "*"){
-            returnedData = await Member.findAll();
-            return returnedData;
-        }
-        // Get records based on dataObject properties.
-        else{
-            const whereClause = {}
 
-            for (const [key, value] of Object.entries(dataObject)) {
-                // Check if the property is not null or undefined and add to conditions
-                if (value !== null && value !== undefined) {
-                    whereClause[key] = value;
+    async readByQuery(dataObject) {
+        // Ensure DB schema is in sync
+        await sequelize.sync({ force: false })
+        // Dynamically retrieve model
+        const currentModel = sequelize.model(this.tableName);
+        if (!currentModel) {
+            throw new Error(`Model for table '${this.tableName}' not found.`);
+        }
+        let returnedData;
+
+        try {
+            // Get all records (No where clause)... TODO - Here we will check for the all property instead.
+            if(dataObject === "*") {
+                returnedData = await currentModel.findAll();
+                return returnedData;
+            }
+            // Get records based on dataObject properties.
+            else {
+                const whereClause = {}
+
+                for (const [key, value] of Object.entries(dataObject)) {
+                    // Check if the property is not null or undefined and add to conditions
+                    if (value !== null && value !== undefined) {
+                        whereClause[key] = value;
+                    }
                 }
+
+                returnedData = await currentModel.findAll({
+                    where: whereClause
+                })
+
+                return returnedData;
+            }
+        } catch (error) {
+            // Sequelize-specific errors
+            if (error instanceof sequelize.ValidationError) {
+                console.error("Validation Error: ", error.errors);
+                throw new Error("Validation failed. Check your input data.");
             }
 
-            returnedData = await Member.findAll({
-                where: whereClause
-            })
-        }
+            if (error instanceof sequelize.DatabaseError) {
+                console.error("Database Error: ", error.message);
+                throw new Error("A database error occurred. Please try again later.");
+            }
 
-        return returnedData;
+            // Other errors
+            console.error("Unexpected Error: ", error.message);
+            throw new Error("An unexpected error occurred: " + error.message);
+        }
     }
     
 
@@ -98,32 +142,79 @@ class DbHandler {
      * Rejects with an error object if the update fails.
      */
     async updateByQuery(dataObject) {
+        // Ensure DB schema is in sync
+        await sequelize.sync({ force: false })
+        // Dynamically retrieve model
+        const currentModel = sequelize.model(this.tableName);
+        if (!currentModel) {
+            throw new Error(`Model for table '${this.tableName}' not found.`);
+        }
         // Extract the primary key value from the data object.
         const pkValue = dataObject[this.pk];
 
-        // Remove the primary key from the update data to avoid updating the primary key.
-        const { [this.pk]: _, ...updateFields } = dataObject;
+        // // Remove the primary key from the update data to avoid updating the primary key.
+        // const { [this.pk]: _, ...updateFields } = dataObject;
 
-        // Dynamically create the SET clause.
-        const updates = Object.entries(updateFields)
-            .map(([key]) => `${key} = ?`)
-            .join(', ');
+        // // Dynamically create the SET clause.
+        // const updates = Object.entries(updateFields)
+        //     .map(([key]) => `${key} = ?`)
+        //     .join(', ');
+
+        const updateData = { ...dataObject };
+        if (Object.keys(updateData).length === 0) {
+            throw new Error("No valid data provided for update.");
+        }
+        delete updateData.MemberID;
+
+        // Only include non-null and defined fields
+        const filteredUpdateData = {};
+        for (const [key, value] of Object.entries(updateData)) {
+            if (value !== null && value !== undefined) {
+                filteredUpdateData[key] = value;
+            }
+        }
+
+        try {
+            const dbUpdate = await currentModel.update(
+                filteredUpdateData,
+                {
+                    where: {
+                        [this.pk]: pkValue
+                    }
+                }
+            )
+            return dbUpdate;
+        } catch (error) {
+            if (error instanceof sequelize.ValidationError) {
+                console.error("Validation Error: ", error.errors);
+                throw new Error("Validation failed. Check your input data.");
+            }
+
+            if (error instanceof sequelize.DatabaseError) {
+                console.error("Database Error: ", error.message);
+                throw new Error("A database error occurred. Please try again later.");
+            }
+
+            // Other errors
+            console.error("Unexpected Error: ", error.message);
+            throw new Error("An unexpected error occurred: " + error.message);
+        }
 
         // Prepare the query and values.
-        const query = `UPDATE ${this.tableName} SET ${updates} WHERE ${this.pk} = ?`;
-        const values = [...Object.values(updateFields), pkValue];
+        // const query = `UPDATE ${this.tableName} SET ${updates} WHERE ${this.pk} = ?`;
+        // const values = [...Object.values(updateFields), pkValue];
 
-        return new Promise((resolve, reject) => {
-            this.connection.query(query, values, (err, results) => {
-                if (err) {
-                    console.error('Error updating data:', err);
-                    reject(err);
-                } else {
-                    console.log('Data updated successfully');
-                    resolve(results);
-                }
-            });
-        });
+        // return new Promise((resolve, reject) => {
+        //     this.connection.query(query, values, (err, results) => {
+        //         if (err) {
+        //             console.error('Error updating data:', err);
+        //             reject(err);
+        //         } else {
+        //             console.log('Data updated successfully');
+        //             resolve(results);
+        //         }
+        //     });
+        // });
     }
 
     /**
@@ -133,19 +224,29 @@ class DbHandler {
      * Rejects with an error object if the deletion fails.
      */
     async deleteByQuery(primaryKey) {
-        const query = `DELETE FROM ${this.tableName} WHERE ${this.pk} = ?`;
-
-        return new Promise((resolve, reject) => {
-            this.connection.query(query, [primaryKey], (err, results) => { 
-                if (err) {
-                    console.error('Error deleting data:', err);
-                    reject(err);
-                } else {
-                    console.log('Data deleted successfully');
-                    resolve(results);
-                }
+        await sequelize.sync({ force: false })
+        const currentModel = sequelize.model(this.tableName);
+        if (!currentModel) {
+            throw new Error(`Model for table '${this.tableName}' not found.`);
+        }
+        try {
+            const deleteResult = await currentModel.destroy({
+                where: {
+                    [this.pk]: primaryKey
+                },
             });
-        });
+    
+            if (deleteResult === 0) {
+                console.warn("No records found to delete. Check the primary key value.");
+            } else {
+                console.log("Data deleted successfully");
+            }
+    
+            return deleteResult; // Return the number of records deleted
+        } catch (err) {
+            console.error("Error deleting data:", err);
+            throw new Error("Failed to delete record: " + err.message);
+        }
     }
     
 
