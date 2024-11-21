@@ -54,7 +54,9 @@ function Header() {
           <Col className="d-flex justify-content-end">
             <Form className="d-flex align-items-center">
               <DropdownMenu searchText={searchText} setSearchText={setSearchText} /> 
-              <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }}>Search</Button>
+              <Link to="/search" state={{ searchTerm: searchText }}>
+                <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }}>Search</Button>
+              </Link>
               <Button className="button-secondary" style={{ borderRadius: '5px 0 0 5px' }} as={Link} to="/basket">
                 Basket
               </Button>
