@@ -7,7 +7,8 @@ import BranchStockCard from '../components/BranchStockCard';
 import NotificationBanner from '../components/NotificationBanner';
 import { useLocation } from 'react-router-dom';
 import { getByTitle } from '../services/sampleDataFunctions';
-const mediaFrontEndService = require('../services//storefront/mediaFrontEndService');
+const mediaFrontEndService = require('../services/storefront/mediaFrontEndService');
+
 
 const MediaPage = () => {
   const location = useLocation();
