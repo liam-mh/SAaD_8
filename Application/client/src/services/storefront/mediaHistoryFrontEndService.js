@@ -1,4 +1,4 @@
-const FrontEndService = require("./frontEndService");
+const FrontEndService = require("../frontEndService");
 
 class MediaHistoryFrontEndService extends FrontEndService{
     constructor(){
