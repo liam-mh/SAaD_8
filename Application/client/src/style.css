@@ -129,9 +129,11 @@ html, body {
 /* BUTTONS, FORMS ------------------------------------------------------------------------------ */
 .form-primary {
     border: 2px solid var(--primary);
+    padding: 0.5rem 1rem;  
 }
 .form-secondary {
     border: 2px solid var(--secondary);
+    padding: 0.5rem 1rem;  
 }
 
 .highlight-primary, 
