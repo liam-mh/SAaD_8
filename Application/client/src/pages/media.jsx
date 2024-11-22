@@ -9,6 +9,7 @@ import { useLocation } from 'react-router-dom';
 import { getByTitle } from '../services/sampleDataFunctions';
 const mediaFrontEndService = require('../services/storefront/mediaFrontEndService');
 
+
 const MediaPage = () => {
   const location = useLocation();
   const { mediaType = "default-type", mediaTitle = "default-title" } = location.state || {};

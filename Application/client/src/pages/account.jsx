@@ -2,6 +2,7 @@
 import LoginCard from '../components/LoginCard';
 const memberFrontendService = require('../services/account/memberFrontEndService.js')
 
+
 const AccountPage = () => {
   return (
     <>
