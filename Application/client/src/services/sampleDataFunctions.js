@@ -73,11 +73,41 @@ async function getByTitle(title) {
     return filteredItems; // Return all items with the same title
 }
 
+async function autoComplete(input) {
+    const mediaData = await getAll();
+    // Filter the mediaData to find matches for the input term in the Title
+    const filteredResults = mediaData
+        .filter(item => item.Title.toLowerCase().includes(input.toLowerCase()))
+        .map(item => ({
+            Title: item.Title,
+            Type: item.Type
+        }));
+
+    return filteredResults;
+}
+
+async function getBySearch(input) {
+    if (!input.trim()) { // Check if input is empty or just whitespace
+        return []; // Return an empty array when there's no search term
+    }
+
+    const mediaData = await getAll(); // Fetch the data from your service
+
+    const filteredResults = mediaData.filter(item => 
+        item.Title.toLowerCase().includes(input.toLowerCase()) ||
+        item.Author.toLowerCase().includes(input.toLowerCase()) // Include author search
+    );
+
+    return filteredResults;
+}
+
 
 // Exporting the functions
 export {
     getAll,
     getByDate,
     getRandomFive,
-    getByTitle
+    getByTitle,
+    autoComplete,
+    getBySearch
 };

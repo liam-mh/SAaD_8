@@ -1,35 +1,42 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Pagination, Row, Col } from 'react-bootstrap';
 import MediaCard from './MediaCard';
 
 const MediaPagination = ({ media, numColumn, numRow, displayFirst = null }) => {
-  
-  // calulations for media to display
+  const mediaContainerRef = useRef(null); // Reference for scrolling
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  // Calculate pagination details
   const mediaToDisplay = displayFirst ? media.slice(0, displayFirst) : media;
   const mediaPerPage = numColumn * numRow;
   const totalPages = Math.ceil(mediaToDisplay.length / mediaPerPage);
-
-  // Page states
-  const [currentPage, setCurrentPage] = React.useState(1);
   const startIndex = (currentPage - 1) * mediaPerPage;
   const endIndex = startIndex + mediaPerPage;
   const visibleMedia = mediaToDisplay.slice(startIndex, endIndex);
+
+  // Scroll to the top of mediaContainerRef when currentPage changes
+  useEffect(() => {
+    if (mediaContainerRef.current) {
+      mediaContainerRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [currentPage]);
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  // Populate columns
+  // Populate rows and columns
   const rows = [];
   let rowContent = [];
   visibleMedia.forEach((item, index) => {
     rowContent.push(
-      <Col key={item.Title} className="d-flex justify-content-center pb-4">
+      <Col key={item.Title} className="d-flex justify-content-start pb-4">
         <MediaCard media={item} isSearchResult={true} />
       </Col>
     );
     if (rowContent.length === numColumn) {
       rows.push(<Row key={`row-${index}`}>{rowContent}</Row>);
-      rowContent = []; 
+      rowContent = [];
     }
   });
 
@@ -37,7 +44,7 @@ const MediaPagination = ({ media, numColumn, numRow, displayFirst = null }) => {
     const emptyCols = numColumn - rowContent.length;
     for (let i = 0; i < emptyCols; i++) {
       rowContent.push(
-        <Col key={`empty-${i}`} className="d-flex justify-content-center pb-4">
+        <Col key={`empty-${i}`} className="d-flex justify-content-start pb-4">
           {/* Empty column */}
         </Col>
       );
@@ -47,8 +54,10 @@ const MediaPagination = ({ media, numColumn, numRow, displayFirst = null }) => {
 
   return (
     <div>
-      {/* Display media rows */}
-      {rows}
+      {/* Media container for scrolling */}
+      <div ref={mediaContainerRef}>
+        {rows}
+      </div>
 
       {/* Pagination Controls (only show if displayFirst is not set) */}
       {!displayFirst && (

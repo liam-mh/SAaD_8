@@ -2,13 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import { generateImageSrc } from '../services/mediaService';
+const mediaFrontEndService = require('../services/storefront/mediaFrontEndService');
+
 
 function MediaCard({ isSearchResult = false, media }) {
   const buttonText = isSearchResult ? "Shop" : "Add To Basket";
   const state = { mediaType: media.Type, mediaTitle: media.Title };
 
-  const mediaArtwork = generateImageSrc(media.Title, media.Type); 
+  const mediaArtwork = mediaFrontEndService.generateImageSrc(media.Title, media.Type); 
 
   const cardLink = !isSearchResult ? (
     <Card.Link className="nav-link-secondary" as={Link} to={'/media'} state={state}>
