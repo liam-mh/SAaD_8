@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { SessionContext } from '../services/sessionContext';
+import DropdownMenu from './DropdownMenu';
 
 function Header() {
   const { basket } = useContext(SessionContext) || {}; 
@@ -20,6 +21,11 @@ function Header() {
     location.pathname.startsWith('/employee') 
     ? 'header mb-0' 
     : 'header';
+
+  const [searchText, setSearchText] = useState('');
+  useEffect(() => {
+    setSearchText('');
+  }, [location]);
   
   return (
     <header className={headerClass}>
@@ -50,9 +56,11 @@ function Header() {
           </Col>
           <Col className="d-flex justify-content-end">
             <Form className="d-flex align-items-center">
-              <Form.Control type="text" placeholder="Search products..." className="form-secondary" style={{borderRadius: '5px 0 0 5px', width: '300px'}} />
-              <Button className="button-secondary me-2" style={{borderRadius: '0 5px 5px 0'}}>Search</Button>
-              <Button className="button-secondary" style={{borderRadius: '5px 0 0 5px'}} as={Link} to="/basket">
+              <DropdownMenu searchText={searchText} setSearchText={setSearchText} /> 
+              <Link to="/search" state={{ searchTerm: searchText }}>
+                <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }}>Search</Button>
+              </Link>
+              <Button className="button-secondary" style={{ borderRadius: '5px 0 0 5px' }} as={Link} to="/basket">
                 Basket
               </Button>
               <span className='highlight-primary' style={{ borderRadius: '0 5px 5px 0' }}>{basketNum || '0'}</span>

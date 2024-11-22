@@ -43,6 +43,7 @@ class DbHandler {
             throw new Error(`Model for table '${this.tableName}' not found.`);
         }
 
+
         // Prepare data for insertion
         const insertData = { ...dataObject };
         delete insertData.MemberID;
@@ -127,6 +128,7 @@ class DbHandler {
             console.error("Unexpected Error: ", error.message);
             throw new Error("An unexpected error occurred: " + error.message);
         }
+
     }
     
 

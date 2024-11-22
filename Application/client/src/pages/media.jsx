@@ -7,7 +7,8 @@ import BranchStockCard from '../components/BranchStockCard';
 import NotificationBanner from '../components/NotificationBanner';
 import { useLocation } from 'react-router-dom';
 import { getByTitle } from '../services/sampleDataFunctions';
-import { generateImageSrc } from '../services/mediaService';
+const mediaFrontEndService = require('../services/storefront/mediaFrontEndService');
+
 
 const MediaPage = () => {
   const location = useLocation();
@@ -31,7 +32,7 @@ const MediaPage = () => {
   }, []);
 
   const mediaItem = media.length > 0 ? media[0] : null;
-  const mediaArtwork = mediaItem ? generateImageSrc(mediaItem.Title, mediaItem.Type) : null;
+  const mediaArtwork = mediaItem ? mediaFrontEndService.generateImageSrc(mediaItem.Title, mediaItem.Type) : null;
 
   const handleAddToBasket = (addedMediaTitle) => {
     setNotificationText(addedMediaTitle);

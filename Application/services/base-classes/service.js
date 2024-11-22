@@ -30,9 +30,8 @@ class Service {
      * @returns 
      */
     createRecordByQuery(recordValues) {
-        this.object.createObjectFromArray(recordValues);
+        this.object.mapObject(recordValues);
         return this.dbHandler.createByQuery(this.object);
-        
     }
 
     // ------------------------------------- Read Methods ---------------------------------------------------
@@ -47,7 +46,8 @@ class Service {
         if(allFlag){
             return this.dbHandler.readByQuery("*");
         }
-        this.object.createObjectFromArray(fieldIdentifiers);
+
+        this.object.mapObject(fieldIdentifiers);
         return this.dbHandler.readByQuery(this.object);
     }
 
@@ -79,7 +79,7 @@ class Service {
      * @returns 
      */
     updateRecordByQuery(newValues) {
-        this.object.createObjectFromArray(newValues);
+        this.object.mapObject(newValues);
         return this.dbHandler.updateByQuery(this.object);
     }
 
