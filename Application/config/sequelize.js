@@ -21,4 +21,11 @@ try {
     console.error('Unable to connect to the database: ', error);
 }
 
+try {
+    sequelize.sync({ force: false })
+    console.log('Database schema synchronised successfully.');
+} catch (error) {
+    console.error('Unable to synchronise database schema: ', error);
+}
+
 module.exports = sequelize;

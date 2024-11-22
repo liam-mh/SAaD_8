@@ -1,8 +1,6 @@
 const mysql = require('mysql2');  // Ensure mysql2 is installed
 // Import Sequelize instance
 const sequelize = require('../../config/sequelize');
-// Import all table models
-const Member = require('../account-service/micro-services/member/memberModel');
 
 /**
  * Base entity class.
@@ -10,9 +8,10 @@ const Member = require('../account-service/micro-services/member/memberModel');
  */
 class DbHandler {
 
-    constructor(tableName, pk) {
+    constructor(tableName, pk, model) {
         this.tableName = tableName;
         this.pk = pk;
+        this.model = model;
     }
 
     /**
@@ -35,12 +34,9 @@ class DbHandler {
     /**
      * Creates a record in the relative table.
      * @param {Object} dataObject - Object relative to the calling service.
-     * @returns {Model} - Resolves with a model object containing the data added to the table or an error.
+     * @returns {Promise<Object>} - Resolves to an object representing the created record, including any auto-generated fields e.g. primary key.
      */
     async createByQuery(dataObject) {
-        // Ensure DB schema is in sync
-        await sequelize.sync({ force: false })
-
         // Dynamically retrieve model
         const currentModel = sequelize.model(this.tableName);
         if (!currentModel) {
@@ -80,12 +76,11 @@ class DbHandler {
     /**
      * Read a record or records from the DB based on relative objects properties.
      * @param {Object || String} dataObject - Data object or "*". 
-     * @returns {Model} - Model object containing returned data or error.
+     * @returns {Promise<Array<Object>>} - Resolves to an array of objects representing the queried records. 
+     * If no records match the conditions, an empty array is returned.
      */
 
     async readByQuery(dataObject) {
-        // Ensure DB schema is in sync
-        await sequelize.sync({ force: false })
         // Dynamically retrieve model
         const currentModel = sequelize.model(this.tableName);
         if (!currentModel) {
@@ -138,12 +133,11 @@ class DbHandler {
     /**
      * Update a record based on relative dataObjects properties.
      * @param {Object} dataObject - relative object based on calling service.
-     * @returns {Promise<Object>} - Resolves with a result object.
-     * Rejects with an error object if the update fails.
-     */
+     * @returns {Promise<[number, Object[]?]>} - Resolves to an array:
+     *  - The first element is the number of rows affected.
+     *  - The second element is an array of the updated records.
+    */
     async updateByQuery(dataObject) {
-        // Ensure DB schema is in sync
-        await sequelize.sync({ force: false })
         // Dynamically retrieve model
         const currentModel = sequelize.model(this.tableName);
         if (!currentModel) {
@@ -151,14 +145,6 @@ class DbHandler {
         }
         // Extract the primary key value from the data object.
         const pkValue = dataObject[this.pk];
-
-        // // Remove the primary key from the update data to avoid updating the primary key.
-        // const { [this.pk]: _, ...updateFields } = dataObject;
-
-        // // Dynamically create the SET clause.
-        // const updates = Object.entries(updateFields)
-        //     .map(([key]) => `${key} = ?`)
-        //     .join(', ');
 
         const updateData = { ...dataObject };
         if (Object.keys(updateData).length === 0) {
@@ -199,36 +185,21 @@ class DbHandler {
             console.error("Unexpected Error: ", error.message);
             throw new Error("An unexpected error occurred: " + error.message);
         }
-
-        // Prepare the query and values.
-        // const query = `UPDATE ${this.tableName} SET ${updates} WHERE ${this.pk} = ?`;
-        // const values = [...Object.values(updateFields), pkValue];
-
-        // return new Promise((resolve, reject) => {
-        //     this.connection.query(query, values, (err, results) => {
-        //         if (err) {
-        //             console.error('Error updating data:', err);
-        //             reject(err);
-        //         } else {
-        //             console.log('Data updated successfully');
-        //             resolve(results);
-        //         }
-        //     });
-        // });
     }
 
     /**
      * Delete a record from the DB.
      * @param {Number} primaryKey - Identifier of record to delete.
-     * @returns {Promise<Object>} - Resolves with a result object.
+     * @returns {Promise<Number>} - Resolves with the number of records deleted (0 if no records were found).
      * Rejects with an error object if the deletion fails.
-     */
+    */
     async deleteByQuery(primaryKey) {
-        await sequelize.sync({ force: false })
+        // Dynamically retrieve model
         const currentModel = sequelize.model(this.tableName);
         if (!currentModel) {
             throw new Error(`Model for table '${this.tableName}' not found.`);
         }
+
         try {
             const deleteResult = await currentModel.destroy({
                 where: {
