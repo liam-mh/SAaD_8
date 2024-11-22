@@ -9,10 +9,12 @@ const SearchPage = () => {
     const location = useLocation();
     const searchTerm = location.state ? location.state.searchTerm : '';
     const [media, setMedia] = useState([]);
-    const [filteredMedia, setFilteredMedia] = useState([]); // Holds filtered & sorted media
+    const [filteredMedia, setFilteredMedia] = useState([]); 
     const [selectedFormats, setSelectedFormats] = useState([]);
     const [selectedGenres, setSelectedGenres] = useState([]);
-    const [sortType, setSortType] = useState('Relevance'); // Default sort
+    const [sortType, setSortType] = useState('Relevance');
+    const [productsPerPage, setProductsPerPage] = useState(24); 
+    const [currentPage, setCurrentPage] = useState(1);
 
     const formats = ['Book', 'CD', 'DVD', 'Game', 'Journal', 'Periodical'];
     const genres = [
@@ -30,8 +32,8 @@ const SearchPage = () => {
 
     const sortByDateNewestFirst = (mediaArray) => {
         return mediaArray.sort((a, b) => {
-            const dateA = new Date(a.PublishDate.split('-').reverse().join('-')); // Convert DD-MM-YYYY to YYYY-MM-DD
-            const dateB = new Date(b.PublishDate.split('-').reverse().join('-')); // Convert DD-MM-YYYY to YYYY-MM-DD
+            const dateA = new Date(a.PublishDate.split('-').reverse().join('-'));
+            const dateB = new Date(b.PublishDate.split('-').reverse().join('-'));
             return dateB - dateA; // Newest first
         });
     };
@@ -50,37 +52,33 @@ const SearchPage = () => {
     useEffect(() => {
         let updatedMedia = [...media];
 
-        // Filter by selected formats
         if (selectedFormats.length > 0) {
             updatedMedia = updatedMedia.filter((item) =>
                 selectedFormats.includes(item.Type)
             );
         }
 
-        // Filter by selected genres
         if (selectedGenres.length > 0) {
             updatedMedia = updatedMedia.filter((item) =>
                 selectedGenres.some((genre) => item.Genre.includes(genre))
             );
         }
 
-        // Apply sorting
         switch (sortType) {
             case 'Title':
                 updatedMedia.sort((a, b) => a.Title.localeCompare(b.Title));
                 break;
             case 'Release':
-                updatedMedia = sortByDateNewestFirst(media);
+                updatedMedia = sortByDateNewestFirst(updatedMedia);
                 break;
             case 'Relevance':
             default:
-                break; 
+                break;
         }
 
         setFilteredMedia(updatedMedia);
     }, [selectedFormats, selectedGenres, sortType, media]);
 
-    // Handle format toggle
     const handleFormatChange = (format) => {
         setSelectedFormats((prevSelected) =>
             prevSelected.includes(format)
@@ -89,13 +87,17 @@ const SearchPage = () => {
         );
     };
 
-    // Handle genre toggle
     const handleGenreChange = (genre) => {
         setSelectedGenres((prevSelected) =>
             prevSelected.includes(genre)
                 ? prevSelected.filter((g) => g !== genre)
                 : [...prevSelected, genre]
         );
+    };
+
+    const handleProductsPerPageChange = (value) => {
+        setProductsPerPage(Number(value)); 
+        setCurrentPage(1); 
     };
 
     return (
@@ -118,7 +120,6 @@ const SearchPage = () => {
                 </div>
             ) : (
                 <Row>
-                    {/* Filters */}
                     <Col xs={2}>
                         <Row className="content-panel g-0">
                             <span>
@@ -155,10 +156,19 @@ const SearchPage = () => {
                             </Form>
                         </Row>
                     </Col>
-
                     <Col>
-                        {/* Sort Panel */}
                         <Row className="content-panel g-0 d-flex align-items-center gap-3 ">
+                            <span style={{ width: 'auto' }}>Products Per Page:</span>
+                            <Form.Group controlId="productsPerPage" className="mb-0" style={{ width: '200px' }}>
+                                <Form.Select
+                                    className="form-secondary"
+                                    onChange={(e) => handleProductsPerPageChange(e.target.value)}
+                                >
+                                    <option value="24">24</option>
+                                    <option value="48">48</option>
+                                    <option value="72">72</option>
+                                </Form.Select>
+                            </Form.Group>
                             <span style={{ width: 'auto' }}>Sort By:</span>
                             <Form.Group controlId="formBasicType" className="mb-0" style={{ width: '200px' }}>
                                 <Form.Select
@@ -170,13 +180,9 @@ const SearchPage = () => {
                                     <option value="Release">Release: Newest First</option>
                                 </Form.Select>
                             </Form.Group>
-                            <Button className="button-primary" type="submit" style={{ width: 'auto' }}>
-                                Apply Filters
-                            </Button>
                         </Row>
-                        {/* Display Media */}
                         <Row className="pt-4">
-                            <MediaPagination media={filteredMedia} numColumn={4} numRow={3} />
+                            <MediaPagination media={filteredMedia} numColumn={4} numRow={productsPerPage / 4} />
                         </Row>
                     </Col>
                 </Row>
