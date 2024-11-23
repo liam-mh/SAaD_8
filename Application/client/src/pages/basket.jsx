@@ -9,14 +9,26 @@ const BasketPage = () => {
     return <p>No basket information...</p>;
   }
 
-  const rentLength = 7;
   const today = new Date();
   const startDate = today.toLocaleDateString('en-GB').split('/').join('-');
 
-  const calculateReturnDate = (days) => {
+  const calculateReturnDate = (rentLength) => {
     const returnDateObj = new Date(today);
-    returnDateObj.setDate(returnDateObj.getDate() + days);
+    returnDateObj.setDate(returnDateObj.getDate() + rentLength);
     return returnDateObj.toLocaleDateString('en-GB').split('/').join('-');
+  };
+
+  const adjustRentLength = (index, adjustment) => {
+    setBasket((prevBasket) =>
+      prevBasket.map((item, i) =>
+        i === index
+          ? {
+              ...item,
+              rentLength: Math.max(7, (item.rentLength || 7) + adjustment), 
+            }
+          : item
+      )
+    );
   };
 
   const getBranchInfo = (BranchID) => {
@@ -24,16 +36,6 @@ const BasketPage = () => {
       return null;
     }
     return branches.find((branch) => branch.BranchID === BranchID) || null;
-  };
-
-  const handleRemove = (itemToRemove) => {
-    const updatedBasket = basket.filter(
-      (item) =>
-        item.Title !== itemToRemove.Title ||
-        item.Type !== itemToRemove.Type ||
-        item.BranchID !== itemToRemove.BranchID
-    );
-    setBasket(updatedBasket);
   };
 
   return (
@@ -58,6 +60,10 @@ const BasketPage = () => {
                 item.Title,
                 item.Type
               );
+              const rentLength = item.rentLength || 7;
+              const returnDate = calculateReturnDate(rentLength);
+              const isMinimumTerm = rentLength <= 7;
+              const tokens = Math.ceil(rentLength / 7);
 
               return (
                 <tr key={index} style={{ verticalAlign: 'middle' }}>
@@ -65,7 +71,7 @@ const BasketPage = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
                       {/* Column 1: Remove */}
                       <div>
-                        <Button 
+                        <Button
                           variant='danger'
                           onClick={() => handleRemove(item)}
                         >
@@ -98,16 +104,25 @@ const BasketPage = () => {
                   </td>
 
                   <td>
-                    <span className="highlight-secondary-outline">{startDate}</span>
+                    <span>{startDate}</span>
                   </td>
 
                   <td>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Button className="button-primary mb-3" style={{ width: '3rem' }}>
+                      <Button
+                        className="button-primary mb-3"
+                        style={{ width: '3rem' }}
+                        onClick={() => adjustRentLength(index, 7)}
+                      >
                         + 7
                       </Button>
-                      {calculateReturnDate(rentLength)}
-                      <Button className="button-primary-outline mt-3" style={{ width: '3rem' }}>
+                      {returnDate}
+                      <Button
+                        className="button-primary-outline mt-3"
+                        style={{ width: '3rem'} }
+                        onClick={() => !isMinimumTerm && adjustRentLength(index, -7)} 
+                        disabled={isMinimumTerm}
+                      >
                         - 7
                       </Button>
                     </div>
@@ -134,7 +149,7 @@ const BasketPage = () => {
 
                   <td>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}>
-                      1
+                      {tokens} Tokens
                     </div>
                   </td>
                 </tr>
@@ -143,7 +158,7 @@ const BasketPage = () => {
           </tbody>
         </Table>
         <div style={{ textAlign: 'right' }}>
-          <h4>Total: {basket.length} Tokens</h4>
+          <h4>Total: {basket.reduce((acc, item) => acc + (Math.ceil(item.rentLength / 7) || 1), 0)} Tokens</h4>
           <Button className="button-primary">Checkout</Button>
         </div>
       </div>
