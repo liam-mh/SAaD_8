@@ -75,12 +75,17 @@ const MediaPage = () => {
               </Col>
             </Row>
             
-            <Row className='pt-3 g-0'>
-              <h3 id="stock">Avaliability</h3>
-              {media.map((mediaItem) => (
-                <BranchStockCard media={mediaItem} onAddToBasket={handleAddToBasket} />
+            <Row className="pt-3 g-0">
+              <h3 id="stock">Availability</h3>
+              {media.map((mediaItem, index) => (
+                <BranchStockCard 
+                  key={`${mediaItem.Title}-${mediaItem.BranchID}-${index}`} 
+                  media={mediaItem} 
+                  onAddToBasket={handleAddToBasket} 
+                />
               ))}
             </Row>
+
             
           </Col>
         </Row>
