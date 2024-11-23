@@ -1,10 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Container, Table, Button, Form } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 
 const BasketPage = () => {
-  const { basket, setBasket, branches } = useContext(SessionContext) || {};
+  const { basket, setBasket, branches, checkout, setCheckout } = useContext(SessionContext) || {};
+  const [deliveryOptions, setDeliveryOptions] = useState(basket.map(() => 'collect'));
+  
   if (!basket || !branches) {
     return <p>No basket information...</p>;
   }
@@ -24,7 +26,7 @@ const BasketPage = () => {
         i === index
           ? {
               ...item,
-              rentLength: Math.max(7, (item.rentLength || 7) + adjustment), 
+              rentLength: Math.max(7, (item.rentLength || 7) + adjustment),
             }
           : item
       )
@@ -36,6 +38,31 @@ const BasketPage = () => {
       return null;
     }
     return branches.find((branch) => branch.BranchID === BranchID) || null;
+  };
+
+  const handleCheckout = () => {
+    const checkoutData = basket.map((item, index) => {
+      const rentLength = item.rentLength || 7;
+      const returnDate = calculateReturnDate(rentLength);
+      const tokens = Math.ceil(rentLength / 7);
+      const deliveryOption = deliveryOptions[index]; 
+
+      return {
+        ...item,
+        startDate,
+        returnDate,
+        tokens,
+        deliveryOption,
+      };
+    });
+
+    setCheckout(checkoutData);
+  };
+
+  const handleDeliveryChange = (index, value) => {
+    setDeliveryOptions((prevOptions) =>
+      prevOptions.map((option, i) => (i === index ? value : option))
+    );
   };
 
   return (
@@ -56,10 +83,7 @@ const BasketPage = () => {
           <tbody>
             {basket.map((item, index) => {
               const branch = getBranchInfo(item.BranchID);
-              const mediaArtwork = mediaFrontEndService.generateImageSrc(
-                item.Title,
-                item.Type
-              );
+              const mediaArtwork = mediaFrontEndService.generateImageSrc(item.Title, item.Type);
               const rentLength = item.rentLength || 7;
               const returnDate = calculateReturnDate(rentLength);
               const isMinimumTerm = rentLength <= 7;
@@ -71,10 +95,7 @@ const BasketPage = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
                       {/* Column 1: Remove */}
                       <div>
-                        <Button
-                          variant='danger'
-                          onClick={() => handleRemove(item)}
-                        >
+                        <Button variant="danger" onClick={() => handleRemove(item)}>
                           X
                         </Button>
                       </div>
@@ -119,8 +140,8 @@ const BasketPage = () => {
                       {returnDate}
                       <Button
                         className="button-primary-outline mt-3"
-                        style={{ width: '3rem'} }
-                        onClick={() => !isMinimumTerm && adjustRentLength(index, -7)} 
+                        style={{ width: '3rem' }}
+                        onClick={() => !isMinimumTerm && adjustRentLength(index, -7)}
                         disabled={isMinimumTerm}
                       >
                         - 7
@@ -139,7 +160,8 @@ const BasketPage = () => {
                   <td>
                     <Form.Select
                       className="form-secondary"
-                      onChange={(e) => console.log('Selected delivery:', e.target.value)}
+                      value={deliveryOptions[index]}
+                      onChange={(e) => handleDeliveryChange(index, e.target.value)}
                       required
                     >
                       <option value="collect">Collect In-Store</option>
@@ -158,8 +180,12 @@ const BasketPage = () => {
           </tbody>
         </Table>
         <div style={{ textAlign: 'right' }}>
-          <h4>Total: {basket.reduce((acc, item) => acc + (Math.ceil(item.rentLength / 7) || 1), 0)} Tokens</h4>
-          <Button className="button-primary">Checkout</Button>
+          <h4>
+            Total: {basket.reduce((acc, item) => acc + (Math.ceil(item.rentLength / 7) || 1), 0)} Tokens
+          </h4>
+          <Button className="button-primary" onClick={handleCheckout}>
+            Checkout
+          </Button>
         </div>
       </div>
     </Container>
