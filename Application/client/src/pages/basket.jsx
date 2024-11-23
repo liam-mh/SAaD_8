@@ -65,6 +65,16 @@ const BasketPage = () => {
     );
   };
 
+  const handleRemove = (itemToRemove) => {
+    const updatedBasket = basket.filter(
+      (item) =>
+        item.Title !== itemToRemove.Title ||
+        item.Type !== itemToRemove.Type ||
+        item.BranchID !== itemToRemove.BranchID
+    );
+    setBasket(updatedBasket);
+  };
+
   return (
     <Container fluid="lg">
       <h2>Your Basket</h2>
