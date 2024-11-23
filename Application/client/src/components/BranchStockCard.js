@@ -1,39 +1,55 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { SessionContext } from '../services/sessionContext';
+import branchFrontEndService from '../services/storefront/branchFrontEndService';
 
-function BranchStockCard({ branch, media, isInStock = true, onAddToBasket }) {
+function BranchStockCard({ media, onAddToBasket }) {
     if (!media) { return <p>Loading media information...</p>; }
     const { basket, setBasket } = useContext(SessionContext);
+    const isInStock = true;
+    const [branch, setBranch] = useState();
+
+    useEffect(() => {
+        async function loadData() {
+            const branchData = await branchFrontEndService.get('/readRecords', { fields: { branchID: media.BranchID }, allFlag: false });
+            setBranch(branchData.data[0]);
+        }
+    
+        loadData();
+    }, []);
 
     const isInBasket = basket.some(item => 
         item.Title === media.Title && 
         item.Type === media.Type && 
-        item.BranchID === branch.BranchID
+        item.BranchID === media.BranchID
     );
 
     const handleAddToBasket = (e) => {
         e.preventDefault();
         if (!isInBasket) {
-            setBasket([...basket, { ...media, BranchID: branch.BranchID }]); 
-            onAddToBasket(media.Title);
+            setBasket([...basket, { ...media }]); 
+            onAddToBasket(media);
         }
     };
 
     const handleRemoveFromBasket = (e) => {
         e.preventDefault();
         setBasket(basket.filter(item => 
-            !(item.Title === media.Title && item.Type === media.Type && item.BranchID === branch.BranchID)
+            !(item.Title === media.Title && item.Type === media.Type && item.BranchID === media.BranchID)
         ));
     };
 
     return (
         <div className="content-panel">
-            <span>
-                {branch.FirstLineAddress || 'First Line'}<br />
-                {branch.City || 'City'}<br />
-                {branch.Postcode || 'Postcode'}<br />
-            </span>
-
+            {branch ? (
+                <span>
+                    {branch.FirstLineAddress || 'First Line'}<br />
+                    {branch.City || 'City'}<br />
+                    {branch.Postcode || 'Postcode'}<br />
+                </span>
+            ) : (
+                <p>Loading branch information...</p>
+            )}
+    
             {isInStock ? (
                 <div>
                     {isInBasket ? (
@@ -50,7 +66,7 @@ function BranchStockCard({ branch, media, isInStock = true, onAddToBasket }) {
                 <span className="highlight-secondary-outline">Out Of Stock</span>
             )}
         </div>
-    );
+    );    
 }
 
 export default BranchStockCard;
