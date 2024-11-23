@@ -4,14 +4,14 @@ import branchFrontEndService from '../services/storefront/branchFrontEndService'
 
 function BranchStockCard({ media, onAddToBasket }) {
     if (!media) { return <p>Loading media information...</p>; }
-    const { basket, setBasket } = useContext(SessionContext);
+    const { basket, setBasket, branches, setBranches } = useContext(SessionContext);
     const isInStock = true;
-    const [branch, setBranch] = useState();
+    const [branch, setCardBranch] = useState();
 
     useEffect(() => {
         async function loadData() {
             const branchData = await branchFrontEndService.get('/readRecords', { fields: { branchID: media.BranchID }, allFlag: false });
-            setBranch(branchData.data[0]);
+            setCardBranch(branchData.data);
         }
     
         loadData();
@@ -27,6 +27,7 @@ function BranchStockCard({ media, onAddToBasket }) {
         e.preventDefault();
         if (!isInBasket) {
             setBasket([...basket, { ...media }]); 
+            setBranches([...branches, {...branch }])
             onAddToBasket(media);
         }
     };
