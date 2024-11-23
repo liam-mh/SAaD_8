@@ -1,25 +1,19 @@
 import { useEffect } from 'react';
 import LoginCard from '../components/LoginCard';
+import moment from 'moment'
 const mediaFrontEndService = require('../services/storefront/mediaFrontEndService');
-const emailFrontEndService = require('../services/notification/emailFrontEndService')
+const emailFrontEndService = require('../services/notification/emailFrontEndService');
+const branchFrontEndService = require('../services/storefront/branchFrontEndService')
 
 const AccountPage = () => {
   useEffect(() => {
     const fetchMedia = async () => {
       try {
-        // //pass empty array and all flag true for all media.
-        //const allMedia = await mediaFrontEndService.get('/readRecords', { fields: {}, allFlag: true });
-        // //pass whatever fields you want in the fields object.
-        // //by title
-        // const mediaByTitle = await mediaFrontEndService.get('/readRecords', { fields: {title: "The Great Gatsby"}, allFlag: false });
-        // //by title and type
-        // const mediaByTitleAndType = await mediaFrontEndService.get('/readRecords', { fields: {title: "The Boy in the Striped Pyjamas", type: "DVD"}, allFlag: false });
-
-        // console.log('all Media records:', allMedia.data); 
-        // console.log('Media By Title:', mediaByTitle.data);
-        // console.log('Media By Title And type', mediaByTitleAndType.data);
-
         
+        const media = await mediaFrontEndService.get('/readRecords', { fields: {}, allFlag: true });
+
+        console.log(media.data); 
+
       } catch (error) {
         console.error('Error fetching media records:', error); 
       }
