@@ -4,10 +4,10 @@ import Container from 'react-bootstrap/esm/Container';
 import Row from 'react-bootstrap/esm/Row';
 import Col from 'react-bootstrap/esm/Col';
 import Button from 'react-bootstrap/esm/Button';
-import MediaCard from '../components/MediaCard';
 import MediaPagination from '../components/MediaPagination';
+import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 
-import { getAll, getByDate, getRandomFive } from '../services/sampleDataFunctions';
+import { getByDate, getRandomFive } from '../services/sampleDataFunctions';
 
 const IndexPage = () => {
   const [allMedia, setAllMedia] = useState([]);
@@ -18,10 +18,10 @@ const IndexPage = () => {
   // Load media data
   useEffect(() => {
     async function loadData() {
-      const allItems = await getAll();
+      const allItems = await mediaFrontEndService.get('/readRecords', { fields: {}, allFlag: true });
       const recentItems = await getByDate();
       const randomItems = await getRandomFive();
-      setAllMedia(allItems);
+      setAllMedia(allItems.data);
       setRecentMedia(recentItems);
       setRandomMedia(randomItems);
     }

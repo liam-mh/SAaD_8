@@ -6,6 +6,8 @@ class MediaController extends Controller {
         const service = new MediaService();
         super(service);
     }
+
+    
 }
 
 module.exports = MediaController;

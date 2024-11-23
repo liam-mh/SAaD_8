@@ -11,7 +11,7 @@ async function getAll() {
     }
 }
 
-// Function to get the most recent media from each type
+// Function to get the most recent media from each type (3 from each type).
 async function getByDate() {
     const mediaData = await getAll(); 
     const groupedByType = {};
@@ -64,7 +64,7 @@ async function getRandomFive() {
     return shuffled.slice(0, 5);
 }
 
-// Function to get all media items with the same title 
+// Function to get all media items with the same title  (DONE)
 async function getByTitle(title) {
     const mediaData = await getAll(); // Fetch data asynchronously
     
@@ -86,7 +86,7 @@ async function autoComplete(input) {
     return filteredResults;
 }
 
-async function getBySearch(input) {
+async function getBySearch(input) {//GET ALL TYPES AND TITLES THAT ARE UNIQUE
     if (!input.trim()) { // Check if input is empty or just whitespace
         return []; // Return an empty array when there's no search term
     }
