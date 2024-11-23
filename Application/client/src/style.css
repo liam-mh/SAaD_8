@@ -350,11 +350,14 @@ a:hover {
 }
 
 /* TABLE --------------------------------------------------------------------------------------- */
-  
-.aml-table tbody tr.middle-row {
-    border-bottom: 2px solid #E0E0E0
+.aml-table tbody tr {
+    border-bottom: 2px solid #E0E0E0; 
 }
-  
+
+.aml-table tbody tr:last-child {
+    border-bottom: none; 
+}
+
 .aml-table tbody {
     border-top: 2px solid var(--primary); 
     border-bottom: 2px solid var(--primary); 
