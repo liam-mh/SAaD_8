@@ -100,8 +100,11 @@ const BasketPage = () => {
               </td>
             </tr>
           </tbody>
-
         </Table>
+        <div style={{ textAlign: 'right' }}>
+          <h4>Total: {} Tokens</h4>
+          <Button className="button-primary">Checkout</Button>
+        </div>
       </div>
 
 
