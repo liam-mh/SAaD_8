@@ -150,7 +150,9 @@ html, body {
     justify-content: center;              
     border-radius: var(--border-radius);        
     font-weight: bold;                
-    text-align: center;                          
+    text-align: center;        
+    width: auto; 
+    white-space: nowrap;                  
 }
 
 .button-primary,
@@ -174,6 +176,13 @@ html, body {
     border: 2px solid var(--primary);
     background-color: var(--primary);
     color: white;
+}
+.button-primary-outline:disabled {
+    filter: blur(1px); 
+    cursor: not-allowed; 
+    border: 2px solid #ccc;  
+    background-color: #f5f5f5;  
+    color: #ccc;  
 }
 
 .button-secondary,
@@ -345,4 +354,18 @@ a:hover {
 .pagination .page-item.disabled .page-link {
     color: var(--secondary); 
     opacity: 0.5; 
+}
+
+/* TABLE --------------------------------------------------------------------------------------- */
+.aml-table tbody tr {
+    border-bottom: 2px solid #E0E0E0; 
+}
+
+.aml-table tbody tr:last-child {
+    border-bottom: none; 
+}
+
+.aml-table tbody {
+    border-top: 2px solid var(--primary); 
+    border-bottom: 2px solid var(--primary); 
 }
