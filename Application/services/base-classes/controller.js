@@ -1,9 +1,6 @@
-/**
- * Abstract Controller class
- *
- */
+const formatDateFields = require("../utils/dateFormatter");
+
 class Contoller {
-  notificationService;
   /**
    * Constructor
    * @param {Service} service - Specific Service based on derived Controller
@@ -31,31 +28,18 @@ class Contoller {
 
   // ------------------------------------- Read Methods ---------------------------------------------------
   /**
-   * Read and return a record.
-   * @param {Int} primaryKey - Primary key for the record to read.
-   * @returns
+   * Reads and returns multiple records based on matching field values.
+   * Formats all date fields for each record.
+   * 
+   * @param {Array} fieldIdentifiers - Array of field identifiers to filter the records.
+   * @param {boolean} allFlag - If true, fetch all records regardless of filters.
+   * @returns {Array} - Array of formatted records with all date fields properly formatted.
    */
-  readRecord(primaryKey) {
-    return this.service.readFieldByQuery(primaryKey);
-  }
-
-  /**
-   * Reads and return multiple records based on matching field values.
-   * @param {Array} fieldIdentifiers - Array of field identifiers.
-   * @returns
-   */
-  readRecords(fieldIdentifiers, allFlag) {
-    return this.service.readRecordsByQuery(fieldIdentifiers, allFlag);
-  }
-
-  /**
-   * Reads and returns a single field matching the PK and column.
-   * @param {Int} primaryKey - Primary key for the record.
-   * @param {String} column - Column to be returned.
-   * @returns
-   */
-  readField(primaryKey, column) {
-    return this.service.readFieldByQuery(primaryKey, column);
+  async readRecords(fieldIdentifiers, allFlag) {
+    
+    // Fetch raw records 
+    const records = await this.service.readRecordsByQuery(fieldIdentifiers, allFlag);
+    return formatDateFields(records);
   }
 
   /**
@@ -125,6 +109,7 @@ class Contoller {
   deleteRecords(primaryKeys) {
     return this.service.deleteRecordsByQuery(primaryKeys);
   }
+
 }
 
 module.exports = Contoller;

@@ -19,6 +19,7 @@ class FrontEndService {
             .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(JSON.stringify(value))}`)
             .join('&');
         const url = `${this.baseRoute}${path}?${queryString}`;
+        
         try {
             return await fetchFromApiGateway(url, {
                 method: 'GET',
@@ -38,6 +39,7 @@ class FrontEndService {
      */
     async post(path, body) {
         const url = `${this.baseRoute}${path}`;
+        console.log(url)
         try {
             return await fetchFromApiGateway(url, {
                 method: 'POST',
