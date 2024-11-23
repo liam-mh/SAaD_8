@@ -150,7 +150,9 @@ html, body {
     justify-content: center;              
     border-radius: var(--border-radius);        
     font-weight: bold;                
-    text-align: center;                          
+    text-align: center;        
+    width: auto; 
+    white-space: nowrap;                  
 }
 
 .button-primary,
@@ -345,4 +347,15 @@ a:hover {
 .pagination .page-item.disabled .page-link {
     color: var(--secondary); 
     opacity: 0.5; 
+}
+
+/* TABLE --------------------------------------------------------------------------------------- */
+  
+.aml-table tbody tr.middle-row {
+    border-bottom: 2px solid #E0E0E0
+}
+  
+.aml-table tbody {
+    border-top: 2px solid var(--primary); 
+    border-bottom: 2px solid var(--primary); 
 }
