@@ -177,6 +177,13 @@ html, body {
     background-color: var(--primary);
     color: white;
 }
+.button-primary-outline:disabled {
+    filter: blur(1px); 
+    cursor: not-allowed; 
+    border: 2px solid #ccc;  
+    background-color: #f5f5f5;  
+    color: #ccc;  
+}
 
 .button-secondary,
 .highlight-secondary {
