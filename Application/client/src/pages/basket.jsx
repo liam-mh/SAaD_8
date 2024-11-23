@@ -2,11 +2,11 @@ import React, { useContext, useState } from 'react';
 import { Container, Table, Button, Form } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
+import { Link } from 'react-router-dom';
 
 const BasketPage = () => {
-  const { basket, setBasket, branches, checkout, setCheckout } = useContext(SessionContext) || {};
+  const { basket, setBasket, branches, setCheckout } = useContext(SessionContext) || {};
   const [deliveryOptions, setDeliveryOptions] = useState(basket.map(() => 'collect'));
-  
   if (!basket || !branches) {
     return <p>No basket information...</p>;
   }
@@ -78,128 +78,139 @@ const BasketPage = () => {
   return (
     <Container fluid="lg">
       <h2>Your Basket</h2>
-      <div className="content-panel">
-        <Table hover className="aml-table">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Rent Start Date</th>
-              <th>Return Date</th>
-              <th>Store</th>
-              <th>Delivery Option</th>
-              <th>Subtotal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {basket.map((item, index) => {
-              const branch = getBranchInfo(item.BranchID);
-              const mediaArtwork = mediaFrontEndService.generateImageSrc(item.Title, item.Type);
-              const rentLength = item.rentLength || 7;
-              const returnDate = calculateReturnDate(rentLength);
-              const isMinimumTerm = rentLength <= 7;
-              const tokens = Math.ceil(rentLength / 7);
-
-              return (
-                <tr key={index} style={{ verticalAlign: 'middle' }}>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
-                      {/* Column 1: Remove */}
-                      <div>
-                        <Button variant="danger" onClick={() => handleRemove(item)}>
-                          X
+      {basket.length === 0 ? (
+        <div className="content-panel" style={{ width: 'fit-content' }}>
+          <span>
+            <strong>No items in your basket</strong>
+            <br />
+            <br />
+            Click <Link to="/">here</Link> to continue shopping
+          </span>
+        </div>
+      ) : (
+        <div className="content-panel">
+          <Table hover className="aml-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Rent Start Date</th>
+                <th>Return Date</th>
+                <th>Store</th>
+                <th>Delivery Option</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {basket.map((item, index) => {
+                const branch = getBranchInfo(item.BranchID);
+                const mediaArtwork = mediaFrontEndService.generateImageSrc(item.Title, item.Type);
+                const rentLength = item.rentLength || 7;
+                const returnDate = calculateReturnDate(rentLength);
+                const isMinimumTerm = rentLength <= 7;
+                const tokens = Math.ceil(rentLength / 7);
+  
+                return (
+                  <tr key={index} style={{ verticalAlign: 'middle' }}>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
+                        {/* Column 1: Remove */}
+                        <div>
+                          <Button variant="danger" onClick={() => handleRemove(item)}>
+                            X
+                          </Button>
+                        </div>
+  
+                        {/* Column 2: Image */}
+                        <div style={{ flex: '0 0 auto' }}>
+                          <img
+                            src={mediaArtwork}
+                            alt="Media Artwork"
+                            style={{
+                              height: '10rem',
+                              aspectRatio: '1',
+                              objectFit: 'contain',
+                            }}
+                          />
+                        </div>
+  
+                        {/* Column 3: Title and Info */}
+                        <div>
+                          <strong>{item.Title}</strong>
+                          <br />
+                          <span>Type: {item.Type}</span>
+                          <br />
+                          <span>Rent tokens per week: 1</span>
+                        </div>
+                      </div>
+                    </td>
+  
+                    <td>
+                      <span>{startDate}</span>
+                    </td>
+  
+                    <td>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Button
+                          className="button-primary mb-3"
+                          style={{ width: '3rem' }}
+                          onClick={() => adjustRentLength(index, 7)}
+                        >
+                          + 7
+                        </Button>
+                        {returnDate}
+                        <Button
+                          className="button-primary-outline mt-3"
+                          style={{ width: '3rem' }}
+                          onClick={() => !isMinimumTerm && adjustRentLength(index, -7)}
+                          disabled={isMinimumTerm}
+                        >
+                          - 7
                         </Button>
                       </div>
-
-                      {/* Column 2: Image */}
-                      <div style={{ flex: '0 0 auto' }}>
-                        <img
-                          src={mediaArtwork}
-                          alt="Media Artwork"
-                          style={{
-                            height: '10rem',
-                            aspectRatio: '1',
-                            objectFit: 'contain',
-                          }}
-                        />
+                    </td>
+  
+                    <td>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <span>{branch?.FirstLineAddress || 'First Line'}</span>
+                        <span>{branch?.City || 'City'}</span>
+                        <span>{branch?.Postcode || 'Postcode'}</span>
                       </div>
-
-                      {/* Column 3: Title and Info */}
-                      <div>
-                        <strong>{item.Title}</strong>
-                        <br />
-                        <span>Type: {item.Type}</span>
-                        <br />
-                        <span>Rent tokens per week: 1</span>
+                    </td>
+  
+                    <td>
+                      <Form.Select
+                        className="form-secondary"
+                        value={deliveryOptions[index]}
+                        onChange={(e) => handleDeliveryChange(index, e.target.value)}
+                        required
+                      >
+                        <option value="collect">Collect In-Store</option>
+                        <option value="delivery">Home Delivery</option>
+                      </Form.Select>
+                    </td>
+  
+                    <td>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}>
+                        {tokens} Tokens
                       </div>
-                    </div>
-                  </td>
-
-                  <td>
-                    <span>{startDate}</span>
-                  </td>
-
-                  <td>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Button
-                        className="button-primary mb-3"
-                        style={{ width: '3rem' }}
-                        onClick={() => adjustRentLength(index, 7)}
-                      >
-                        + 7
-                      </Button>
-                      {returnDate}
-                      <Button
-                        className="button-primary-outline mt-3"
-                        style={{ width: '3rem' }}
-                        onClick={() => !isMinimumTerm && adjustRentLength(index, -7)}
-                        disabled={isMinimumTerm}
-                      >
-                        - 7
-                      </Button>
-                    </div>
-                  </td>
-
-                  <td>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <span>{branch?.FirstLineAddress || 'First Line'}</span>
-                      <span>{branch?.City || 'City'}</span>
-                      <span>{branch?.Postcode || 'Postcode'}</span>
-                    </div>
-                  </td>
-
-                  <td>
-                    <Form.Select
-                      className="form-secondary"
-                      value={deliveryOptions[index]}
-                      onChange={(e) => handleDeliveryChange(index, e.target.value)}
-                      required
-                    >
-                      <option value="collect">Collect In-Store</option>
-                      <option value="delivery">Home Delivery</option>
-                    </Form.Select>
-                  </td>
-
-                  <td>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}>
-                      {tokens} Tokens
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-        <div style={{ textAlign: 'right' }}>
-          <h4>
-            Total: {basket.reduce((acc, item) => acc + (Math.ceil(item.rentLength / 7) || 1), 0)} Tokens
-          </h4>
-          <Button className="button-primary" onClick={handleCheckout}>
-            Checkout
-          </Button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+          <div style={{ textAlign: 'right' }}>
+            <h4>
+              Total: {basket.reduce((acc, item) => acc + (Math.ceil(item.rentLength / 7) || 1), 0)} Tokens
+            </h4>
+            <Button className="button-primary" onClick={handleCheckout}>
+              Checkout
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
     </Container>
-  );
+  );  
 };
 
 export default BasketPage;
