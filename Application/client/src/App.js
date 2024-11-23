@@ -11,6 +11,7 @@ import AccountPage from './pages/account';
 import MediaPage from './pages/media';
 import BasketPage from './pages/basket';
 import SearchPage from './pages/search';
+import CheckoutPage from './pages/checkout';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/media" element={<MediaPage />} />
           <Route path="/basket" element={<BasketPage />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
         </Routes>
         <Footer />
       </Router>
