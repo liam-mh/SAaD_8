@@ -17,9 +17,12 @@ const toCamelCase = (resource) =>
 const getController = (resource, serviceName) => {
     try {
         const controllerResource = toCamelCase(resource); // Convert to camelCase
+        console.log("dirname", __dirname);
+        console.log('THIS IS A PATH : ', `../../${serviceName}/micro-services/${resource}/${controllerResource}Controller.js`)
+
         const controllerPath = path.resolve(
             __dirname,
-            `../${serviceName}/micro-services/${resource}/${controllerResource}Controller.js`
+            `../../${serviceName}/micro-services/${resource}/${controllerResource}Controller.js`
         );
 
         return require(controllerPath);

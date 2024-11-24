@@ -1,4 +1,4 @@
-const DbHandler = require("../../../base-classes/dbHandler");
+const {DbHandler} = require("shared");
 
 class WishlistDbHandler extends DbHandler{
     constructor(){

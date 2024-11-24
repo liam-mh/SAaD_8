@@ -21,7 +21,6 @@ const formatDateFields = (data) => {
 
       // If innerValue is a valid ISO 8601 date, format it
       if (moment(innerValue, moment.ISO_8601, true).isValid()) {
-        console.log("Valid Date found:", innerValue); // Log the value for debugging
         value[innerKey] = moment(innerValue).format("DD/MM/YYYY"); // Reformat to DD/MM/YYYY
       }
     }

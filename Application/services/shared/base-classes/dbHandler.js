@@ -1,6 +1,6 @@
 const mysql = require('mysql2');  // Ensure mysql2 is installed
 // Import Sequelize instance
-const sequelize = require('../../config/sequelize');
+const sequelize = require('../../../config/sequelize');
 
 /**
  * Base entity class.

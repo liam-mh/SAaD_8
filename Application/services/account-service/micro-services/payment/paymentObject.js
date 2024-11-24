@@ -1,4 +1,4 @@
-const Object = require("../../../base-classes/object");
+const {Object} = require("../../../shared");
 
 class PaymentObject extends Object {
   constructor() {

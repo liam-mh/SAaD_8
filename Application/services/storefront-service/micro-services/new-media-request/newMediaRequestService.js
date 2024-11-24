@@ -1,4 +1,4 @@
-const Service = require("../../../../services/base-classes/service");
+const {Service} = require("shared");
 const NewMediaRequestDbHandler = require("./newMediaRequestDbHandler");
 const NewMediaRequestObject = require("./newMediaRequestObject");
 
