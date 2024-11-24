@@ -1,4 +1,4 @@
-const Controller = require("../../../base-classes/controller");
+const {Controller} = require("shared");
 const MediaHistoryService = require("./mediaHistoryService");
 
 class MediaHistoryController extends Controller {

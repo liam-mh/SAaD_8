@@ -1,5 +1,4 @@
-const Object = require("../../../base-classes/object");
-
+const {Object} = require("../../../shared");
 class MemberSubscriptionObject extends Object {
   constructor() {
     super();

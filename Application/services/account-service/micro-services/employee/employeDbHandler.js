@@ -1,4 +1,4 @@
-const DbHandler = require("../../../base-classes/dbHandler");
+const {DbHandler} = require("../../../shared");
 
 class EmployeeDbHandler extends DbHandler {
   constructor() {

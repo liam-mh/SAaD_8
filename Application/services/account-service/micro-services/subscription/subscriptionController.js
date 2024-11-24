@@ -1,4 +1,4 @@
-const Controller = require("../../../base-classes/controller");
+const {Controller} = require("../../../shared");
 const SubscriptionService = require("./subscriptionService");
 
 /**
