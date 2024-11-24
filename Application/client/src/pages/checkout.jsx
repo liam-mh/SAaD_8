@@ -8,6 +8,7 @@ import PaymentCard from '../components/PaymentCard';
 const CheckoutPage = () => {
   const { user, checkout } = useContext(SessionContext) || {}; 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [transactionID, setTransactionID] = useState(null);
   const subscriptionPayment = true; 
   const [confirmation, setConfirmation] = useState(false);
   const total = checkout.reduce((acc, item) => acc + (item.tokens || 0), 0);
@@ -15,6 +16,10 @@ const CheckoutPage = () => {
   const handleSelectedPaymentMethod = (method) => {
     setSelectedPaymentMethod(method);
   };
+
+  const generateTransactionID = () => {
+    return user.MemberID + '-' + Date.now()
+  }
 
   const handlePayment = () => {
 
@@ -27,8 +32,10 @@ const CheckoutPage = () => {
       return;
     }
     const paymentMethod = subscriptionPayment ? selectedPaymentMethod : 'token';
+    setTransactionID(generateTransactionID);
 
     const transaction = {
+      transactionID,
       user,
       checkout,
       paymentMethod,
@@ -50,7 +57,7 @@ const CheckoutPage = () => {
               Thank you for your order, {user?.FirstName}.<br />
               Here is your order number:
             </p>
-            <p><strong>#gffdsfsgd</strong></p>
+            <p><strong>#{transactionID}</strong></p>
             <Row>
               <Col>
                 <Button className='button-primary-outline' as={Link} to='/'>
