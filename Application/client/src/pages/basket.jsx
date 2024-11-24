@@ -46,6 +46,7 @@ const BasketPage = () => {
       const returnDate = calculateReturnDate(rentLength);
       const tokens = Math.ceil(rentLength / 7);
       const deliveryOption = deliveryOptions[index]; 
+      const branch = getBranchInfo(item.BranchID);
 
       return {
         ...item,
@@ -53,6 +54,7 @@ const BasketPage = () => {
         returnDate,
         tokens,
         deliveryOption,
+        branch
       };
     });
 
@@ -203,7 +205,7 @@ const BasketPage = () => {
             <h4>
               Total: {basket.reduce((acc, item) => acc + (Math.ceil(item.rentLength / 7) || 1), 0)} Tokens
             </h4>
-            <Button className="button-primary" onClick={handleCheckout}>
+            <Button className="button-primary" onClick={handleCheckout} as={Link} to="/checkout">
               Checkout
             </Button>
           </div>

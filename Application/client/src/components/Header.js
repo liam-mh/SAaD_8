@@ -17,7 +17,8 @@ function Header() {
   const location = useLocation();
   const headerClass = 
     location.pathname === '/' || 
-    location.pathname === '/help' || 
+    location.pathname === '/help' ||
+    location.pathname === '/checkout' || 
     location.pathname.startsWith('/employee') 
     ? 'header mb-0' 
     : 'header';
