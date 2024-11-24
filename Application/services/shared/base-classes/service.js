@@ -1,7 +1,4 @@
-/**
- *  Abstract Service class
- */
-
+//Base service class.
 const DbHandler = require("./dbHandler");
 
 class Service {
