@@ -8,11 +8,33 @@ import PaymentCard from '../components/PaymentCard';
 const CheckoutPage = () => {
   const { user, checkout } = useContext(SessionContext) || {}; 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-  const subscriptionPayment = true;
+  const subscriptionPayment = true; 
   const total = checkout.reduce((acc, item) => acc + (item.tokens || 0), 0);
 
   const handleSelectedPaymentMethod = (method) => {
     setSelectedPaymentMethod(method);
+  };
+
+  const handlePayment = () => {
+
+    if (!user) {
+      alert("Please log in to proceed with payment.");
+      return;
+    }
+    if (subscriptionPayment && !selectedPaymentMethod) {
+      alert("Please select a payment method.");
+      return;
+    }
+    const paymentMethod = subscriptionPayment ? selectedPaymentMethod : 'token';
+
+    const transaction = {
+      user,
+      checkout,
+      paymentMethod,
+      total
+    };
+
+    console.log('Transaction: ', transaction);
   };
 
   return (
@@ -120,13 +142,15 @@ const CheckoutPage = () => {
           </div>
 
           {/* Subscription Payment */}  
-          <Row className='g-0 mt-4'>
-            <PaymentCard onSelectPaymentMethod={handleSelectedPaymentMethod} />
-          </Row>
+          {subscriptionPayment && (
+            <Row className='g-0 mt-4'>
+              <PaymentCard onSelectPaymentMethod={handleSelectedPaymentMethod} />
+            </Row>
+          )}
 
           {/* Payment Bar */} 
           <Row className='g-0 pt-4'>
-            <Button className='button-primary mb-4' style={{ width: '100%', boxShadow: 'var(--drop-shadow)' }}>
+            <Button onClick={handlePayment} className='button-primary mb-4' style={{ width: '100%', boxShadow: 'var(--drop-shadow)' }}>
               Pay Total: {total}
             </Button>
             <span>
