@@ -1,43 +1,43 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../../../../config/sequelize'); 
+const sequelize = require('../../../../config/sequelize');
 
-const MemberSubscriptionModel = sequelize.define('Member', {
-  MemberID: {
+const EmployeeModel = sequelize.define('Employee', {
+  EmployeeID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
   FirstName: {
     type: DataTypes.STRING(100),
-    allowNull: false, 
+    allowNull: false,
   },
   Surname: {
     type: DataTypes.STRING(100),
-    allowNull: false, 
+    allowNull: false,
   },
   Email: {
     type: DataTypes.STRING(255),
-    allowNull: false, 
-    unique: true, 
+    allowNull: false,
+    unique: true,
     validate: {
       isEmail: true,
     },
   },
   Password: {
     type: DataTypes.STRING(255),
-    allowNull: false, 
+    allowNull: false,
   },
   FirstLineAddress: {
     type: DataTypes.STRING(255),
-    allowNull: false, 
+    allowNull: false,
   },
   City: {
     type: DataTypes.STRING(100),
-    allowNull: false, 
+    allowNull: false,
   },
   Postcode: {
     type: DataTypes.STRING(20),
-    allowNull: false, 
+    allowNull: false,
   },
   BranchID: {
     type: DataTypes.INTEGER,
@@ -47,16 +47,22 @@ const MemberSubscriptionModel = sequelize.define('Member', {
     },
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
-    allowNull: true, 
   },
-  RegisterDate: {
-    type: DataTypes.DATE,
+  Role: {
+    type: DataTypes.ENUM(
+      'Librarian',
+      'BranchManager',
+      'Administrator',
+      'CallCentreOperator',
+      'Accountant',
+      'PurchaseManager',
+      'SystemAdministrator'
+    ),
     allowNull: false,
-    defaultValue: DataTypes.NOW, 
   },
 }, {
-  tableName: 'Member',
-  timestamps: false, 
+  tableName: 'Employee',
+  timestamps: false,
 });
 
-module.exports = MemberSubscriptionModel;
+module.exports = EmployeeModel;

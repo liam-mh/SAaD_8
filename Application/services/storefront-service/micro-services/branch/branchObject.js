@@ -3,11 +3,11 @@ const {Object} = require("shared");
 class BranchObject extends Object{
     constructor(){
         super();
-        this.branchID = null;
-        this.firstLineAddress = null;
-        this.poscode = null;
+        this.BranchID = null;
+        this.FirstLineAddress = null;
+        this.Postcode = null;
         this.city = null;
-        this.openingHours = null;
+        this.OpeningHours = null;
     }
 }
 

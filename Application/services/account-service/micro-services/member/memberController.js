@@ -1,4 +1,4 @@
-const {Controller} = require("../../../shared");
+const {Controller} = require("shared");
 const MemberService = require("./memberService");
 
 /**

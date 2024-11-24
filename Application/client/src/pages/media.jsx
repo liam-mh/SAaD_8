@@ -18,7 +18,7 @@ const MediaPage = () => {
 
   useEffect(() => {
     async function loadData() {
-      const allItems = await mediaFrontEndService.get('/readRecords', { fields: {title: mediaTitle, type: mediaType}, allFlag: false });
+      const allItems = await mediaFrontEndService.get('/readRecords', { fields: {Title: mediaTitle, Type: mediaType}, allFlag: false });
       setMedia(allItems.data);
     }
 

@@ -7,7 +7,6 @@ class MediaController extends Controller {
         super(service);
     }
 
-    
 }
 
 module.exports = MediaController;

@@ -1,8 +1,9 @@
 const {DbHandler} = require("../../../shared");
+const MediaSubscriptionModel = require("./memberSubscriptionModel");
 
 class MemberSubscriptionDbHandler extends DbHandler {
   constructor() {
-    super("memberSubscription", "memberID");
+    super("memberSubscription", "memberID", MediaSubscriptionModel);
   }
 }
 
