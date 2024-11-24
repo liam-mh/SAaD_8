@@ -28,8 +28,8 @@ const MediaPage = () => {
   const mediaItem = media.length > 0 ? media[0] : null;
   const mediaArtwork = mediaItem ? mediaFrontEndService.generateImageSrc(mediaItem.Title, mediaItem.Type) : null;
 
-  const handleAddToBasket = (addedMediaTitle) => {
-    setNotificationText(addedMediaTitle);
+  const handleAddToBasket = () => {
+    setNotificationText(mediaItem.Title);
     setShowNotification(true);
   };
 
