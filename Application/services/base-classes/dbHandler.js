@@ -128,7 +128,6 @@ class DbHandler {
             console.error("Unexpected Error: ", error.message);
             throw new Error("An unexpected error occurred: " + error.message);
         }
-
     }
     
 

@@ -4,6 +4,7 @@ class MediaObject extends Object{
     constructor(){
         super();
         this.mediaID = null;
+        this.title = null;
         this.type = null;
         this.description = null;
         this.publishDate = null;
