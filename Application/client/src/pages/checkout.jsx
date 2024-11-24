@@ -1,16 +1,26 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import LoginCard from '../components/LoginCard';
 import { Button, Container, Row, Col, Table } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
 import { Link } from 'react-router-dom';
+import PaymentCard from '../components/PaymentCard';
 
 const CheckoutPage = () => {
   const { user, checkout } = useContext(SessionContext) || {}; 
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const subscriptionPayment = true;
+
+  const handleSelectedPaymentMethod = (method) => {
+    setSelectedPaymentMethod(method);
+  };
+
   return (
     <Container fluid='lg'>
       <h1>Checkout</h1>
       <Row>
         <Col>
+
+          {/* Account and Login */}    
           <h4 id="details">Your Details</h4>
           {!user ? (
             <LoginCard />
@@ -41,7 +51,7 @@ const CheckoutPage = () => {
             </div>
           )}
 
-
+          {/* Order Summary */}    
           <h4 id="order" className='mt-3'>Order Summary</h4>
           <div className='content-panel'>
             <Table hover className="aml-table">
@@ -87,22 +97,31 @@ const CheckoutPage = () => {
         </Col>
 
         <Col>
+          {/* Payment */}        
           <h4 id="payment">Payment</h4>
           <div className='content-panel mb-3'>
-            <Row>
-              <Col style={{textAlign: 'center'}}>
-                <Row>
-                  <span><strong>Tokens Remaining</strong></span>
-                </Row>
-                <Row>
-                  <span className='highlight-primary-outline' style={{width: '3rem'}}>{'5'}</span>
-                </Row>
-              </Col>
-              <Col style={{textAlign: 'center'}}>
-              
-              </Col>
-            </Row>
+          <Row style={{ textAlign: 'center' }}>
+            <Col>
+              <span><strong>Tokens Remaining</strong></span>
+            </Col>
+            <Col>
+              <span><strong>Refresh Date</strong></span>
+            </Col>
+          </Row>
+          <Row style={{ textAlign: 'center', marginTop: '0.5rem' }}>
+            <Col>
+              <span className='highlight-primary-outline'>{'5'}</span>
+            </Col>
+            <Col style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ color: 'var(--primary)' }}>{'11-11-2024'}</span>
+            </Col>
+          </Row>
           </div>
+
+          {/* Subscription Payment */}  
+          <Row className='g-0'>
+            <PaymentCard onSelectPaymentMethod={handleSelectedPaymentMethod} />
+          </Row>
         </Col>
       </Row>
     </Container>
