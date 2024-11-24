@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import PaymentCard from '../components/PaymentCard';
 
 const CheckoutPage = () => {
-  const { user, checkout } = useContext(SessionContext) || {}; 
+  const { user, checkout, setBasket } = useContext(SessionContext) || {}; 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [transactionID, setTransactionID] = useState(null);
   const subscriptionPayment = true; 
@@ -43,6 +43,7 @@ const CheckoutPage = () => {
     };
 
     console.log('Transaction: ', transaction);
+    setBasket([]);
     setConfirmation(true);
   };
 
@@ -148,7 +149,7 @@ const CheckoutPage = () => {
                 </tbody>          
               </Table>
               <div style={{ textAlign: 'right' }}>
-                <Button className='button-primary-outline' as={Link} to="/basket">
+                <Button className='button-primary-outline' as={Link} to="/basket" disabled={confirmation}>
                   Edit Basket
                 </Button>
               </div>
