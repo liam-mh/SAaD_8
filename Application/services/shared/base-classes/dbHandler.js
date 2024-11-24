@@ -37,6 +37,7 @@ class DbHandler {
      * @returns {Promise<Object>} - Resolves to an object representing the created record, including any auto-generated fields e.g. primary key.
      */
     async createByQuery(dataObject) {
+        console.log("!!!!DATA OBJECT:     " ,dataObject);
         // Dynamically retrieve model
         const currentModel = sequelize.model(this.tableName);
         if (!currentModel) {

@@ -8,7 +8,7 @@ const PaymentModel = sequelize.define('Payment', {
     autoIncrement: true,
   },
   PaymentType: {
-    type: DataTypes.ENUM('Cash', 'CreditCard', 'BankTransfer', 'Other'),
+    type: DataTypes.ENUM('Card','PayPal','Klarna'),
     allowNull: false,
   },
   PaymentReason: {

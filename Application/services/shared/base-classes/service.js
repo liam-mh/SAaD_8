@@ -3,7 +3,6 @@ const DbHandler = require("./dbHandler");
 
 class Service {
 
-    notificationService;
     /**
      * Constructor
      * @param {DbHandler} dbHandler - Specific database handler based on derived Service.
