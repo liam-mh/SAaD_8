@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import LoginCard from '../components/LoginCard';
 import { Button, Container, Row, Col, Table } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
+import { Link } from 'react-router-dom';
 
 const CheckoutPage = () => {
   const { user, checkout } = useContext(SessionContext) || {}; 
@@ -32,15 +33,17 @@ const CheckoutPage = () => {
                   </span>
                 </Col>
                 <Col style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-                  <Button className='button-primary-outline'>
+                  <Button className='button-primary-outline' as={Link} to='/account#account'>
                     Edit Account
                   </Button>
                 </Col>
               </Row>
             </div>
           )}
+
+
           <h4 id="order" className='mt-3'>Order Summary</h4>
-          <div className='content-panel mb-3'>
+          <div className='content-panel'>
             <Table hover className="aml-table">
               <thead>
                 <tr>
@@ -75,8 +78,14 @@ const CheckoutPage = () => {
                 })}
               </tbody>          
             </Table>
+            <div style={{ textAlign: 'right' }}>
+              <Button className='button-primary-outline' as={Link} to="/basket">
+                Edit Basket
+              </Button>
+            </div>
           </div>
         </Col>
+
         <Col>
           <h4 id="payment">Payment</h4>
           <div className='content-panel mb-3'>
