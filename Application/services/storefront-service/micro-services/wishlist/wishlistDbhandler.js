@@ -3,7 +3,7 @@ const WishlistModel = require("./wishlistModel")
 
 class WishlistDbHandler extends DbHandler{
     constructor(){
-        super("wishlist", "wishlistID", WishlistModel);
+        super("Wishlist", "WishlistID", WishlistModel);
     }
 }
 

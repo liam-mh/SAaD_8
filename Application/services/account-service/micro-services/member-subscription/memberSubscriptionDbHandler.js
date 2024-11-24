@@ -3,7 +3,7 @@ const MediaSubscriptionModel = require("./memberSubscriptionModel");
 
 class MemberSubscriptionDbHandler extends DbHandler {
   constructor() {
-    super("memberSubscription", "memberID", MediaSubscriptionModel);
+    super("MemberSubscription", "MemberID", MediaSubscriptionModel);
   }
 }
 
