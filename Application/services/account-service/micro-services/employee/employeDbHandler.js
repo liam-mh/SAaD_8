@@ -3,7 +3,7 @@ const EmployeeModel = require("./employeeModel");
 
 class EmployeeDbHandler extends DbHandler {
   constructor() {
-    super("employee", "employeeID", EmployeeModel);
+    super("Employee", "EmployeeID", EmployeeModel);
   }
 }
 

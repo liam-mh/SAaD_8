@@ -3,7 +3,7 @@ const NewMediaRequestModel = require("./newMediaRequestModel")
 
 class newMediaRequestDbHandler extends DbHandler{
     constructor(){
-        super("newMediaRequest", "requestID", NewMediaRequestModel);
+        super("NewMediaRequest", "RequestID", NewMediaRequestModel);
     }
 }
 

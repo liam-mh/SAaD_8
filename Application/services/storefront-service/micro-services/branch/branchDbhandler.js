@@ -3,7 +3,7 @@ const BranchModel = require("./branchModel")
 
 class BranchDbHandler extends DbHandler{
     constructor(){
-        super("branch", "branchID", BranchModel);
+        super("Branch", "BranchID", BranchModel);
     }
 }
 

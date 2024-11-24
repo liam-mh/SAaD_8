@@ -3,7 +3,7 @@ const PaymentModel = require("./paymentModel");
 
 class PaymentDbHandler extends DbHandler {
   constructor() {
-    super("payment", "paymentID", PaymentModel);
+    super("Payment", "PaymentID", PaymentModel);
   }
 }
 
