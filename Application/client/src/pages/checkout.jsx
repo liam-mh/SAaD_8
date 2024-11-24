@@ -9,6 +9,7 @@ const CheckoutPage = () => {
   const { user, checkout } = useContext(SessionContext) || {}; 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const subscriptionPayment = true;
+  const total = checkout.reduce((acc, item) => acc + (item.tokens || 0), 0);
 
   const handleSelectedPaymentMethod = (method) => {
     setSelectedPaymentMethod(method);
@@ -99,28 +100,39 @@ const CheckoutPage = () => {
         <Col>
           {/* Payment */}        
           <h4 id="payment">Payment</h4>
-          <div className='content-panel mb-3'>
-          <Row style={{ textAlign: 'center' }}>
-            <Col>
-              <span><strong>Tokens Remaining</strong></span>
-            </Col>
-            <Col>
-              <span><strong>Refresh Date</strong></span>
-            </Col>
-          </Row>
-          <Row style={{ textAlign: 'center', marginTop: '0.5rem' }}>
-            <Col>
-              <span className='highlight-primary-outline'>{'5'}</span>
-            </Col>
-            <Col style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ color: 'var(--primary)' }}>{'11-11-2024'}</span>
-            </Col>
-          </Row>
+          <div className='content-panel'>
+            <Row style={{ textAlign: 'center' }}>
+              <Col>
+                <span><strong>Tokens Remaining</strong></span>
+              </Col>
+              <Col>
+                <span><strong>Refresh Date</strong></span>
+              </Col>
+            </Row>
+            <Row style={{ textAlign: 'center', marginTop: '0.5rem' }}>
+              <Col>
+                <span className='highlight-primary-outline'>{'5'}</span>
+              </Col>
+              <Col style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ color: 'var(--primary)' }}>{'11-11-2024'}</span>
+              </Col>
+            </Row>
           </div>
 
           {/* Subscription Payment */}  
-          <Row className='g-0'>
+          <Row className='g-0 mt-4'>
             <PaymentCard onSelectPaymentMethod={handleSelectedPaymentMethod} />
+          </Row>
+
+          {/* Payment Bar */} 
+          <Row className='g-0 pt-4'>
+            <Button className='button-primary mb-4' style={{ width: '100%', boxShadow: 'var(--drop-shadow)' }}>
+              Pay Total: {total}
+            </Button>
+            <span>
+              For more information on payments and media rental policies, click{" "}
+              <Link to="/help#rerturn-policy">here</Link>
+            </span>
           </Row>
         </Col>
       </Row>
