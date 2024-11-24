@@ -2,11 +2,11 @@ const {Object} = require("../../../shared");
 class MemberSubscriptionObject extends Object {
   constructor() {
     super();
-    this.memberID = null;
-    this.subscriptionID = null;
-    this.subscriptionDate = null;
-    this.remainingTokens = null;
-    this.overdueDebt = null;
+    this.MemberID = null;
+    this.SubscriptionID = null;
+    this.SubscriptionDate = null;
+    this.RemainingTokens = null;
+    this.OverdueDebt = null;
   }
 }
 
