@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../../../../config/sequelize'); // Import sequelize instance
-
-// Data object for Member table
+const sequelize = require('../../../../config/sequelize'); 
 
 const Member = sequelize.define('Member', {
   MemberID: {
@@ -9,18 +7,38 @@ const Member = sequelize.define('Member', {
     primaryKey: true,
     autoIncrement: true,
   },
-  FirstName: DataTypes.STRING(100),
-  Surname: DataTypes.STRING(100),
+  FirstName: {
+    type: DataTypes.STRING(100),
+    allowNull: false, 
+  },
+  Surname: {
+    type: DataTypes.STRING(100),
+    allowNull: false, 
+  },
   Email: {
     type: DataTypes.STRING(255),
+    allowNull: false, 
+    unique: true, 
     validate: {
       isEmail: true,
     },
   },
-  Password: DataTypes.STRING(255),
-  FirstLineAddress: DataTypes.STRING(255),
-  City: DataTypes.STRING(100),
-  Postcode: DataTypes.STRING(20),
+  Password: {
+    type: DataTypes.STRING(255),
+    allowNull: false, 
+  },
+  FirstLineAddress: {
+    type: DataTypes.STRING(255),
+    allowNull: false, 
+  },
+  City: {
+    type: DataTypes.STRING(100),
+    allowNull: false, 
+  },
+  Postcode: {
+    type: DataTypes.STRING(20),
+    allowNull: false, 
+  },
   BranchID: {
     type: DataTypes.INTEGER,
     references: {
@@ -29,11 +47,16 @@ const Member = sequelize.define('Member', {
     },
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
+    allowNull: true, 
   },
-  RegisterDate: DataTypes.DATE,
+  RegisterDate: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW, 
+  },
 }, {
   tableName: 'Member',
-  timestamps: false,
+  timestamps: false, 
 });
 
 module.exports = Member;
