@@ -3,15 +3,16 @@ const Object = require("../../../base-classes/object");
 class MemberObject extends Object {
   constructor() {
     super();
-    this.memberID = null;
-    this.firstName = null;
-    this.surname = null;
-    this.email = null;
-    this.firstLineAddress = null;
-    this.city = null;
-    this.postcode = null;
-    this.branchID = null;
-    this.registerDate = null;
+    this.MemberID = null;
+    this.FirstName = null;
+    this.Surname = null;
+    this.Email = null;
+    this.Password = null;
+    this.FirstLineAddress = null;
+    this.City = null;
+    this.Postcode = null;
+    this.BranchID = null;
+    this.RegisterDate = null;
   }
 }
 
