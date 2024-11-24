@@ -203,7 +203,7 @@ const BasketPage = () => {
             <h4>
               Total: {basket.reduce((acc, item) => acc + (Math.ceil(item.rentLength / 7) || 1), 0)} Tokens
             </h4>
-            <Button className="button-primary" onClick={handleCheckout}>
+            <Button className="button-primary" onClick={handleCheckout} as={Link} to="/checkout">
               Checkout
             </Button>
           </div>
