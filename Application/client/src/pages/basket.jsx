@@ -46,6 +46,7 @@ const BasketPage = () => {
       const returnDate = calculateReturnDate(rentLength);
       const tokens = Math.ceil(rentLength / 7);
       const deliveryOption = deliveryOptions[index]; 
+      const branch = getBranchInfo(item.BranchID);
 
       return {
         ...item,
@@ -53,6 +54,7 @@ const BasketPage = () => {
         returnDate,
         tokens,
         deliveryOption,
+        branch
       };
     });
 
