@@ -1,5 +1,6 @@
 const mysql = require("mysql2");
 const sequelize = require("../../../config/sequelize");
+const { Op } = require('sequelize');
 
 /**
  * Base entity class.
@@ -49,21 +50,20 @@ class DbHandler {
     });
   }
 
-  //!!!! re write this <------ Can't trust as Lewis just pooped memberID in
+ 
   /**
    * Creates a record in the relative table.
    * @param {Object} dataObject - Object relative to the calling service.
    * @returns {Promise<Object>} - Resolves to an object representing the created record.
    */
   async createByQuery(dataObject) {
-
     if (!this.model) {
       throw new Error(`Model for table '${this.model.tableName}' not found.`);
     }
 
     // Prepare data for insertion
     const insertData = { ...dataObject };
-    delete insertData.MemberID; //<--- wanged MemberId so no longer dynamic.
+    delete insertData.MemberID; 
     if (Object.keys(insertData).length === 0) {
       throw new Error("No valid data provided for insertion.");
     }
@@ -120,9 +120,9 @@ class DbHandler {
 
       // Handle uniqueFlag
       if (uniqueFlag) {
-        const modelAttributes = Object.keys(
-          this.model.getAttributes()
-        ).filter((attr) => attr !== this.model.primaryKeyAttribute);
+        const modelAttributes = Object.keys(this.model.getAttributes()).filter(
+          (attr) => attr !== this.model.primaryKeyAttribute
+        );
 
         queryOptions.attributes = modelAttributes.map((attr) => [
           sequelize.fn("MIN", sequelize.col(attr)),
@@ -149,7 +149,6 @@ class DbHandler {
    *  - The second element is an array of the updated records.
    */
   async updateByQuery(dataObject) {
-    
     if (!this.model) {
       throw new Error(`Model for table '${this.model.tableName}' not found.`);
     }
@@ -228,6 +227,43 @@ class DbHandler {
     }
   }
 
+  /**
+   * Searches all fields in the model for values like the given characters.
+   * @param {string} chars - The search term to look for in all fields.
+   * @returns {Promise<Array<Object>>} - An array of matching records from the database.
+   * @throws {Error} - Throws an error if the input is invalid or the query fails.
+   */
+  async autoComplete(chars) {
+    
+    try {
+      // Get all fields (attributes) from the model, excluding associations
+      const attributes = Object.keys(this.model.rawAttributes);
+
+      // Build WHERE clause: search all fields for a match
+      const whereClause = {
+        [Op.or]: attributes.map((field) => ({
+          [field]: { [Op.like]: `%${chars}%` },
+        })),
+      };
+
+      // Perform the query
+      const results = await this.model.findAll({
+        where: whereClause,
+        limit: 10, // Limit results for performance
+      });
+
+      return results;
+    } catch (error) {
+      console.error("Error performing autocomplete search:", error);
+      throw new Error("Error searching for records");
+    }
+  }
+
+  /**
+   * Closes the database connection.
+   * @returns {Promise<void>} - Resolves when the connection is successfully closed.
+   * @throws {Error} - Rejects with an error if the disconnection fails.
+   */
   async disconnect() {
     return new Promise((resolve, reject) => {
       this.connection.end((err) => {

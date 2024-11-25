@@ -33,6 +33,10 @@ class MediaDbHandler extends DbHandler {
       throw new Error("Error fetching media items.");
     }
   }
+
+  async getTopFive(){
+
+  }
 }
 
 module.exports = MediaDbHandler;
