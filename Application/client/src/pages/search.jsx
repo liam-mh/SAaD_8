@@ -4,17 +4,20 @@ import Container from 'react-bootstrap/esm/Container';
 import { Col, Row, Form, FormGroup, Button } from 'react-bootstrap';
 import { getBySearch } from '../services/sampleDataFunctions';
 import MediaPagination from '../components/MediaPagination';
+import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 
 const SearchPage = () => {
     const location = useLocation();
     const searchTerm = location.state ? location.state.searchTerm : '';
+    const { preFilterType } = location.state || {};
+
     const [media, setMedia] = useState([]);
     const [filteredMedia, setFilteredMedia] = useState([]); 
-    const [selectedFormats, setSelectedFormats] = useState([]);
+    const [selectedFormats, setSelectedFormats] = useState([preFilterType]);
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [sortType, setSortType] = useState('Relevance');
     const [productsPerPage, setProductsPerPage] = useState(24); 
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1)
 
     const formats = ['Book', 'CD', 'DVD', 'Game', 'Journal', 'Periodical'];
     const genres = [
@@ -34,19 +37,30 @@ const SearchPage = () => {
         return mediaArray.sort((a, b) => {
             const dateA = new Date(a.PublishDate.split('-').reverse().join('-'));
             const dateB = new Date(b.PublishDate.split('-').reverse().join('-'));
-            return dateB - dateA; // Newest first
+            return dateB - dateA; 
         });
     };
 
     // Load initial media data
     useEffect(() => {
         async function loadData() {
-            const mediaItem = await getBySearch(searchTerm);
-            setMedia(mediaItem);
-            setFilteredMedia(mediaItem); // Start with all media shown
+            try {
+                if (preFilterType) {
+                    console.log('PRE FILTER: ', preFilterType);
+                    const res = await mediaFrontEndService.get('/readRecords', { fields: {}, allFlag: true });
+                    setMedia(res.data);
+                } else {
+                    console.log('NO FILTER');
+                    const searchResults = await getBySearch(searchTerm);
+                    setMedia(searchResults);
+                }
+            } catch (error) {
+                console.error('Error loading media data:', error);
+            }
         }
+    
         loadData();
-    }, [searchTerm]);
+    }, [searchTerm, preFilterType]);
 
     // Apply filters and sort whenever criteria change
     useEffect(() => {
