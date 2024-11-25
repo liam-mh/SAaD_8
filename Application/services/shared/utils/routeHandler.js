@@ -91,6 +91,28 @@ const handleRoutes = (router, serviceName, resources) => {
             }
         });
 
+        router.get(`/${resource}/autoComplete`, async (req, res) => {
+            try {
+                // Extract `chars` directly from the query parameters
+                const { chars } = req.query;
+        
+                if (!chars) {
+                    return res.status(400).json({ message: 'Missing query parameter: chars' });
+                }
+        
+                const autoCompleteResults = await controllerInstance.autoComplete(chars);
+                res.status(200).json({
+                    message: 'Autocomplete results retrieved successfully',
+                    data: autoCompleteResults,
+                    status: res.statusCode // Using `res.statusCode` as the status has already been set
+                });
+            } catch (error) {
+                console.error(`Error fetching autocomplete results for ${resource}:`, error);
+                res.status(500).json({ message: 'Failed to retrieve autocomplete results', error: error.message });
+            }
+        });
+        
+
         //media specific
         router.get(`/${resource}/fetchMediaByTypeAndLimit`, async (req, res) => {
             try {

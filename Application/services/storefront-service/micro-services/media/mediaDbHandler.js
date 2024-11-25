@@ -2,6 +2,14 @@ const { DbHandler } = require("shared");
 const MediaModel = require("./mediaModel");
 
 class MediaDbHandler extends DbHandler {
+
+  autoCompleteQueryFields = [
+    'Author',
+    'Genre',
+    'Title',
+    'Type'
+  ]
+
   constructor() {
     super("MediaID", MediaModel);
   }

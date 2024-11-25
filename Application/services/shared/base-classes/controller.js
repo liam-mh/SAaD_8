@@ -35,11 +35,20 @@ class Contoller {
    * @param {boolean} uniqueFlag - If true, fetch filtered records based on field identifiers.
    * @returns {Array} - Array of formatted records with all date fields properly formatted.
    */
-  async readRecords(fieldIdentifiers={}, uniqueFlag=false) {
+  readRecords(fieldIdentifiers={}, uniqueFlag=false) {
     // Fetch raw records 
-    const records = await this.service.readRecordsByQuery(fieldIdentifiers, uniqueFlag);
+    const records = this.service.readRecordsByQuery(fieldIdentifiers, uniqueFlag);
     return formatDateFields(records);
   }
+
+  /**
+   * 
+   * @param {Array} chars 
+   */
+  autoComplete(chars){
+    return this.service.autoComplete(chars);
+  }
+
 
   /**
    * Reads and returns multiple fields based on column identifiers.
