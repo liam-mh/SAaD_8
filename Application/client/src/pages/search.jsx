@@ -1,69 +1,75 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import Container from 'react-bootstrap/esm/Container';
-import { Col, Row, Form, FormGroup, Button } from 'react-bootstrap';
-import { getBySearch } from '../services/sampleDataFunctions';
+import { Container, Col, Row, Form, FormGroup } from 'react-bootstrap';
 import MediaPagination from '../components/MediaPagination';
+import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 
 const SearchPage = () => {
     const location = useLocation();
     const searchTerm = location.state ? location.state.searchTerm : '';
+    const { preFilterType } = location.state || {};
+
     const [media, setMedia] = useState([]);
     const [filteredMedia, setFilteredMedia] = useState([]); 
-    const [selectedFormats, setSelectedFormats] = useState([]);
+    const [selectedFormats, setSelectedFormats] = useState([preFilterType]);
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [sortType, setSortType] = useState('Relevance');
     const [productsPerPage, setProductsPerPage] = useState(24); 
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1)
+    const [allDataLoaded, setAllDataLoaded] = useState(false);
 
     const formats = ['Book', 'CD', 'DVD', 'Game', 'Journal', 'Periodical'];
     const genres = [
-        'Fiction',
-        'Non-Fiction',
-        'Action',
-        'Fantasy',
-        'Biography',
-        'Thriller',
-        'History',
-        'Educational',
-        'Entertainment',
-        'Art & Culture',
+        'Fiction', 'Non-Fiction', 'Action', 'Fantasy', 'Biography', 'Thriller',
+        'History', 'Educational', 'Entertainment', 'Art & Culture',
     ];
 
     const sortByDateNewestFirst = (mediaArray) => {
         return mediaArray.sort((a, b) => {
             const dateA = new Date(a.PublishDate.split('-').reverse().join('-'));
             const dateB = new Date(b.PublishDate.split('-').reverse().join('-'));
-            return dateB - dateA; // Newest first
+            return dateB - dateA; 
         });
     };
 
-    // Load initial media data
     useEffect(() => {
         async function loadData() {
-            const mediaItem = await getBySearch(searchTerm);
-            setMedia(mediaItem);
-            setFilteredMedia(mediaItem); // Start with all media shown
+            try {
+                let res;
+                if (preFilterType) {
+                    console.log('PRE FILTER: ', preFilterType);
+                    res = await mediaFrontEndService.get('/readRecords', { Type: preFilterType }, true);
+                } else {
+                    console.log('NO FILTER');
+                    res = await mediaFrontEndService.get('/readRecords', {}, true);
+                    setAllDataLoaded(true);
+                }
+                setMedia(res.data);
+            } catch (error) {
+                console.error('Error loading media data:', error);
+            }
         }
+    
         loadData();
-    }, [searchTerm]);
+    }, [searchTerm, preFilterType]);    
 
-    // Apply filters and sort whenever criteria change
     useEffect(() => {
         let updatedMedia = [...media];
-
+    
         if (selectedFormats.length > 0) {
             updatedMedia = updatedMedia.filter((item) =>
                 selectedFormats.includes(item.Type)
             );
         }
-
         if (selectedGenres.length > 0) {
             updatedMedia = updatedMedia.filter((item) =>
                 selectedGenres.some((genre) => item.Genre.includes(genre))
             );
         }
-
+        if (selectedFormats.length === 0 && selectedGenres.length === 0 && allDataLoaded) {
+            updatedMedia = media;
+        }
+    
         switch (sortType) {
             case 'Title':
                 updatedMedia.sort((a, b) => a.Title.localeCompare(b.Title));
@@ -71,20 +77,36 @@ const SearchPage = () => {
             case 'Release':
                 updatedMedia = sortByDateNewestFirst(updatedMedia);
                 break;
-            case 'Relevance':
             default:
                 break;
         }
-
+    
         setFilteredMedia(updatedMedia);
-    }, [selectedFormats, selectedGenres, sortType, media]);
+    }, [selectedFormats, selectedGenres, sortType, media, allDataLoaded]);
+    
 
     const handleFormatChange = (format) => {
-        setSelectedFormats((prevSelected) =>
-            prevSelected.includes(format)
+        setSelectedFormats((prevSelected) => {
+            const updatedFormats = prevSelected.includes(format)
                 ? prevSelected.filter((f) => f !== format)
-                : [...prevSelected, format]
-        );
+                : [...prevSelected, format];
+
+            if (updatedFormats.length === 0 && !allDataLoaded) {
+                fetchAllData(); 
+            }
+    
+            return updatedFormats;
+        });
+    };
+
+    const fetchAllData = async () => {
+        try {
+            const res = await mediaFrontEndService.get('/readRecords', {}, true);
+            setMedia(res.data);
+            setAllDataLoaded(true);
+        } catch (error) {
+            console.error('Error fetching all media data:', error);
+        }
     };
 
     const handleGenreChange = (genre) => {

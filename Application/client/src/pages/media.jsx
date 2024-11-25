@@ -11,7 +11,7 @@ const mediaFrontEndService = require('../services/storefront/mediaFrontEndServic
 
 const MediaPage = () => {
   const location = useLocation();
-  const { mediaType = "default-type", mediaTitle = "default-title" } = location.state || {};
+  const { mediaType, mediaTitle } = location.state || {};
   const [media, setMedia] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationText, setNotificationText] = useState('');
@@ -26,10 +26,10 @@ const MediaPage = () => {
   }, []);
 
   const mediaItem = media.length > 0 ? media[0] : null;
-  const mediaArtwork = mediaItem ? mediaFrontEndService.generateImageSrc(mediaTitle, mediaType) : null;
+  const mediaArtwork = mediaItem ? mediaFrontEndService.generateImageSrc(mediaItem.Title, mediaItem.Type) : null;
 
-  const handleAddToBasket = (addedMediaTitle) => {
-    setNotificationText(addedMediaTitle);
+  const handleAddToBasket = () => {
+    setNotificationText(mediaItem.Title);
     setShowNotification(true);
   };
 

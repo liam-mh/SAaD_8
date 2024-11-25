@@ -27,7 +27,7 @@ function Header() {
   useEffect(() => {
     setSearchText('');
   }, [location]);
-  
+
   return (
     <header className={headerClass}>
       <Container fluid>
@@ -73,12 +73,12 @@ function Header() {
         <Row>
           <Col>
             <Nav className="justify-content-start">
-              <Nav.Link className="nav-link-secondary" href="#home">Books</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#journals">Journals</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#periodicals">Periodicals</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#cds">CDs</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#dvds">DVDs</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#games">Games</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Book'}}>Books</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Journal'}}>Journals</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Periodical'}}>Periodicals</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'CD' }}>CDs</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'DVD' }}>DVDs</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Game' }}>Games</Nav.Link>
             </Nav>
           </Col>
           <Col>
