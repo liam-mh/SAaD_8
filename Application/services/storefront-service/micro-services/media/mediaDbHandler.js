@@ -3,10 +3,16 @@ const MediaModel = require("./mediaModel");
 
 class MediaDbHandler extends DbHandler {
   constructor() {
-    super("Media", "MediaID", MediaModel);
+    super("MediaID", MediaModel);
   }
 
-  async getTopMediaByType() {
+  /**
+   * Gets The most recent media from each type field. 
+   * 
+   * @note could introduce a limit variable if we need some more flexibility.
+   * @returns 
+   */
+  async getTopMediaByTypeAndLimit() {
     try {
       const types = ['Book', 'Journal', 'CD', 'Periodical', 'DVD', 'Game'];
       const results = [];

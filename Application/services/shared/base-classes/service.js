@@ -19,6 +19,10 @@ class Service {
 
     // Common methods that all services can use
 
+    // ------------------------------------- Validation methods -----------------------------------------------
+
+    isEmpty = (obj) => Object.keys(obj).length === 0;
+
     // ------------------------------------- Create Methods ---------------------------------------------------
     /**
      * Creates a new record
@@ -37,15 +41,17 @@ class Service {
      * @param {Array} fieldIdentifiers - Array of field identifiers.
      * @returns 
      */
-    readRecordsByQuery(fieldIdentifiers, allFlag, uniqueFlag) {
+    readRecordsByQuery(fieldIdentifiers={}, uniqueFlag=false) {
         
-        if(allFlag && !uniqueFlag){
-            return this.dbHandler.readByQuery({}, allFlag, uniqueFlag);
+        // Skip object mapping and just retrieve all records for the relevant table.
+        if(this.isEmpty(fieldIdentifiers) && !uniqueFlag){
+            return this.dbHandler.readByQuery();
         }
 
-        this.object.mapObject(fieldIdentifiers);
+        // Map to the relevant object.
+        //this.object.mapObject(fieldIdentifiers);
 
-        return this.dbHandler.readByQuery(this.object, allFlag, uniqueFlag);
+        return this.dbHandler.readByQuery(fieldIdentifiers, uniqueFlag);
     }
 
     /**

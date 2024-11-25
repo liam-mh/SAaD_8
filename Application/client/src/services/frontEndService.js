@@ -12,19 +12,17 @@ class FrontEndService {
      * Perform a GET request.
      * @param {string} path - The service endpoint path.
      * @param {object} [fields={}] - The fields retrieve.
-     * @param {boolean} [allFlag=true] - Indicates whether to fetch all records.
-     * @param {boolean} [uniqueFlag=true] - Indicates whether to fetch only unique records disregarding pk.
+     * @param {boolean} [uniqueFlag=true] - Indicates whether to fetch only unique records disregarding pk or all records.
      * @returns {Promise<object>} - The API response.
      */
-    async get(path, fields = {}, allFlag = true, uniqueFlag = true) {
+    async get(path, fields = {}, uniqueFlag = false) {
         
-        const queryParams = { fields, allFlag, uniqueFlag };
+        const queryParams = { fields, uniqueFlag };
         
         const queryString = Object.entries(queryParams)
             .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(JSON.stringify(value))}`)
             .join('&');
         const url = `${this.baseRoute}${path}?${queryString}`;
-        console.log(`${this.baseRoute}${path}`)
         
         try {
             return await fetchFromApiGateway(url, {

@@ -44,17 +44,15 @@ const handleRoutes = (router, serviceName, resources) => {
         router.get(`/${resource}/readRecords`, async (req, res) => {
             try {
 
-                const { fields, allFlag, uniqueFlag } = req.query;
+                const { fields, uniqueFlag } = req.query;
                 const parsedFields = JSON.parse(fields);
-                const parsedAllFlag = allFlag === 'true';
                 const parsedUniqueFlag = uniqueFlag === 'true';
-                console.log(parsedFields)
 
-                const records = await controllerInstance.readRecords(parsedFields, parsedAllFlag, parsedUniqueFlag);
-                res.status(200).json({ message: 'Records retrieved successfully', data: records });
+                const records = await controllerInstance.readRecords(parsedFields, parsedUniqueFlag);
+                res.status(200).json({ message: 'Records retrieved successfully', data: records, status: res.status });
             } catch (error) {
                 console.error(`Error reading records for ${resource}:`, error);
-                res.status(500).json({ message: 'Failed to retrieve records', error: error.message });
+                res.status(500).json({ message: 'Failed to retrieve records', error: error.message, status: res.status });
             }
         });
 
@@ -94,9 +92,9 @@ const handleRoutes = (router, serviceName, resources) => {
         });
 
         //media specific
-        router.get(`/${resource}/getTopMediaByType`, async (req, res) => {
+        router.get(`/${resource}/fetchMediaByTypeAndLimit`, async (req, res) => {
             try {
-                const topMedia = await controllerInstance.handleGetTopMediaByType();
+                const topMedia = await controllerInstance.handleGetTopMediaByTypeAndLimit();
                 res.status(200).json({ message: 'Top media retrieved successfully', data: topMedia });
             } catch (error) {
                 console.error(`Error fetching top media by type for ${resource}:`, error);

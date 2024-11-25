@@ -10,25 +10,29 @@ const AccountPage = () => {
   useEffect(() => {
     const fetchMedia = async () => {
       try {
-        const mediaCatalog = await mediaFrontEndService.get('/readRecords', { Title: "The Hobbit", Type: "Book" }, false, false);
+        const catalog = await mediaFrontEndService.get('/readRecords', { Title: "The Hobbit", Type: "Book" }, false, false);
   
         //Promise.all fetches availability concurrently
         const availabilityResults = await Promise.all(
-          mediaCatalog.data.map(async (media) => {
+          catalog.data.map(async (media) => {
           
             const availability = await mediaHistoryFrontEndService.get('/readRecords', { MediaID: media.MediaID });
             const activeStatus = availability?.data?.[0]?.Active ?? "Unavailable";
   
-            return { media, activeStatus }; // Return combined result
+             return { media, activeStatus }; // Return combined result
           })
         );
   
         console.log("Final Results:", availabilityResults); 
+
+        const mediaCatalog = await mediaFrontEndService.get('/readRecords', { }, false);
+        console.log(mediaCatalog.data)
+
       } catch (error) {
         console.error('Error fetching media records:', error);
       }
       try {
-        const topMedia = await mediaFrontEndService.fetchTopMediaByType();
+        const topMedia = await mediaFrontEndService.fetchMediaByTypeAndLimit();
         console.log(topMedia);
       } catch (error) {
         console.error('Error fetching media records:', error);

@@ -32,12 +32,12 @@ class Contoller {
    * Formats all date fields for each record.
    * 
    * @param {Array} fieldIdentifiers - Array of field identifiers to filter the records.
-   * @param {boolean} allFlag - If true, fetch all records regardless of filters.
+   * @param {boolean} uniqueFlag - If true, fetch filtered records based on field identifiers.
    * @returns {Array} - Array of formatted records with all date fields properly formatted.
    */
-  async readRecords(fieldIdentifiers, allFlag, uniqueFlag) {
+  async readRecords(fieldIdentifiers={}, uniqueFlag=false) {
     // Fetch raw records 
-    const records = await this.service.readRecordsByQuery(fieldIdentifiers, allFlag, uniqueFlag);
+    const records = await this.service.readRecordsByQuery(fieldIdentifiers, uniqueFlag);
     return formatDateFields(records);
   }
 

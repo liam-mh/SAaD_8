@@ -3,7 +3,7 @@ const MemberModel = require("./memberModel")
 
 class MemberDbHandler extends DbHandler {
   constructor() {
-    super("Member", "MemberID", MemberModel);
+    super("MemberID", MemberModel);
   }
 }
 

@@ -11,7 +11,7 @@ class MediaService extends Service {
   }
 
   async fetchTopMediaByType() {
-    return this.dbHandler.getTopMediaByType(); 
+    return this.dbHandler.getTopMediaByTypeAndLimit(); 
   }
 }
 

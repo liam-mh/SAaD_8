@@ -28,9 +28,9 @@ class MediaFrontEndService extends FrontEndService {
    *
    * @returns {Promise<Array>} A promise that resolves to an array of top media items.
    */
-  fetchTopMediaByType = async () => {
-    const url = `${this.baseRoute}/getTopMediaByType`;
-    console.log(url);
+  fetchMediaByTypeAndLimit = async () => {
+    const url = `${this.baseRoute}/fetchMediaByTypeAndLimit`;
+    console.log('URL:   ',url);
     try {
 
       const response = await fetchFromApiGateway(url, { method: "GET" });
