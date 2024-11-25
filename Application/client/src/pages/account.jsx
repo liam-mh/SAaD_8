@@ -32,8 +32,8 @@ const AccountPage = () => {
         console.error('Error fetching media records:', error);
       }
       try {
-        const topMedia = await mediaFrontEndService.fetchMediaByTypeAndLimit();
-        console.log(topMedia);
+        const carouselMedia = await mediaFrontEndService.fetchMediaByTypeAndLimit();
+        console.log('CAROUSEL MEDIA:',carouselMedia);
       } catch (error) {
         console.error('Error fetching media records:', error);
       }
