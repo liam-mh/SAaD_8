@@ -18,8 +18,8 @@ const IndexPage = () => {
   // Load media data
   useEffect(() => {
     async function loadData() {
-      const allItems = await mediaFrontEndService.get('/readRecords', { fields: {}, allFlag: true });
-      const recentItems = await getByDate();
+      const allItems = await mediaFrontEndService.get('/readRecords', { });
+      const recentItems = await mediaFrontEndService.fetchMediaByTypeAndLimit();
       const randomItems = await getRandomFive();
       setAllMedia(allItems.data);
       setRecentMedia(recentItems);

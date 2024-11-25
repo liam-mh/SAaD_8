@@ -10,11 +10,15 @@ class FrontEndService {
 
     /**
      * Perform a GET request.
-     * @param {string} path - The endpoint path.
-     * @param {object} queryParams - Query parameters to include in the URL.
+     * @param {string} path - The service endpoint path.
+     * @param {object} [fields={}] - The fields retrieve.
+     * @param {boolean} [uniqueFlag=true] - Indicates whether to fetch only unique records disregarding pk or all records.
      * @returns {Promise<object>} - The API response.
      */
-    async get(path, queryParams = {}) {
+    async get(path, fields = {}, uniqueFlag = false) {
+        
+        const queryParams = { fields, uniqueFlag };
+        
         const queryString = Object.entries(queryParams)
             .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(JSON.stringify(value))}`)
             .join('&');
@@ -33,13 +37,12 @@ class FrontEndService {
 
     /**
      * Perform a POST request.
-     * @param {string} path - The endpoint path.
+     * @param {string} path - The service endpoint path.
      * @param {object} body - The request payload.
      * @returns {Promise<object>} - The API response.
      */
     async post(path, body) {
         const url = `${this.baseRoute}${path}`;
-        console.log(url)
         try {
             return await fetchFromApiGateway(url, {
                 method: 'POST',
@@ -54,7 +57,7 @@ class FrontEndService {
 
     /**
      * Perform a PUT request.
-     * @param {string} path - The endpoint path.
+     * @param {string} path - The service endpoint path.
      * @param {object} body - The request payload.
      * @returns {Promise<object>} - The API response.
      */
@@ -74,7 +77,7 @@ class FrontEndService {
 
     /**
      * Perform a DELETE request.
-     * @param {string} path - The endpoint path.
+     * @param {string} path - The service endpoint path.
      * @param {object} body - The request payload.
      * @returns {Promise<object>} - The API response.
      */
@@ -93,6 +96,4 @@ class FrontEndService {
     }
 }
 
-
 module.exports = FrontEndService;
-
