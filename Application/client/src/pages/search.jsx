@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container';
-import { Col, Row, Form, FormGroup, Button } from 'react-bootstrap';
+import { Col, Row, Form, FormGroup } from 'react-bootstrap';
 import { getBySearch } from '../services/sampleDataFunctions';
 import MediaPagination from '../components/MediaPagination';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
