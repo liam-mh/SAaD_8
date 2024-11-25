@@ -1,6 +1,6 @@
-const mysql = require('mysql2');  // Ensure mysql2 is installed
-// Import Sequelize instance
+const mysql = require('mysql2');  
 const sequelize = require('../../../config/sequelize');
+
 
 /**
  * Base entity class.
@@ -31,6 +31,7 @@ class DbHandler {
             });
         });
     }
+
     /**
      * Creates a record in the relative table.
      * @param {Object} dataObject - Object relative to the calling service.
@@ -74,64 +75,84 @@ class DbHandler {
         }
     }
 
-    //TODO - dont like the dual param... this should be a flag or a property on the object (all = true)
-    /**
-     * Read a record or records from the DB based on relative objects properties.
-     * @param {Object || String} dataObject - Data object or "*". 
-     * @returns {Promise<Array<Object>>} - Resolves to an array of objects representing the queried records. 
-     * If no records match the conditions, an empty array is returned.
-     */
-
-    async readByQuery(dataObject) {
+    async readByQuery(dataObject, allFlag, uniqueFlag) {
+        console.log(dataObject, allFlag, uniqueFlag)
         // Dynamically retrieve model
         const currentModel = sequelize.model(this.tableName);
         if (!currentModel) {
             throw new Error(`Model for table '${this.tableName}' not found.`);
         }
+    
         let returnedData;
-
+    
         try {
-            // Get all records (No where clause)... TODO - Here we will check for the all property instead.
-            if(dataObject === "*") {
+            // Initialize query options
+            const queryOptions = {};
+    
+            // If allFlag is true and uniqueFlag is false, return all records without aggregation
+            if (allFlag && !uniqueFlag) {
                 returnedData = await currentModel.findAll();
                 return returnedData;
             }
-            // Get records based on dataObject properties.
-            else {
-                const whereClause = {}
-
+    
+            // Build the where clause based on dataObject if allFlag is false
+            const whereClause = {};
+            if (!allFlag) {
                 for (const [key, value] of Object.entries(dataObject)) {
-                    // Check if the property is not null or undefined and add to conditions
                     if (value !== null && value !== undefined) {
                         whereClause[key] = value;
                     }
                 }
-
-                returnedData = await currentModel.findAll({
-                    where: whereClause
-                })
-
-                return returnedData;
+                queryOptions.where = whereClause;
             }
+    
+            // Handle uniqueFlag: apply grouping and aggregation for non-pk fields
+            if (uniqueFlag) {
+                // Get all the attributes of the model, excluding the primary key
+                const modelAttributes = Object.keys(currentModel.getAttributes()).filter(attr => attr !== currentModel.primaryKeyAttribute);
+    
+                // Dynamically build the attributes for the query
+                const attributes = [
+                    ...modelAttributes, // Include the grouping columns (all non-pk fields)
+                ];
+    
+                // Apply aggregation (MIN) for all other fields dynamically
+                modelAttributes.forEach((attr) => {
+                    attributes.push([sequelize.fn('MIN', sequelize.col(attr)), attr]);
+                });
+    
+                // Set the query options
+                queryOptions.attributes = attributes;
+                queryOptions.group = modelAttributes; // Group by all non-pk fields
+            }
+
+            console.log(queryOptions)
+    
+            // Fetch records based on query options
+            returnedData = await currentModel.findAll(queryOptions);
+            return returnedData;
+    
         } catch (error) {
-            // Sequelize-specific errors
-            if (error instanceof sequelize.ValidationError) {
+            // Handle specific Sequelize errors
+            const SequelizeLib = require('sequelize');
+    
+            if (error instanceof SequelizeLib.ValidationError) {
                 console.error("Validation Error: ", error.errors);
                 throw new Error("Validation failed. Check your input data.");
             }
-
-            if (error instanceof sequelize.DatabaseError) {
+    
+            if (error instanceof SequelizeLib.DatabaseError) {
                 console.error("Database Error: ", error.message);
                 throw new Error("A database error occurred. Please try again later.");
             }
-
-            // Other errors
+    
+            // Handle unexpected errors
             console.error("Unexpected Error: ", error.message);
             throw new Error("An unexpected error occurred: " + error.message);
         }
     }
     
-
+    
     /**
      * Update a record based on relative dataObjects properties.
      * @param {Object} dataObject - relative object based on calling service.

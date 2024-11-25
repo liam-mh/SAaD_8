@@ -4,23 +4,39 @@ import moment from 'moment'
 const mediaFrontEndService = require('../services/storefront/mediaFrontEndService');
 const emailFrontEndService = require('../services/notification/emailFrontEndService');
 const branchFrontEndService = require('../services/storefront/branchFrontEndService')
+const mediaHistoryFrontEndService = require('../services/storefront/mediaHistoryFrontEndService');
 
 const AccountPage = () => {
   useEffect(() => {
     const fetchMedia = async () => {
       try {
-        
-        const media = await mediaFrontEndService.get('/readRecords', { fields: {}, allFlag: true });
-
-        console.log(media.data); 
-
+        const mediaCatalog = await mediaFrontEndService.get('/readRecords', { Title: "The Hobbit", Type: "Book" }, false, false);
+  
+        //Promise.all fetches availability concurrently
+        const availabilityResults = await Promise.all(
+          mediaCatalog.data.map(async (media) => {
+          
+            const availability = await mediaHistoryFrontEndService.get('/readRecords', { MediaID: media.MediaID });
+            const activeStatus = availability?.data?.[0]?.Active ?? "Unavailable";
+  
+            return { media, activeStatus }; // Return combined result
+          })
+        );
+  
+        console.log("Final Results:", availabilityResults); 
       } catch (error) {
-        console.error('Error fetching media records:', error); 
+        console.error('Error fetching media records:', error);
+      }
+      try {
+        const topMedia = await mediaFrontEndService.fetchTopMediaByType();
+        console.log(topMedia);
+      } catch (error) {
+        console.error('Error fetching media records:', error);
       }
     };
-
-    fetchMedia(); 
+    fetchMedia();
   }, []); 
+  
 
   // Function to send an email
   const sendWelcomeEmail = async () => {

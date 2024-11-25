@@ -43,10 +43,14 @@ const handleRoutes = (router, serviceName, resources) => {
 
         router.get(`/${resource}/readRecords`, async (req, res) => {
             try {
-                const { fields, allFlag } = req.query;
+
+                const { fields, allFlag, uniqueFlag } = req.query;
                 const parsedFields = JSON.parse(fields);
                 const parsedAllFlag = allFlag === 'true';
-                const records = await controllerInstance.readRecords(parsedFields, parsedAllFlag);
+                const parsedUniqueFlag = uniqueFlag === 'true';
+                console.log(parsedFields)
+
+                const records = await controllerInstance.readRecords(parsedFields, parsedAllFlag, parsedUniqueFlag);
                 res.status(200).json({ message: 'Records retrieved successfully', data: records });
             } catch (error) {
                 console.error(`Error reading records for ${resource}:`, error);
@@ -86,6 +90,17 @@ const handleRoutes = (router, serviceName, resources) => {
             } catch (error) {
                 console.error(`Error deleting record for ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to delete record', error: error.message });
+            }
+        });
+
+        //media specific
+        router.get(`/${resource}/getTopMediaByType`, async (req, res) => {
+            try {
+                const topMedia = await controllerInstance.handleGetTopMediaByType();
+                res.status(200).json({ message: 'Top media retrieved successfully', data: topMedia });
+            } catch (error) {
+                console.error(`Error fetching top media by type for ${resource}:`, error);
+                res.status(500).json({ message: 'Failed to retrieve top media', error: error.message });
             }
         });
     });

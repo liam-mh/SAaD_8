@@ -37,14 +37,15 @@ class Service {
      * @param {Array} fieldIdentifiers - Array of field identifiers.
      * @returns 
      */
-    readRecordsByQuery(fieldIdentifiers, allFlag) {
+    readRecordsByQuery(fieldIdentifiers, allFlag, uniqueFlag) {
         
-        if(allFlag){
-            return this.dbHandler.readByQuery("*");
+        if(allFlag && !uniqueFlag){
+            return this.dbHandler.readByQuery({}, allFlag, uniqueFlag);
         }
 
         this.object.mapObject(fieldIdentifiers);
-        return this.dbHandler.readByQuery(this.object);
+
+        return this.dbHandler.readByQuery(this.object, allFlag, uniqueFlag);
     }
 
     /**
