@@ -3,7 +3,7 @@ const MediaHistoryModel = require("./mediaHistoryModel");
 
 class MediaHistoryDbHandler extends DbHandler{
     constructor(){
-        super("MediaHistory", "HistoryID", MediaHistoryModel);
+        super("HistoryID", MediaHistoryModel);
     }
 }
 
