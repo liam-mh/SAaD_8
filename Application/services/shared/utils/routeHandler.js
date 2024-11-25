@@ -51,7 +51,7 @@ const handleRoutes = (router, serviceName, resources) => {
                 const records = await controllerInstance.readRecords(parsedFields, parsedUniqueFlag);
                 res.status(200).json({ message: 'Records retrieved successfully', data: records, status: res.status });
             } catch (error) {
-                console.error(`Error reading records for ${resource}:`, error);
+                console.error(`Error reading records from ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to retrieve records', error: error.message, status: res.status });
             }
         });
@@ -61,7 +61,7 @@ const handleRoutes = (router, serviceName, resources) => {
                 const result = await controllerInstance.createRecord(req.body);
                 res.status(201).json({ message: 'Record created successfully', data: result });
             } catch (error) {
-                console.error(`Error creating record for ${resource}:`, error);
+                console.error(`Error creating record in ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to create record', error: error.message });
             }
         });
@@ -71,7 +71,7 @@ const handleRoutes = (router, serviceName, resources) => {
                 const result = await controllerInstance.updateRecord(req.body);
                 res.status(200).json({ message: 'Record updated successfully', result });
             } catch (error) {
-                console.error(`Error updating record for ${resource}:`, error);
+                console.error(`Error updating record in ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to update record', error: error.message });
             }
         });
@@ -86,7 +86,7 @@ const handleRoutes = (router, serviceName, resources) => {
                     res.status(404).json({ message: 'Record not found' });
                 }
             } catch (error) {
-                console.error(`Error deleting record for ${resource}:`, error);
+                console.error(`Error deleting record in ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to delete record', error: error.message });
             }
         });
@@ -107,7 +107,7 @@ const handleRoutes = (router, serviceName, resources) => {
                     status: res.statusCode // Using `res.statusCode` as the status has already been set
                 });
             } catch (error) {
-                console.error(`Error fetching autocomplete results for ${resource}:`, error);
+                console.error(`Error fetching autocomplete results from ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to retrieve autocomplete results', error: error.message });
             }
         });
@@ -116,13 +116,24 @@ const handleRoutes = (router, serviceName, resources) => {
         //media specific
         router.get(`/${resource}/fetchMediaByTypeAndLimit`, async (req, res) => {
             try {
-                const topMedia = await controllerInstance.handleGetTopMediaByTypeAndLimit();
-                res.status(200).json({ message: 'Top media retrieved successfully', data: topMedia });
+                const carouselMedia = await controllerInstance.handleMediaByTypeAndLimit();
+                res.status(200).json({ message: 'Carousel media retrieved successfully', data: carouselMedia });
             } catch (error) {
-                console.error(`Error fetching top media by type for ${resource}:`, error);
-                res.status(500).json({ message: 'Failed to retrieve top media', error: error.message });
+                console.error(`Error fetching carousel media from ${resource}:`, error);
+                res.status(500).json({ message: 'Failed to retrieve carousel media', error: error.message });
             }
         });
+
+        router.get(`/${resource}/fetchTopFive`, async (req, res) => {
+            try {
+                const topFive = await controllerInstance.handleMediaTopFive();
+                res.status(200).json({ message: 'Top five media retrieved successfully', data: topFive });
+            } catch (error) {
+                console.error(`Error fetching top five media from ${resource}:`, error);
+                res.status(500).json({ message: 'Failed to retrieve top five media', error: error.message });
+            }
+        });
+
     });
 };
 

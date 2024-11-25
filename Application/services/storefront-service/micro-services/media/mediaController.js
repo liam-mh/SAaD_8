@@ -8,8 +8,12 @@ class MediaController extends Controller {
         this.service = service;
     }
 
-    async handleGetTopMediaByTypeAndLimit(){
-        return this.service.fetchTopMediaByType();
+    async handleMediaByTypeAndLimit(){
+        return this.service.fetchMediaByTypeAndLimit();
+    }
+
+    async handleMediaTopFive(){
+        return this.service.fetchMediaTopFive();
     }
 
 }

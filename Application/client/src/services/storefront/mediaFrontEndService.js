@@ -49,13 +49,15 @@ class MediaFrontEndService extends FrontEndService {
     }
   };
 
-  topFive = async () => {
-    const url = `${this.baseRoute}/topFive`
+  fetchTopFive = async () => {
+    const url = `${this.baseRoute}/fetchTopFive`
     try{
       const response = await fetchFromApiGateway(url, { method: "GET"});
+      console.log("response: ", response);
       return response.data
-    }catch{
-      
+    }catch (error) {
+      console.error("Error fetching top media by type:", error);
+      return [];
     }
   };
 }

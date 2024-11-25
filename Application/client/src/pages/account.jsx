@@ -27,8 +27,8 @@ const AccountPage = () => {
         //   }
         // });
 
-        const catalog = await mediaFrontEndService.get('/readRecords', { Title: "The Hobbit", Type: "Book" }, false);
-        console.log(catalog)
+        // const catalog = await mediaFrontEndService.get('/readRecords', { Title: "The Hobbit", Type: "Book" }, false);
+        // console.log(catalog)
         //Promise.all fetches availability concurrently
         // const availabilityResults = await Promise.all(
         //   catalog.data.map(async (media) => {
@@ -48,8 +48,21 @@ const AccountPage = () => {
         console.error("Error fetching media records:", error);
       }
       try {
-        //const topMedia = await mediaFrontEndService.fetchMediaByTypeAndLimit();
-        //console.log(topMedia);
+        // const topMedia = await mediaFrontEndService.fetchMediaByTypeAndLimit();
+        // console.log(topMedia);
+      } catch (error) {
+        console.error("Error fetching media records:", error);
+      }
+      try {
+        // const topFive = await mediaFrontEndService.fetchTopFive();
+        // console.log(topFive)
+
+      } catch (error) {
+        console.error("Error fetching media records:", error);
+      }
+      try {
+       
+
       } catch (error) {
         console.error("Error fetching media records:", error);
       }
