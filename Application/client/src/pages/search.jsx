@@ -41,13 +41,12 @@ const SearchPage = () => {
         });
     };
 
-    // Load initial media data
     useEffect(() => {
         async function loadData() {
             try {
                 if (preFilterType) {
                     console.log('PRE FILTER: ', preFilterType);
-                    const res = await mediaFrontEndService.get('/readRecords', { fields: {}, allFlag: true });
+                    const res = await mediaFrontEndService.get('/readRecords', { Type: preFilterType }, true );
                     setMedia(res.data);
                 } else {
                     console.log('NO FILTER');
