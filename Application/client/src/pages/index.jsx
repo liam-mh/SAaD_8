@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import WhatsNewCarousel from '../components/WhatsNewCarousel';
-import Container from 'react-bootstrap/esm/Container';
-import Row from 'react-bootstrap/esm/Row';
-import Col from 'react-bootstrap/esm/Col';
-import Button from 'react-bootstrap/esm/Button';
-import MediaCard from '../components/MediaCard';
 import MediaPagination from '../components/MediaPagination';
-
-import { getAll, getByDate, getRandomFive } from '../services/sampleDataFunctions';
+import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 
 const IndexPage = () => {
   const [allMedia, setAllMedia] = useState([]);
@@ -18,12 +13,12 @@ const IndexPage = () => {
   // Load media data
   useEffect(() => {
     async function loadData() {
-      const allItems = await getAll();
-      const recentItems = await getByDate();
-      const randomItems = await getRandomFive();
-      setAllMedia(allItems);
-      setRecentMedia(recentItems);
-      setRandomMedia(randomItems);
+      const allItems = await mediaFrontEndService.get('/readRecords', {});
+      const recentItems = await mediaFrontEndService.fetchMediaByTypeAndLimit();
+      const randomItems = await mediaFrontEndService.fetchTopFive();
+      setAllMedia(allItems.data);
+      setRecentMedia(recentItems.data);
+      setRandomMedia(randomItems.data);
     }
 
     loadData();

@@ -1,37 +1,15 @@
-const AbstractObject = require("../../../base-classes/abstractObject");
+const {Object} = require("../../../shared");
 
-class PaymentObject extends AbstractObject {
+class PaymentObject extends Object {
   constructor() {
     super();
-    this.paymentID = null;
-    this.paymentType = null;
-    this.paymentReason = null;
-    this.date = null;
-    this.memberID = null;
-    this.price = null;
-    this.employeeID = null;
-  }
-
-  /**
-   * @override
-   * @param {Array} arr - array to create a payment object from.
-   */
-  createObjectFromArray(arr) {
-    // Check if array has the expected length to assign to properties.
-    if (arr.length !== 6) {
-      throw new Error("Array must have exactly 6 elements.");
-    }
-
-    // Assign each element in the array to the respective property.
-    [
-      this.paymentID,
-      this.paymentType,
-      this.paymentReason,
-      this.date,
-      this.memberID,
-      this.price,
-      this.employeeID,
-    ] = arr;
+    this.PaymentID = null;
+    this.PaymentType = null;
+    this.PaymentReason = null;
+    this.Date = null;
+    this.MemberID = null;
+    this.Price = null;
+    this.EmployeeID = null;
   }
 }
 

@@ -17,6 +17,10 @@ const DB_NAME = process.env.DB_NAME;
 const DB_PORT = process.env.DB_PORT;
 const SSL_CA_PATH = process.env.SSL_CA_PATH;
 
+// Notification Service Configurations
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
+
 // Optional: Debugging logs
 // console.log("FRONTEND_PORT:", FRONTEND_PORT);
 // console.log("API_GATEWAY_PORT:", API_GATEWAY_PORT);
@@ -32,6 +36,7 @@ const SSL_CA_PATH = process.env.SSL_CA_PATH;
 // console.log("DB_PORT:", DB_PORT);
 // console.log("SSL_CA_PATH:", SSL_CA_PATH);
 
+
 module.exports = {
     FRONTEND_PORT,
     FRONTEND_ORIGIN: `http://localhost:${FRONTEND_PORT}`,
@@ -40,6 +45,7 @@ module.exports = {
     ACCOUNT_SERVICE_PORT,
     ACCOUNT_SERVICE_API: `http://localhost:${ACCOUNT_SERVICE_PORT}/api`,
     NOTIFICATION_SERVICE_PORT,
+    NOTIFICATION_SERVICE_API: `http://localhost:${NOTIFICATION_SERVICE_PORT}/api`,
     PROCUREMENT_SERVICE_PORT,
     STOREFRONT_SERVICE_PORT,
     STOREFRONT_SERVICE_API: `http://localhost:${STOREFRONT_SERVICE_PORT}/api`, 
@@ -48,5 +54,7 @@ module.exports = {
     DB_PASSWORD,
     DB_NAME,
     DB_PORT,
-    SSL_CA_PATH
+    SSL_CA_PATH,
+    EMAIL_USER,
+    EMAIL_PASS
 };

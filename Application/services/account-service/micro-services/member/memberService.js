@@ -1,4 +1,4 @@
-const Service = require("../../../base-classes/service");
+const {Service} = require("../../../shared");
 const MemberDbHandler = require("../../../account-service/micro-services/member/memberDbHandler");
 const MemberObject = require("./memberObject");
 
@@ -11,3 +11,5 @@ class MemberService extends Service {
 }
 
 module.exports = MemberService;
+
+

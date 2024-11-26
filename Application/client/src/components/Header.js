@@ -1,12 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { Container, Nav, Form, Button, Row, Col } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
+import DropdownMenu from './DropdownMenu';
 
 function Header() {
   const { basket } = useContext(SessionContext) || {}; 
@@ -16,11 +12,17 @@ function Header() {
   const location = useLocation();
   const headerClass = 
     location.pathname === '/' || 
-    location.pathname === '/help' || 
+    location.pathname === '/help' ||
+    location.pathname === '/checkout' || 
     location.pathname.startsWith('/employee') 
     ? 'header mb-0' 
     : 'header';
-  
+
+  const [searchText, setSearchText] = useState('');
+  useEffect(() => {
+    setSearchText('');
+  }, [location]);
+
   return (
     <header className={headerClass}>
       <Container fluid>
@@ -50,9 +52,11 @@ function Header() {
           </Col>
           <Col className="d-flex justify-content-end">
             <Form className="d-flex align-items-center">
-              <Form.Control type="text" placeholder="Search products..." className="form-secondary" style={{borderRadius: '5px 0 0 5px', width: '300px'}} />
-              <Button className="button-secondary me-2" style={{borderRadius: '0 5px 5px 0'}}>Search</Button>
-              <Button className="button-secondary" style={{borderRadius: '5px 0 0 5px'}} as={Link} to="/basket">
+              <DropdownMenu searchText={searchText} setSearchText={setSearchText} /> 
+              <Link to="/search" state={{ searchTerm: searchText }}>
+                <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }}>Search</Button>
+              </Link>
+              <Button className="button-secondary" style={{ borderRadius: '5px 0 0 5px' }} as={Link} to="/basket">
                 Basket
               </Button>
               <span className='highlight-primary' style={{ borderRadius: '0 5px 5px 0' }}>{basketNum || '0'}</span>
@@ -64,12 +68,12 @@ function Header() {
         <Row>
           <Col>
             <Nav className="justify-content-start">
-              <Nav.Link className="nav-link-secondary" href="#home">Books</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#journals">Journals</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#periodicals">Periodicals</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#cds">CDs</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#dvds">DVDs</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#games">Games</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Book'}}>Books</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Journal'}}>Journals</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Periodical'}}>Periodicals</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'CD' }}>CDs</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'DVD' }}>DVDs</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Game' }}>Games</Nav.Link>
             </Nav>
           </Col>
           <Col>

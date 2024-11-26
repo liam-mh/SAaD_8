@@ -1,29 +1,76 @@
-import React, { useEffect, useState } from 'react';
-import { getMembers } from '../services/memberService';
-import LoginCard from '../components/LoginCard';
+import { useEffect } from "react";
+import LoginCard from "../components/LoginCard";
+import moment from "moment";
+const mediaFrontEndService = require("../services/storefront/mediaFrontEndService");
+const emailFrontEndService = require("../services/notification/emailFrontEndService");
+const branchFrontEndService = require("../services/storefront/branchFrontEndService");
+const mediaHistoryFrontEndService = require("../services/storefront/mediaHistoryFrontEndService");
+const employeeFrontEndService = require("../services/account/employeeFrontEndService")
 
 const AccountPage = () => {
-  const [allMembers, setAll] = useState([]);
-  const [isLoading, setIsLoading] = useState(false); // Track loading state
-  const [error, setError] = useState(null); // Track error
-
   useEffect(() => {
-    const loadData = async () => {
-      setIsLoading(true); // Set loading state to true
-      setError(null); // Clear any previous errors
-
+    const fetchMedia = async () => {
       try {
-        const allItems = await getMembers([], true);
-        setAll(Array.isArray(allItems.data) ? allItems.data : []);
+
+        // const catalog = await mediaFrontEndService.get("/readRecords", {Title: "The Hobbit", Type: "Book"}, ); //Outputs media
+        // console.log(catalog.data)
+
+        // const availabilityResults = await Promise.all(
+        //   catalog.data.map(async (media) => {
+        //     const availability = await mediaHistoryFrontEndService.get(
+        //       "/readRecords",
+        //       { MediaID: media.MediaID } 
+        //     );
+            
+        //     const activeStatus =
+        //       availability.data?.[0]?.Active === 1
+        //         ? "Active"
+        //         : `Unavailable (Received: ${availability?.[0]?.Active})`;
+
+        //     return { media, activeStatus }; 
+        //   })
+        //  );
+        // //apend to media
+        // console.log("Final Results:", availabilityResults);
+
       } catch (error) {
-        setError(error.message || 'Failed to fetch data'); // Set error message
-      } finally {
-        setIsLoading(false); // Set loading state to false after all tasks
+        console.error("Error fetching media records:", error);
+      }
+      try {
+        const topMedia = await mediaFrontEndService.fetchMediaByTypeAndLimit();
+        console.log(topMedia.data);
+      } catch (error) {
+        console.error("Error fetching media records:", error);
+      }
+      try {
+
+      } catch (error) {
+        console.error("Error fetching media records:", error);
+      }
+      try {
+      } catch (error) {
+        console.error("Error fetching media records:", error);
       }
     };
-
-    loadData();
+    fetchMedia();
   }, []);
+
+  // Function to send an email
+  const sendWelcomeEmail = async () => {
+    try {
+      const response = await emailFrontEndService.post("/send", {
+        to: "nicklinguy@yahoo.com", // Replace with recipient's email
+        subject: "Welcome to Our Service!",
+        message: "Thank you for signing up. Enjoy your stay!",
+      });
+
+      console.log("Email sent successfully:", response);
+      alert("Welcome email sent!");
+    } catch (error) {
+      console.error("Error sending email:", error);
+      alert("Failed to send email. Please try again later.");
+    }
+  };
 
   return (
     <>
@@ -31,15 +78,11 @@ const AccountPage = () => {
 
       <h1>Account Management</h1>
       <h2 id="account">My Account</h2>
-      <h2 id="subscription">My Subcription</h2>
+      <h2 id="subscription">My Subscription</h2>
       <h2 id="library">My Library</h2>
       <h2 id="wishlist">My Wishlist</h2>
-
-      <h1>TEST FOR API SERVICE</h1>
-      {isLoading && <p>Loading data...</p>}
-      {error && <p>Error: {error}</p>}
-      {allMembers.length > 0 && allMembers.map((member) => (member.FirstName))}
-      {!isLoading && !error && allMembers.length === 0 && <p>No data available.</p>}
+      {/* Add a button to trigger email sending */}
+      <button onClick={sendWelcomeEmail}>Send Welcome Email</button>
     </>
   );
 };
