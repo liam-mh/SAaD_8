@@ -29,11 +29,10 @@ class FrontEndService {
     const url = `${this.baseRoute}${path}?${queryString}`;
 
     try {
-      const result = await fetchFromApiGateway(url, {
+      return await fetchFromApiGateway(url, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
-      return result.data;
     } catch (error) {
       console.error(`Error fetching data from ${url}:`, error);
       throw error;
@@ -111,11 +110,10 @@ class FrontEndService {
   async autoComplete(path, chars) {
     const url = `${this.baseRoute}${path}?chars=${encodeURIComponent(chars)}`;
     try {
-      const result = await fetchFromApiGateway(url, {
+      return await fetchFromApiGateway(url, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
-      return result.data;
     } catch (error) {
       console.error(`Error fetching autocomplete data from ${url}:`, error);
       throw error;

@@ -5,6 +5,7 @@ const mediaFrontEndService = require("../services/storefront/mediaFrontEndServic
 const emailFrontEndService = require("../services/notification/emailFrontEndService");
 const branchFrontEndService = require("../services/storefront/branchFrontEndService");
 const mediaHistoryFrontEndService = require("../services/storefront/mediaHistoryFrontEndService");
+const employeeFrontEndService = require("../services/account/employeeFrontEndService")
 
 const AccountPage = () => {
   useEffect(() => {
@@ -37,31 +38,33 @@ const AccountPage = () => {
 
         // console.log(catalog)
 
-        // const catalog = await mediaFrontEndService.get("/readRecords");
+        // const catalog = await mediaFrontEndService.get("/readRecords"); //Outputs media
 
         // const availabilityResults = await Promise.all(
-        //   catalog.map(async (media) => {
+        //   catalog.data.map(async (media) => {
         //     const availability = await mediaHistoryFrontEndService.get(
         //       "/readRecords",
-        //       { MediaID: media.MediaID } // Fix here: use media.MediaID, not catalog.MediaID
+        //       { MediaID: media.MediaID } 
         //     );
-        //     // Check if availability is returned and has the Active field
+            
         //     const activeStatus =
-        //       availability?.[0]?.Active === 1
+        //       availability.data?.[0]?.Active === 1
         //         ? "Active"
         //         : `Unavailable (Received: ${availability?.[0]?.Active})`;
 
-        //     console.log("Active Status:", activeStatus);
-        //     return { media, activeStatus }; // Return combined result
+        //     return { media, activeStatus }; 
         //   })
-        // );
-
+        //  );
+        // //apend to media
         // console.log("Final Results:", availabilityResults);
 
-        const availability = await mediaHistoryFrontEndService.get(
-          "/readRecords",
-        );
-        console.log("Availability:", availability);
+        const branches = await employeeFrontEndService.get('/readRecords');
+        console.log(branches);
+
+        // const availability = await mediaHistoryFrontEndService.get(
+        //   "/readRecords",
+        // );
+        // console.log("Availability:", availability);
 
         // const mediaCatalog = await mediaFrontEndService.get(
         //   "/readRecords",
