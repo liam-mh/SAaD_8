@@ -10,7 +10,7 @@ function BranchStockCard({ media, onAddToBasket }) {
 
     useEffect(() => {
         async function loadData() {
-            const branchData = await branchFrontEndService.get('/readRecords', { BranchID: media.BranchID }, true );
+            const branchData = await branchFrontEndService.get('/readRecords', { BranchID: media.BranchID });
             setCardBranch(branchData.data[0]);
         }
     

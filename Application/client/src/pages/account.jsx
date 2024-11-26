@@ -11,34 +11,9 @@ const AccountPage = () => {
   useEffect(() => {
     const fetchMedia = async () => {
       try {
-        // const autocomplete = await mediaFrontEndService.autoComplete(
-        //   "/autocomplete",
-        //   "The"
-        // );
 
-        //   for (const item of autocomplete) {
-        //     // autocomplete is already an array of objects
-        //     for (const [key, value] of Object.entries(item)) {
-        //       // Only check fields listed in autoCompleteQueryFields
-        //       if (
-        //         mediaFrontEndService.autoCompleteQueryFields.includes(key) &&
-        //         typeof value === "string" &&
-        //         value.toLowerCase().includes("the")
-        //       ) {
-        //         console.log(`  Key: ${key}, Value: ${value}`);
-        //       }
-        //     }
-        //   }
-
-        // const catalog = await mediaFrontEndService.get(
-        //   "/readRecords",
-        //   { Title: "The Hobbit", Type: "Book" },
-        //   false
-        // );
-
-        // console.log(catalog)
-
-        // const catalog = await mediaFrontEndService.get("/readRecords"); //Outputs media
+        // const catalog = await mediaFrontEndService.get("/readRecords", {Title: "The Hobbit", Type: "Book"}, ); //Outputs media
+        // console.log(catalog.data)
 
         // const availabilityResults = await Promise.all(
         //   catalog.data.map(async (media) => {
@@ -58,32 +33,17 @@ const AccountPage = () => {
         // //apend to media
         // console.log("Final Results:", availabilityResults);
 
-        const branches = await employeeFrontEndService.get('/readRecords');
-        console.log(branches);
-
-        // const availability = await mediaHistoryFrontEndService.get(
-        //   "/readRecords",
-        // );
-        // console.log("Availability:", availability);
-
-        // const mediaCatalog = await mediaFrontEndService.get(
-        //   "/readRecords",
-        //   {},
-        //   false
-        // );
-        // console.log(mediaCatalog);
       } catch (error) {
         console.error("Error fetching media records:", error);
       }
       try {
-        // const topMedia = await mediaFrontEndService.fetchMediaByTypeAndLimit();
-        // console.log(topMedia);
+        const topMedia = await mediaFrontEndService.fetchMediaByTypeAndLimit();
+        console.log(topMedia.data);
       } catch (error) {
         console.error("Error fetching media records:", error);
       }
       try {
-        // const topFive = await mediaFrontEndService.fetchTopFive();
-        // console.log(topFive);
+
       } catch (error) {
         console.error("Error fetching media records:", error);
       }

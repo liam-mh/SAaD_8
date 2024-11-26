@@ -1,7 +1,7 @@
-const dateFormatter = require('./dateFormatter');
+const formatDateFields = require('./dateFormatter');
 const handleRoutes = require('./routeHandler');
 
 module.exports = {
-    dateFormatter,
+    formatDateFields,
     handleRoutes
 }

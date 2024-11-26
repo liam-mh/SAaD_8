@@ -4,38 +4,53 @@ const sequelize = require('../../../../config/sequelize');
 
 class MediaDbHandler extends DbHandler {
   autoCompleteQueryFields = ["Author", "Genre", "Title", "Type"];
+  types = ["Book", "Journal", "CD", "Periodical", "DVD", "Game"];
 
   constructor() {
     super("MediaID", MediaModel);
   }
 
-  /**
-   * Gets The most recent media from each type field.
+   /**
+   * Gets the most recent 3 unique media from each type field.
    *
-   * @note could introduce a limit variable if we need some more flexibility.
-   * @returns
+   * @returns {Promise<Object[]>} An array containing the most recent 3 unique media items from each type.
    */
-  async fetchMediaByTypeAndLimit() {
+   async fetchMediaByTypeAndLimit() {
     try {
-      const types = ["Book", "Journal", "CD", "Periodical", "DVD", "Game"];
       const results = [];
 
-      for (const type of types) {
-        const mediaItems = await MediaModel.findAll({
+      for (const type of this.types) {
+        // Fetch the most recent 3 unique media of the current type.
+        const mediaList = await MediaModel.findAll({
           where: { Type: type },
-          order: [["PublishDate", "DESC"]],
-          limit: 3,
+          attributes: [
+            'Title', 
+            'Author',
+            'Genre',
+            'PublishDate',
+            'Type'
+          ],
+          // Only fetch distinct records, by disregarding the primary key.
+          group: ['Type', 'Title', 'Author', 'Genre', 'PublishDate'],
+          order: [['PublishDate', 'DESC']], 
+          limit: 3, 
         });
 
-        results.push(...mediaItems);
+        // Push the result to the final array
+        if (mediaList && mediaList.length > 0) {
+          results.push(...mediaList);
+        }
       }
 
       return results;
     } catch (error) {
-      console.error("Error fetching media items:", error);
-      throw new Error("Error fetching media items.");
+      console.error("Error fetching media by type:", error);
+      throw error;
     }
   }
+
+  
+
 
   async fetchMediaTopFive() {
     try {

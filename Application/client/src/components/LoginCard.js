@@ -14,10 +14,7 @@ function LoginCard() {
     e.preventDefault(); 
 
     try {
-      const response = await memberFrontEndService.get('/readRecords', {
-        fields: { Email: inputEmail, Password: inputPassword },
-        allFlag: false,
-      });
+      const response = await memberFrontEndService.get('/readRecords', { Email: inputEmail, Password: inputPassword });
 
       if (response?.data) {
         const loggedInUser = response.data[0];
