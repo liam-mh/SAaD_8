@@ -109,6 +109,7 @@ class FrontEndService {
    */
   async autoComplete(path, chars) {
     const url = `${this.baseRoute}${path}?chars=${encodeURIComponent(chars)}`;
+    console.log(url);
     try {
       return await fetchFromApiGateway(url, {
         method: "GET",

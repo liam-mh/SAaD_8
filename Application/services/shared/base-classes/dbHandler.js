@@ -104,6 +104,7 @@ class DbHandler {
     if (!this.model) {
       throw new Error(`Model for table '${this.model.tableName}' not found.`);
     }
+    
 
     try {
       const queryOptions = {};

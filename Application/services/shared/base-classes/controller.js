@@ -46,7 +46,8 @@ class Contoller {
    * @param {Array} chars 
    */
   autoComplete(chars){
-    return this.service.autoComplete(chars);
+    const records = this.service.autoComplete(chars);
+    return formatDateFields(records);
   }
 
 

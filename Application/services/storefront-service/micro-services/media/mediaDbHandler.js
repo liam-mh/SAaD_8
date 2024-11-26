@@ -10,43 +10,46 @@ class MediaDbHandler extends DbHandler {
     super("MediaID", MediaModel);
   }
 
-  /**
-   * Gets The most recent media from each type field.
+   /**
+   * Gets the most recent 3 unique media from each type field.
    *
-   * @note could introduce a limit variable if we need some more flexibility.
-   * @returns
+   * @returns {Promise<Object[]>} An array containing the most recent 3 unique media items from each type.
    */
-  async fetchMediaByTypeAndLimit() {
+   async fetchMediaByTypeAndLimit() {
     try {
-      const selectedMedia = [];
-      const seenTitles = new Set();
-      const seenTypes = new Map(); 
-      const totalNeeded = this.types.length * 3; 
+      const results = [];
 
-      while (selectedMedia.length < totalNeeded) {
-        const randomMedia = await MediaModel.findOne({
-          order: [sequelize.fn('RAND')],
+      for (const type of this.types) {
+        // Fetch the most recent 3 unique media of the current type.
+        const mediaList = await MediaModel.findAll({
+          where: { Type: type },
+          attributes: [
+            'Title', 
+            'Author',
+            'Genre',
+            'PublishDate',
+            'Type'
+          ],
+          // Only fetch distinct records, by disregarding the primary key.
+          group: ['Type', 'Title', 'Author', 'Genre', 'PublishDate'],
+          order: [['PublishDate', 'DESC']], 
+          limit: 3, 
         });
 
-        if (
-          randomMedia &&
-          !seenTitles.has(randomMedia.Title) &&
-          (seenTypes.get(randomMedia.Type) || 0) < 3
-        ) {
-          selectedMedia.push(randomMedia);
-          seenTitles.add(randomMedia.Title);
-
-          // Update the count for this type
-          seenTypes.set(randomMedia.Type, (seenTypes.get(randomMedia.Type) || 0) + 1);
+        // Push the result to the final array
+        if (mediaList && mediaList.length > 0) {
+          results.push(...mediaList);
         }
       }
 
-      return selectedMedia;
+      return results;
     } catch (error) {
-      console.error("Error fetching media by type and limit:", error);
-      throw new Error("Error fetching media by type and limit.");
+      console.error("Error fetching media by type:", error);
+      throw error;
     }
   }
+
+  
 
 
   async fetchMediaTopFive() {
