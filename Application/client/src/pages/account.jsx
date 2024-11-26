@@ -84,8 +84,9 @@ const AccountPage = () => {
         console.error("Error fetching media records:", error);
       }
       try {
-        // const topFive = await mediaFrontEndService.fetchTopFive();
-        // console.log(topFive);
+        
+        const topFive = await mediaFrontEndService.fetchTopFive();
+        console.log(topFive);
       } catch (error) {
         console.error("Error fetching media records:", error);
       }
