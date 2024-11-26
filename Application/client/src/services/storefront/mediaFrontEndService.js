@@ -41,7 +41,7 @@ class MediaFrontEndService extends FrontEndService {
     try {
 
       const response = await fetchFromApiGateway(url, { method: "GET" });
-      return response.data
+      return response
 
     } catch (error) {
       console.error("Error fetching top media by type:", error);
@@ -52,9 +52,7 @@ class MediaFrontEndService extends FrontEndService {
   fetchTopFive = async () => {
     const url = `${this.baseRoute}/fetchTopFive`
     try{
-      const response = await fetchFromApiGateway(url, { method: "GET"});
-      console.log("response: ", response);
-      return response.data
+      return await fetchFromApiGateway(url, { method: "GET"});
     }catch (error) {
       console.error("Error fetching top media by type:", error);
       return [];
