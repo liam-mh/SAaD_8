@@ -43,7 +43,7 @@ const handleRoutes = (router, serviceName, resources) => {
 
         router.get(`/${resource}/readRecords`, async (req, res) => {
             try {
-
+                console.log('here')
                 const { fields, uniqueFlag } = req.query;
                 const parsedFields = JSON.parse(fields);
                 const parsedUniqueFlag = uniqueFlag === 'true';

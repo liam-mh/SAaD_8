@@ -15,35 +15,60 @@ const AccountPage = () => {
         //   "The"
         // );
 
-        // autocomplete.data.forEach((item, index) => {
-        //   for (const [key, value] of Object.entries(item)) {
-        //     // Only check fields listed in autoCompleteQueryFields : mediaFrontEnd Data Variable.
-        //     if (
-        //       mediaFrontEndService.autoCompleteQueryFields.includes(key) &&
-        //       value.toLowerCase().includes("the")
-        //     ) {
-        //       console.log(`  Key: ${key}, Value: ${value}`);
+        //   for (const item of autocomplete) {
+        //     // autocomplete is already an array of objects
+        //     for (const [key, value] of Object.entries(item)) {
+        //       // Only check fields listed in autoCompleteQueryFields
+        //       if (
+        //         mediaFrontEndService.autoCompleteQueryFields.includes(key) &&
+        //         typeof value === "string" &&
+        //         value.toLowerCase().includes("the")
+        //       ) {
+        //         console.log(`  Key: ${key}, Value: ${value}`);
+        //       }
         //     }
         //   }
-        // });
 
-        // const catalog = await mediaFrontEndService.get('/readRecords', { Title: "The Hobbit", Type: "Book" }, false);
+        // const catalog = await mediaFrontEndService.get(
+        //   "/readRecords",
+        //   { Title: "The Hobbit", Type: "Book" },
+        //   false
+        // );
+
         // console.log(catalog)
-        //Promise.all fetches availability concurrently
+
+        // const catalog = await mediaFrontEndService.get("/readRecords");
+
         // const availabilityResults = await Promise.all(
-        //   catalog.data.map(async (media) => {
+        //   catalog.map(async (media) => {
+        //     const availability = await mediaHistoryFrontEndService.get(
+        //       "/readRecords",
+        //       { MediaID: media.MediaID } // Fix here: use media.MediaID, not catalog.MediaID
+        //     );
+        //     // Check if availability is returned and has the Active field
+        //     const activeStatus =
+        //       availability?.[0]?.Active === 1
+        //         ? "Active"
+        //         : `Unavailable (Received: ${availability?.[0]?.Active})`;
 
-        //     const availability = await mediaHistoryFrontEndService.get('/readRecords', { MediaID: media.MediaID });
-        //     const activeStatus = availability?.data?.[0]?.Active ?? "Unavailable";
-
-        //      return { media, activeStatus }; // Return combined result
+        //     console.log("Active Status:", activeStatus);
+        //     return { media, activeStatus }; // Return combined result
         //   })
         // );
 
-        //console.log("Final Results:", availabilityResults);
+        // console.log("Final Results:", availabilityResults);
 
-        //const mediaCatalog = await mediaFrontEndService.get('/readRecords', { }, false);
-        //console.log(mediaCatalog.data)
+        const availability = await mediaHistoryFrontEndService.get(
+          "/readRecords",
+        );
+        console.log("Availability:", availability);
+
+        // const mediaCatalog = await mediaFrontEndService.get(
+        //   "/readRecords",
+        //   {},
+        //   false
+        // );
+        // console.log(mediaCatalog);
       } catch (error) {
         console.error("Error fetching media records:", error);
       }
@@ -55,14 +80,11 @@ const AccountPage = () => {
       }
       try {
         // const topFive = await mediaFrontEndService.fetchTopFive();
-        // console.log(topFive)
-
+        // console.log(topFive);
       } catch (error) {
         console.error("Error fetching media records:", error);
       }
       try {
-       
-
       } catch (error) {
         console.error("Error fetching media records:", error);
       }
