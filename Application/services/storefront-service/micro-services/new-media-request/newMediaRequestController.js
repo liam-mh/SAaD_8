@@ -1,4 +1,4 @@
-const Controller = require("../../../base-classes/controller");
+const {Controller} = require("shared");
 const NewMediaRequestService = require("./newMediaRequestService");
 
 class NewMediaRequestController extends Controller {

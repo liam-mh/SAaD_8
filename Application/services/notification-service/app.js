@@ -1,14 +1,9 @@
 const express = require('express');
-const routes = require('./routes'); 
-const config = require('../../config/env');
+const emailRoutes = require('./routes/email');
 const app = express();
 
-app.use(express.json()); 
-app.use('/api', routes); 
+app.use(express.json());
+app.use('/api/email', emailRoutes);
 
-const PORT = config.NOTIFICATION_SERVICE_PORT;
-
-app.listen(PORT, () => {
-  console.log(`Notification Service running on port ${PORT}`);
-});
-
+const PORT = process.env.NOTIFICATION_SERVICE_PORT || 4002;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

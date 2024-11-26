@@ -1,16 +1,16 @@
-const Object = require("../../../base-classes/object");
+const {Object} = require("shared");
 
 class MediaHistoryObject extends Object{
     constructor(){
         super();
-        this.historyID = null;
-        this.mediaID = null;
-        this.branchID = null;
-        this.employeeID = null;
-        this.active = null;
-        this.rentStart = null;
-        this.rentEnd = null;
-        this.actualReturn = null;
+        this.HistoryID = null;
+        this.MediaID = null;
+        this.BranchID = null;
+        this.EmployeeID = null;
+        this.Active = null; 
+        this.RentStart = null;
+        this.RentEnd = null;
+        this.ActualReturn = null;
     }
 }
 

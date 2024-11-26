@@ -1,14 +1,14 @@
-const Object = require("../../../base-classes/object");
+const {Object} = require("shared");
 
 class WishlistObject extends Object{
     constructor(){
         super();
-        this.wishlistID = null;
-        this.memberID = null;
-        this.title = null;
-        this.type = null;
-        this.dateTime = null;
-        this.widhType = null;
+        this.WishlistID = null;
+        this.MemberID = null;
+        this.Title = null;
+        this.Type = null; //enum (same as others)
+        this.DateTime = null;
+        this.WishType = null;//enum 'Wishlist','Reservation'
     }
 }
 

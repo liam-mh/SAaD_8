@@ -1,11 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { Container, Nav, Form, Button, Row, Col } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
 import DropdownMenu from './DropdownMenu';
 
@@ -17,7 +12,8 @@ function Header() {
   const location = useLocation();
   const headerClass = 
     location.pathname === '/' || 
-    location.pathname === '/help' || 
+    location.pathname === '/help' ||
+    location.pathname === '/checkout' || 
     location.pathname.startsWith('/employee') 
     ? 'header mb-0' 
     : 'header';
@@ -26,7 +22,7 @@ function Header() {
   useEffect(() => {
     setSearchText('');
   }, [location]);
-  
+
   return (
     <header className={headerClass}>
       <Container fluid>
@@ -72,12 +68,12 @@ function Header() {
         <Row>
           <Col>
             <Nav className="justify-content-start">
-              <Nav.Link className="nav-link-secondary" href="#home">Books</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#journals">Journals</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#periodicals">Periodicals</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#cds">CDs</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#dvds">DVDs</Nav.Link>
-              <Nav.Link className="nav-link-secondary" href="#games">Games</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Book'}}>Books</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Journal'}}>Journals</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Periodical'}}>Periodicals</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'CD' }}>CDs</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'DVD' }}>DVDs</Nav.Link>
+              <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Game' }}>Games</Nav.Link>
             </Nav>
           </Col>
           <Col>

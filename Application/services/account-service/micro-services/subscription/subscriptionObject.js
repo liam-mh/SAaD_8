@@ -1,12 +1,12 @@
-const Object = require("../../../base-classes/object");
+const {Object} = require("../../../shared");
 
 class SubscriptionObject extends Object {
   constructor() {
     super();
-    this.subscriptionID = null;
-    this.tokenQuantity = null;
-    this.pricePerMonth = null;
-    this.overduePricePerDay = null;
+    this.SubscriptionID = null;
+    this.TokenQuantity = null;
+    this.PricePerMonth = null;
+    this.OverduePricePerDay = null;
   }
 }
 

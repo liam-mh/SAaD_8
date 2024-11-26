@@ -1,5 +1,5 @@
 const express = require('express');
-const handleRoutes = require('../../utils/routeHandler');
+const {handleRoutes} = require("shared");
 const router = express.Router();
 
 // Define resources for the account service

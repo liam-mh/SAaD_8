@@ -1,8 +1,9 @@
-const DbHandler = require("../../../base-classes/dbHandler");
+const {DbHandler} = require("../../../shared");
+const MemberModel = require("./memberModel")
 
 class MemberDbHandler extends DbHandler {
   constructor() {
-    super("member", "memberID");
+    super("MemberID", MemberModel);
   }
 }
 

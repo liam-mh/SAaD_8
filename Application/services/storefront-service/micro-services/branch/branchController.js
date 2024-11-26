@@ -1,4 +1,4 @@
-const Controller = require("../../../base-classes/controller");
+const {Controller} = require("shared");
 const BranchService = require("./branchService");
 
 class BranchController extends Controller {

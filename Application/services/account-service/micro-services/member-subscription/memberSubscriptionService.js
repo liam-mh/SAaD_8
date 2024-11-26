@@ -1,4 +1,4 @@
-const Service = require("../../../base-classes/service");
+const {Service} = require("../../../shared");
 const MemberSubscriptionDbHandler = require("./memberSubscriptionDbHandler");
 const MemberSubscriptionObject = require("./memberSubscriptionObject");
 

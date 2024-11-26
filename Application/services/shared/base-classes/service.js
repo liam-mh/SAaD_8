@@ -1,12 +1,8 @@
-/**
- *  Abstract Service class
- */
-
+//Base service class.
 const DbHandler = require("./dbHandler");
 
 class Service {
 
-    notificationService;
     /**
      * Constructor
      * @param {DbHandler} dbHandler - Specific database handler based on derived Service.
@@ -22,6 +18,10 @@ class Service {
     }
 
     // Common methods that all services can use
+
+    // ------------------------------------- Validation methods -----------------------------------------------
+
+    isEmpty = (obj) => Object.keys(obj).length === 0;
 
     // ------------------------------------- Create Methods ---------------------------------------------------
     /**
@@ -41,14 +41,25 @@ class Service {
      * @param {Array} fieldIdentifiers - Array of field identifiers.
      * @returns 
      */
-    readRecordsByQuery(fieldIdentifiers, allFlag) {
+    readRecordsByQuery(fieldIdentifiers={}, uniqueFlag=false) {
         
-        if(allFlag){
-            return this.dbHandler.readByQuery("*");
+        // Skip object mapping and just retrieve all records for the relevant table.
+        if(this.isEmpty(fieldIdentifiers) && !uniqueFlag){
+            return this.dbHandler.readByQuery();
         }
 
-        this.object.mapObject(fieldIdentifiers);
-        return this.dbHandler.readByQuery(this.object);
+        // Map to the relevant object.
+        //this.object.mapObject(fieldIdentifiers);
+
+        return this.dbHandler.readByQuery(fieldIdentifiers, uniqueFlag);
+    }
+
+    /**
+     * 
+     * @param {String} chars 
+     */
+    autoComplete(chars){
+        return this.dbHandler.autoComplete(chars);
     }
 
     /**

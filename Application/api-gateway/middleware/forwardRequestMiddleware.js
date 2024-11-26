@@ -9,8 +9,6 @@ const axios = require('axios');
  */
 const forwardRequest = (serviceApi, isRedirect = false) => {
     return async(req, res, next) => {
-        console.log('SERVICE API:', serviceApi);
-        console.log('ORIGINAL URL:', req.originalUrl);
         const forwardUrl = isRedirect ? redirectUrl(serviceApi, req.originalUrl) : serviceApi;
 
     try {
@@ -23,7 +21,7 @@ const forwardRequest = (serviceApi, isRedirect = false) => {
         
         res.status(response.status).json(response.data);
     } catch (error) {
-        //console.error(`Error forwarding request to ${serviceApi}:`, error);
+        console.error(`Error forwarding request to ${serviceApi}:`, error);
         const status = error.response ? error.response.status : 500;
         res.status(status).json({
             error: error.message,

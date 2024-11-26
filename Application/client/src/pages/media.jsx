@@ -6,53 +6,32 @@ import Col from 'react-bootstrap/esm/Col';
 import BranchStockCard from '../components/BranchStockCard';
 import NotificationBanner from '../components/NotificationBanner';
 import { useLocation } from 'react-router-dom';
-import { getByTitle } from '../services/sampleDataFunctions';
 const mediaFrontEndService = require('../services/storefront/mediaFrontEndService');
 
 
 const MediaPage = () => {
   const location = useLocation();
-  const { mediaType = "default-type", mediaTitle = "default-title" } = location.state || {};
+  const { mediaType, mediaTitle } = location.state || {};
   const [media, setMedia] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationText, setNotificationText] = useState('');
 
   useEffect(() => {
     async function loadData() {
-      const mediaItem = await getByTitle(mediaTitle);
-      if (mediaType) {
-        const filteredMedia = mediaItem.filter(item => item.Type === mediaType);
-        setMedia(filteredMedia); 
-      } else {
-        setMedia(mediaItem);
-      }
+      const allItems = await mediaFrontEndService.get('/readRecords', {Title: mediaTitle, Type: mediaType} , true);
+      setMedia(allItems.data);
     }
-  
+
     loadData();
   }, []);
 
   const mediaItem = media.length > 0 ? media[0] : null;
   const mediaArtwork = mediaItem ? mediaFrontEndService.generateImageSrc(mediaItem.Title, mediaItem.Type) : null;
 
-  const handleAddToBasket = (addedMediaTitle) => {
-    setNotificationText(addedMediaTitle);
+  const handleAddToBasket = () => {
+    setNotificationText(mediaItem.Title);
     setShowNotification(true);
   };
-
-  {/* Example Usage Branches */}
-  const exampleBranch1 = {
-    BranchID: '0001',
-    FirstLineAddress: '120 example road',
-    City: 'Sheffield',
-    Postcode: 'S10 ABC'
-  };
-  const exampleBranch2 = {
-    BranchID: '0002',
-    FirstLineAddress: '60 Test Drive',
-    City: 'Sheffield',
-    Postcode: 'S5 XYZ'
-  };
-  {/* END - Example Usage Branches */}
 
   return (
     <>
@@ -95,19 +74,19 @@ const MediaPage = () => {
                 </span>
               </Col>
             </Row>
-        
-            {/* Local Branch */}
-            <Row className='pt-3 g-0'>
-              <h3 id="stock">Stock At Local Branch</h3>
-              <BranchStockCard branch={exampleBranch1} media={mediaItem} onAddToBasket={handleAddToBasket} />
+            
+            <Row className="pt-3 g-0">
+              <h3 id="stock">Availability</h3>
+              {media.map((mediaItem, index) => (
+                <BranchStockCard 
+                  key={`${mediaItem.Title}-${mediaItem.BranchID}-${index}`} 
+                  media={mediaItem} 
+                  onAddToBasket={handleAddToBasket} 
+                />
+              ))}
             </Row>
 
-            {/* Suggested Branch */}
-            <Row className='pt-3 g-0'>
-              <h3 id="stock">Stock At Suggested Branches</h3>
-              <BranchStockCard branch={exampleBranch2} media={mediaItem} onAddToBasket={handleAddToBasket} />
-            </Row>
-
+            
           </Col>
         </Row>
       </Container>
