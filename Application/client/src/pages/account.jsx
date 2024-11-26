@@ -38,7 +38,7 @@ const AccountPage = () => {
 
         // console.log(catalog)
 
-        // const catalog = await mediaFrontEndService.get("/readRecords"); //Outputs media
+        //const catalog = await mediaFrontEndService.get("/readRecords"); //Outputs media
 
         // const availabilityResults = await Promise.all(
         //   catalog.data.map(async (media) => {
@@ -58,8 +58,10 @@ const AccountPage = () => {
         // //apend to media
         // console.log("Final Results:", availabilityResults);
 
-        const branches = await employeeFrontEndService.get('/readRecords');
-        console.log(branches);
+
+
+        //const branches = await branchFrontEndService.get('/readRecords', {MediaID: catalog.data[0]});
+        //console.log(branches);
 
         // const availability = await mediaHistoryFrontEndService.get(
         //   "/readRecords",
@@ -76,8 +78,8 @@ const AccountPage = () => {
         console.error("Error fetching media records:", error);
       }
       try {
-        // const topMedia = await mediaFrontEndService.fetchMediaByTypeAndLimit();
-        // console.log(topMedia);
+        const topMedia = await mediaFrontEndService.fetchMediaByTypeAndLimit();
+        console.log(topMedia);
       } catch (error) {
         console.error("Error fetching media records:", error);
       }

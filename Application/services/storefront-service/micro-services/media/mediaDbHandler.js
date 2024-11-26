@@ -4,6 +4,7 @@ const sequelize = require('../../../../config/sequelize');
 
 class MediaDbHandler extends DbHandler {
   autoCompleteQueryFields = ["Author", "Genre", "Title", "Type"];
+  types = ["Book", "Journal", "CD", "Periodical", "DVD", "Game"];
 
   constructor() {
     super("MediaID", MediaModel);
@@ -17,25 +18,36 @@ class MediaDbHandler extends DbHandler {
    */
   async fetchMediaByTypeAndLimit() {
     try {
-      const types = ["Book", "Journal", "CD", "Periodical", "DVD", "Game"];
-      const results = [];
+      const selectedMedia = [];
+      const seenTitles = new Set();
+      const seenTypes = new Map(); 
+      const totalNeeded = this.types.length * 3; 
 
-      for (const type of types) {
-        const mediaItems = await MediaModel.findAll({
-          where: { Type: type },
-          order: [["PublishDate", "DESC"]],
-          limit: 3,
+      while (selectedMedia.length < totalNeeded) {
+        const randomMedia = await MediaModel.findOne({
+          order: [sequelize.fn('RAND')],
         });
 
-        results.push(...mediaItems);
+        if (
+          randomMedia &&
+          !seenTitles.has(randomMedia.Title) &&
+          (seenTypes.get(randomMedia.Type) || 0) < 3
+        ) {
+          selectedMedia.push(randomMedia);
+          seenTitles.add(randomMedia.Title);
+
+          // Update the count for this type
+          seenTypes.set(randomMedia.Type, (seenTypes.get(randomMedia.Type) || 0) + 1);
+        }
       }
 
-      return results;
+      return selectedMedia;
     } catch (error) {
-      console.error("Error fetching media items:", error);
-      throw new Error("Error fetching media items.");
+      console.error("Error fetching media by type and limit:", error);
+      throw new Error("Error fetching media by type and limit.");
     }
   }
+
 
   async fetchMediaTopFive() {
     try {
