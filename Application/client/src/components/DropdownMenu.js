@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
-import { autoComplete } from '../services/sampleDataFunctions';
+import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 
 function DropdownMenu({ searchText, setSearchText }) {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -12,9 +12,9 @@ function DropdownMenu({ searchText, setSearchText }) {
     setSearchText(value);
 
     if (value.length >= 3) {
-      const results = await autoComplete(value);
-      setFilteredData(results);
-      setShowDropdown(results.length > 0);
+      const results = await mediaFrontEndService.autoComplete(value);
+      setFilteredData(results.data);
+      setShowDropdown(results.data.length > 0);
     } else {
       setFilteredData([]);
       setShowDropdown(false);

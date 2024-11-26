@@ -101,15 +101,13 @@ class FrontEndService {
 
   /**
    * Sends an autocomplete request with the provided search characters.
-   *
-   * @param {string} path - The API endpoint path.
    * @param {string} chars - The characters to search for in the autocomplete request.
    * @returns {Promise<Object>} - Resolves to the autocomplete results.
    * @throws {Error} - Throws an error if the API request fails.
    */
-  async autoComplete(path, chars) {
-    const url = `${this.baseRoute}${path}?chars=${encodeURIComponent(chars)}`;
-    console.log(url);
+
+  async autoComplete(chars) {
+    const url = `${this.baseRoute}/autoComplete?chars=${encodeURIComponent(chars)}`;
     try {
       return await fetchFromApiGateway(url, {
         method: "GET",
