@@ -32,7 +32,8 @@ class MediaFrontEndService extends FrontEndService {
   };
 
   /**
-   * Fetches the carousel media by type.
+   * Fetches the carousel media by type. Limit 3
+   * If needed can set param limit
    *
    * @returns {Promise<Array>} A promise that resolves to an array of top media items.
    */
