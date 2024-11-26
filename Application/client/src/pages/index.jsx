@@ -4,8 +4,6 @@ import WhatsNewCarousel from '../components/WhatsNewCarousel';
 import MediaPagination from '../components/MediaPagination';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 
-import { getRandomFive } from '../services/sampleDataFunctions';
-
 const IndexPage = () => {
   const [allMedia, setAllMedia] = useState([]);
   const [whatsNew, setRecentMedia] = useState([]);
