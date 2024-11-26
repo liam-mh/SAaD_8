@@ -2,5 +2,8 @@
     "name": "shared",
     "version": "1.0.0",
     "main": "index.js",
-    "private": true
+    "private": true,
+    "dependencies": {
+        "sequelize": "^6.37.5"
+    }
 }

@@ -55,6 +55,14 @@ class Service {
     }
 
     /**
+     * 
+     * @param {String} chars 
+     */
+    autoComplete(chars){
+        return this.dbHandler.autoComplete(chars);
+    }
+
+    /**
      * Reads and returns a single field matching the PK and column.
      * @param {Int} primaryKey - Primary key for the record.
      * @param {String} column - Column to be returned.

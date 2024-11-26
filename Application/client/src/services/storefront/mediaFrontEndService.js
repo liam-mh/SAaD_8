@@ -2,6 +2,14 @@ const FrontEndService = require("../frontEndService");
 const fetchFromApiGateway = require("../apiService");
 
 class MediaFrontEndService extends FrontEndService {
+
+  autoCompleteQueryFields = [
+    'Author',
+    'Genre',
+    'Title',
+    'Type'
+  ]
+
   constructor() {
     super("/storefront/media");
     this.baseRoute = "/storefront/media";
@@ -30,13 +38,24 @@ class MediaFrontEndService extends FrontEndService {
    */
   fetchMediaByTypeAndLimit = async () => {
     const url = `${this.baseRoute}/fetchMediaByTypeAndLimit`;
-    console.log('URL:   ',url);
     try {
 
       const response = await fetchFromApiGateway(url, { method: "GET" });
-      return response.data;
+      return response.data
 
     } catch (error) {
+      console.error("Error fetching top media by type:", error);
+      return [];
+    }
+  };
+
+  fetchTopFive = async () => {
+    const url = `${this.baseRoute}/fetchTopFive`
+    try{
+      const response = await fetchFromApiGateway(url, { method: "GET"});
+      console.log("response: ", response);
+      return response.data
+    }catch (error) {
       console.error("Error fetching top media by type:", error);
       return [];
     }

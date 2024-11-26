@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 const sequelize = require("../../../config/sequelize");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 /**
  * Base entity class.
@@ -50,7 +50,6 @@ class DbHandler {
     });
   }
 
- 
   /**
    * Creates a record in the relative table.
    * @param {Object} dataObject - Object relative to the calling service.
@@ -63,7 +62,7 @@ class DbHandler {
 
     // Prepare data for insertion
     const insertData = { ...dataObject };
-    delete insertData.MemberID; 
+    delete insertData.this.pk;
     if (Object.keys(insertData).length === 0) {
       throw new Error("No valid data provided for insertion.");
     }
@@ -159,7 +158,7 @@ class DbHandler {
     if (Object.keys(updateData).length === 0) {
       throw new Error("No valid data provided for update.");
     }
-    delete updateData.MemberID;
+    delete updateData.this.pk;
 
     // Only include non-null and defined fields
     const filteredUpdateData = {};
@@ -234,30 +233,26 @@ class DbHandler {
    * @throws {Error} - Throws an error if the input is invalid or the query fails.
    */
   async autoComplete(chars) {
-    
     try {
-      // Get all fields (attributes) from the model, excluding associations
-      const attributes = Object.keys(this.model.rawAttributes);
-
-      // Build WHERE clause: search all fields for a match
+      // Build WHERE clause: search all fields in LikeQueryFields for a Like match.
       const whereClause = {
-        [Op.or]: attributes.map((field) => ({
+        [Op.or]: this.autoCompleteQueryFields.map((field) => ({
           [field]: { [Op.like]: `%${chars}%` },
         })),
       };
-
-      // Perform the query
+  
       const results = await this.model.findAll({
         where: whereClause,
-        limit: 10, // Limit results for performance
+        limit: 10, // Limit the number of results
       });
-
+  
       return results;
     } catch (error) {
       console.error("Error performing autocomplete search:", error);
       throw new Error("Error searching for records");
     }
   }
+  
 
   /**
    * Closes the database connection.

@@ -1,5 +1,7 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize} = require('sequelize');
+const { Op } = require('sequelize');
 const dbConfig = require('../config/azure-db/dbConfig');
+
 
 // Create a connection to the database.
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
