@@ -1,44 +1,58 @@
 import React, { useEffect, useState, useContext } from 'react';
 import Row from 'react-bootstrap/esm/Row';
 import Col from 'react-bootstrap/esm/Col';
-import MediaPagination from '../components/MediaPagination';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import { Link } from 'react-router-dom';
 import { Container, Table, Button, Form } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
 import branchFrontEndService from '../services/storefront/branchFrontEndService';
 
+
 const EmployeeIndexPage = () => {
   const [searchMedia, setSearchMedia] = useState([]);
   const [searchPK, setSearchPK] = useState('');
   const [searchTitle, setSearchTitle] = useState('');
-  const { branches } = useContext(SessionContext) || {};
+  const { basket, setBasket, branches, setCheckout } = useContext(SessionContext) || {};
+  const [deliveryOptions, setDeliveryOptions] = useState(basket.map(() => 'collect'));
+  const [uniqueTitles, setUniqueTitles] = useState(false);
+  const [searchEmail, setSearchEmail] = useState('');
+  const [user, setUserDetails] = useState('');
 
   const today = new Date();
   const startDate = today.toLocaleDateString('en-GB').split('/').join('-');
 
-  // Load media data
-  useEffect(() => {
-    async function loadData() {
-      const searchItems = await mediaFrontEndService.get('/readRecords', { MediaID: searchPK });
-      setSearchMedia(searchItems.data);
+  const handleSearch = async () => {
+    try {
+        if (searchPK) {
+            const searchItems = await mediaFrontEndService.get('/readRecords', { MediaID: searchPK });
+            await getBranchInfo(searchItems.data);
+            setSearchPK('');
+            return console.log("Search by primary key successful.");
+        }
+        if (searchTitle) {
+            const searchItems = await mediaFrontEndService.get('/readRecords', { Title: searchTitle }, uniqueTitles);
+            await getBranchInfo(searchItems.data);
+            setSearchTitle('');
+            return console.log("Search by title successful.");
+        }
+        console.warn('No valid search parameters provided.');
     }
-
-    loadData();
-  }, [searchPK]);
-
-  useEffect(() => {
-    async function loadData() {
-      const searchItems = await mediaFrontEndService.get('/readRecords', { Title: searchTitle }, true);
-      setSearchMedia(searchItems.data);
+    catch (error) {
+        Console.error('Error during search: ', error);
     }
+  }
 
-    loadData();
-  }, [searchTitle]);
-
-  useEffect(() => {
-    
-  }, [])
+  const getBranchInfo = async (mediaItems) => {
+    const mediaWithBranches = await Promise.all(
+        mediaItems.map(async (media) => {
+            const branchResponse = await branchFrontEndService.get('/readRecords', { BranchID: media.BranchID });
+            const branchInfo = branchResponse.data[0];
+            return { ...media, branch: branchInfo };
+        })
+    );
+    setSearchMedia(mediaWithBranches);
+    console.log("Media with branches: ", mediaWithBranches);
+  }
 
   const handlePKInputChange = async (e) => {
     const value = e.target.value;
@@ -60,21 +74,72 @@ const EmployeeIndexPage = () => {
     
   };
 
-  async function getBranchInfo(branchID) {
-    const branchInfo = await branchFrontEndService.get('/readRecords', {BranchID: branchID })
-
-    return branchInfo.data;
+  const handleDeliveryChange = (index, value) => {
+    setDeliveryOptions((prevOptions) =>
+      prevOptions.map((option, i) => (i === index ? value : option))
+    );
   };
+
+  const handleCheckboxChange = (e) => {
+    setUniqueTitles(e.target.checked); // Update state when checkbox is toggled
+};
+
+const handleEmailInputChange = (e) => {
+    setSearchEmail(e.target.value);
+}
 
   return (
     <>
      <Container fluid="lg">
+     <Row><Col><br></br></Col></Row>
+        <Row>
+            <div className='content-panel'>
+                <Col className="justify-content-center">
+                    <h1>Enter user's email address</h1>
+                    <Form className="d-flex align-items-center">
+                    <div className="search-wrapper d-flex">
+                    <Form.Control
+                        type="text"
+                        placeholder="jane.doe@example.com"
+                        className="search-input"
+                        value={searchEmail}
+                        onChange={handleEmailInputChange}
+                    />
+                    <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }} onClick={ handleSearch }>Search</Button>
+                    </div>
+                    </Form>
+                </Col>
+                <br></br>
+                <Row>
+                  <Col>
+                    <span>
+                      <strong>Account Details</strong><br />
+                      Name: {[user.FirstName || 'Firstname', ' ', user.Surname || 'Surname']}<br />
+                      Email: {user.Email}
+                    </span>
+                    <br />
+                    <br />
+                    <span>
+                      <strong>Home Address</strong><br />
+                      {user.FirstLineAddress || 'First Line Address'}<br />
+                      {user.City || 'City'}<br />
+                      {user.Postcode || 'Postcode'}<br />
+                    </span>
+                  </Col>
+                  <Col style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+                    <Button className='button-primary-outline' as={Link} to='/account#account'>
+                      Edit Account
+                    </Button>
+                  </Col>
+                </Row>
+            </div>
+        </Row>
         <Row>
             <Row><Col><br></br></Col></Row>
-            <Col className="d-flex justify-content-center">
+            <Col className="justify-content-center">
+                <h1>Search by media ID</h1>
                 <Form className="d-flex align-items-center">
-                <div className="search-wrapper">
-                    <h1>Search by media ID</h1>
+                <div className="search-wrapper d-flex">
                     <Form.Control
                         type="text"
                         placeholder="Enter ID of item to be checked out..."
@@ -82,19 +147,30 @@ const EmployeeIndexPage = () => {
                         value={searchPK}
                         onChange={handlePKInputChange}
                     />
+                    <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }} onClick={ handleSearch }>Search</Button>
                 </div>
                 </Form>
             </Col>
-            <Col className="d-flex justify-content-center">
-                <Form className="d-flex align-items-center">
-                    <div className="search-wrapper">
-                        <h1>Search by media title</h1>
+            <Col className="justify-content-center">
+                <h1>Search by media title</h1>
+                <Form className="align-items-center">
+                    <div className="search-wrapper d-flex">
                         <Form.Control
                             type="text"
                             placeholder="Enter title of media to search for..."
                             className="search-input"
                             value={searchTitle}
                             onChange={handleTitleInputChange}
+                        />
+                        <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }} onClick={ handleSearch }>Search</Button>
+                    </div>
+                    <div>
+                        <label for="uniqueTitles">Unique Titles</label>
+                        <input
+                            type="checkbox"
+                            name="uniqueTitles"
+                            checked={uniqueTitles}
+                            onChange={handleCheckboxChange}
                         />
                     </div>
                 </Form>
@@ -118,9 +194,7 @@ const EmployeeIndexPage = () => {
                 </thead>
                 <tbody>
                     {searchMedia.map((item, index) => {
-                        const branch = getBranchInfo(item.BranchID);
-                        console.log("Branch: ", branch);
-                        const mediaArtwork = mediaFrontEndService.generateImageSrc(item.Title, item.Type);
+                        const branch = item.branch;
                         const rentLength = item.rentLength || 7;
                         const returnDate = calculateReturnDate(rentLength);
                         const isMinimumTerm = rentLength <= 7;
@@ -130,21 +204,6 @@ const EmployeeIndexPage = () => {
                             <tr key={index} style={{ verticalAlign: 'middle' }}>
                                 <td>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
-                                        {/* Column 1: Remove */}
-  
-                                        {/* Column 2: Image */}
-                                        <div style={{ flex: '0 0 auto' }}>
-                                            <img
-                                                src={mediaArtwork}
-                                                alt="Media Artwork"
-                                                style={{
-                                                height: '10rem',
-                                                aspectRatio: '1',
-                                                objectFit: 'contain',
-                                                }}
-                                            />
-                                        </div>
-  
                                         {/* Column 3: Title and Info */}
                                         <div>
                                             <strong>{item.Title}</strong>
@@ -190,12 +249,31 @@ const EmployeeIndexPage = () => {
                                 </td>
   
                                 <td>
-                                    <p>Collect In Store</p>
+                                    <Form.Select
+                                        className="form-secondary"
+                                        value={deliveryOptions[index]}
+                                        onChange={(e) => handleDeliveryChange(index, e.target.value)}
+                                        required
+                                    >
+                                    <option value="collect">Collect In-Store</option>
+                                    <option value="delivery">Home Delivery</option>
+                                    </Form.Select>
                                 </td>
   
                                 <td>
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'middle' }}>
                                         {tokens} Tokens
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'middle' }}>
+                                        <Button
+                                            className="button-primary mb-3"
+                                            //onClick={ }
+                                        > 
+                                            Add to user's basket
+                                        </Button>
                                     </div>
                                 </td>
                             </tr>
@@ -203,11 +281,6 @@ const EmployeeIndexPage = () => {
                     })}
                 </tbody>
             </Table>
-            <div style={{ textAlign: 'right' }}>
-                <h4>
-                    Total: {searchMedia.reduce((acc, item) => acc + (Math.ceil(item.rentLength / 7) || 1), 0)} Tokens
-                </h4>
-            </div>
             </div>
             </Col>
         </Row>
