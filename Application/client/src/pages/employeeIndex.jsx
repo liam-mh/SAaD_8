@@ -18,7 +18,6 @@ const EmployeeIndexPage = () => {
   const [uniqueTitles, setUniqueTitles] = useState(false);
   const [searchEmail, setSearchEmail] = useState('');
   const [user, setUserDetails] = useState(['', '']);
-  const [returnDate, setReturnDate] = useState('');
 
   const today = new Date();
   const startDate = today.toLocaleDateString('en-GB').split('/').join('-');
@@ -92,19 +91,19 @@ const EmployeeIndexPage = () => {
     return returnDateObj.toLocaleDateString('en-GB').split('/').join('-');
   };
 
-  const adjustRentLength = (index, adjustment) => {
-    setReturnDate(calculateReturnDate(adjustment));
-    setBasket((prevBasket) =>
-        prevBasket.map((item, i) =>
-          i === index
-            ? {
-                ...item,
-                rentLength: Math.max(7, (item.rentLength || 7) + adjustment),
-                returnDate: returnDate
-              }
-            : item
-        )
-    );
+  const adjustRentLength = (item, adjustment) => {
+    const updatedMedia = searchMedia.map(mediaItem => {
+        if (mediaItem.MediaID === item.MediaID) {
+            return {
+                ...mediaItem,  // Copy all properties of the item
+                rentLength: mediaItem.rentLength + adjustment // Adjust rentLength
+            };
+        }
+        return mediaItem; // If it's not the item we're looking for, just return it unchanged
+    });
+
+    // Update the state with the new media list
+    setSearchMedia(updatedMedia);
   };
 
   const isInBasket = (mediaID) => basket.some(item => 
@@ -313,9 +312,12 @@ const EmployeeIndexPage = () => {
                 </thead>
                 <tbody>
                     {searchMedia.map((item, index) => {
+                        if (!item.rentLength) {
+                            item.rentLength = 7;
+                        }
                         const mediaID = item.MediaID;
                         const branch = item.branch;
-                        const rentLength = item.rentLength || 7;
+                        const rentLength = item.rentLength;
                         const returnDate = calculateReturnDate(rentLength);
                         const isMinimumTerm = rentLength <= 7;
                         const tokens = Math.ceil(rentLength / 7);
@@ -351,7 +353,7 @@ const EmployeeIndexPage = () => {
                                         <Button
                                         className="button-primary mb-3"
                                         style={{ width: '3rem' }}
-                                        onClick={() => adjustRentLength(index, 7)}
+                                        onClick={() => adjustRentLength(item, 7)}
                                         >
                                             + 7
                                         </Button>
@@ -359,7 +361,7 @@ const EmployeeIndexPage = () => {
                                         <Button
                                         className="button-primary-outline mt-3"
                                         style={{ width: '3rem' }}
-                                        onClick={() => !isMinimumTerm && adjustRentLength(index, -7)}
+                                        onClick={() => !isMinimumTerm && adjustRentLength(item, -7)}
                                         disabled={isMinimumTerm}
                                         >
                                             - 7
