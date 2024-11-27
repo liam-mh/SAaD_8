@@ -13,14 +13,19 @@ const EmployeeIndexPage = () => {
   const [searchMedia, setSearchMedia] = useState([]);
   const [searchPK, setSearchPK] = useState('');
   const [searchTitle, setSearchTitle] = useState('');
-  const { basket, setBasket, branches, setCheckout } = useContext(SessionContext) || {};
+  const { basket, setBasket, setCheckout } = useContext(SessionContext) || {};
   const [deliveryOptions, setDeliveryOptions] = useState(basket.map(() => 'collect'));
   const [uniqueTitles, setUniqueTitles] = useState(false);
   const [searchEmail, setSearchEmail] = useState('');
   const [user, setUserDetails] = useState(['', '']);
+  const [returnDate, setReturnDate] = useState('');
 
   const today = new Date();
   const startDate = today.toLocaleDateString('en-GB').split('/').join('-');
+
+  useEffect(() => {
+
+  }, []);
 
   const handleSearch = async () => {
     try {
@@ -88,8 +93,40 @@ const EmployeeIndexPage = () => {
   };
 
   const adjustRentLength = (index, adjustment) => {
-    
+    setReturnDate(calculateReturnDate(adjustment));
+    setBasket((prevBasket) =>
+        prevBasket.map((item, i) =>
+          i === index
+            ? {
+                ...item,
+                rentLength: Math.max(7, (item.rentLength || 7) + adjustment),
+                returnDate: returnDate
+              }
+            : item
+        )
+    );
   };
+
+  const isInBasket = (mediaID) => basket.some(item => 
+        item.MediaID === mediaID
+    );
+
+    const handleAddToBasket = (e, item) => {
+        e.preventDefault();
+
+        if (!isInBasket(item.MediaID)) {
+            setBasket([...basket, item]);
+        };
+    }
+
+    const handleRemoveFromBasket = (e, itemToRemove) => {
+        e.preventDefault();
+        const updatedBasket = basket.filter(
+          (item) =>
+            item.MediaID !== itemToRemove.MediaID
+        );
+        setBasket(updatedBasket);
+    };
 
   const handlePKInputChange = async (e) => {
     const value = e.target.value;
@@ -172,8 +209,47 @@ const EmployeeIndexPage = () => {
                 </Row>
             </div>
             <Col>
-                <div>
-                    
+                <div className='content-panel'>
+                    <h4 id="order" className='mt-3'>Order Summary</h4>
+                    <Table hover className="aml-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Rent Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {basket.map((item, index) => {
+                            const deliveryMessage = item.deliveryOption === 'collect'
+                            ? `In-Store Collection from ${item.branch.Postcode}`
+                            : `Home Delivery to ${user[0].Postcode || 'Unknown Address'}`;
+                            return (
+                                <tr key={index} style={{ verticalAlign: 'middle' }}>
+                                    <td>
+                                        <span>
+                                            ID: {item.MediaID}<br />
+                                            <strong>{item.Title}</strong><br />
+                                            Format: {item.Type}<br />
+                                            Subtotal: {item.tokens}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            Start: {startDate}<br />
+                                            Return: {item.returnDate}<br />
+                                            Delivery: {deliveryMessage}
+                                        </span>
+                                    </td>
+                                </tr>
+                                );
+                            })}
+                        </tbody>          
+                    </Table>
+                    <div style={{ textAlign: 'right' }}>
+                        <Button className='button-primary-outline' as={Link} to="/basket">
+                            Edit Basket
+                        </Button>
+                    </div>
                 </div>
             </Col>
         </Row>
@@ -220,7 +296,7 @@ const EmployeeIndexPage = () => {
             </Col>
         </Row>
         {/* Searched media */}
-        <Row><Col><br></br></Col></Row>
+        <Row><Col><br /></Col></Row>
         <Row>
             <Col>
             <div className="content-panel">
@@ -237,11 +313,18 @@ const EmployeeIndexPage = () => {
                 </thead>
                 <tbody>
                     {searchMedia.map((item, index) => {
+                        const mediaID = item.MediaID;
                         const branch = item.branch;
                         const rentLength = item.rentLength || 7;
                         const returnDate = calculateReturnDate(rentLength);
                         const isMinimumTerm = rentLength <= 7;
                         const tokens = Math.ceil(rentLength / 7);
+
+                        item = {
+                            ...item,
+                            rentLength,
+                            returnDate
+                        }
   
                         return (
                             <tr key={index} style={{ verticalAlign: 'middle' }}>
@@ -249,6 +332,7 @@ const EmployeeIndexPage = () => {
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
                                         {/* Column 3: Title and Info */}
                                         <div>
+                                            <span>ID: {mediaID}</span><br />
                                             <strong>{item.Title}</strong>
                                             <br />
                                             <span>Type: {item.Type}</span>
@@ -311,12 +395,15 @@ const EmployeeIndexPage = () => {
 
                                 <td>
                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'middle' }}>
-                                        <Button
-                                            className="button-primary mb-3"
-                                            //onClick={ }
-                                        > 
-                                            Add to user's basket
-                                        </Button>
+                                        {!isInBasket(item.MediaID) ? (
+                                            <button className="button-primary" onClick={(e) => handleAddToBasket(e, item)}>
+                                                Add to Basket
+                                            </button>
+                                        ) : (
+                                            <button className="button-secondary" onClick={(e) => handleRemoveFromBasket(e, item)}>
+                                                Remove from Basket
+                                            </button>
+                                        )}
                                     </div>
                                 </td>
                             </tr>
