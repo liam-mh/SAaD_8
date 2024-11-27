@@ -138,9 +138,9 @@ const EmployeeIndexPage = () => {
   }
 
   const handleDeliveryChange = (index, value) => {
-    setDeliveryOptions((prevOptions) =>
-      prevOptions.map((option, i) => (i === index ? value : option))
-    );
+    const updatedDeliveryOptions = [...deliveryOptions];
+    updatedDeliveryOptions[index] = value;
+    setDeliveryOptions(updatedDeliveryOptions);
   };
 
   const handleCheckboxChange = (e) => {
@@ -159,7 +159,8 @@ const EmployeeIndexPage = () => {
         <Row>
             <div className='content-panel'>
                 <Col className="justify-content-center">
-                    <h1>Enter user's email address</h1>
+                    <br />
+                    <h4><b>Enter user's email address</b></h4>
                     <Form className="d-flex align-items-center">
                     <div className="search-wrapper d-flex">
                     <Form.Control
@@ -208,7 +209,7 @@ const EmployeeIndexPage = () => {
                 </Row>
             </div>
             <Col>
-                <div className='content-panel'>
+                <div className='content-panel' style={{ height: '46vh', overflowY: 'auto' }}>
                     <h4 id="order" className='mt-3'>Order Summary</h4>
                     <Table hover className="aml-table">
                         <thead>
@@ -219,7 +220,8 @@ const EmployeeIndexPage = () => {
                         </thead>
                         <tbody>
                             {basket.map((item, index) => {
-                            const deliveryMessage = item.deliveryOption === 'collect'
+                            console.log("Item in basket: ", item);
+                            const deliveryMessage = item.deliveryMethod === 'collect'
                             ? `In-Store Collection from ${item.branch.Postcode}`
                             : `Home Delivery to ${user[0].Postcode || 'Unknown Address'}`;
                             return (
@@ -245,8 +247,8 @@ const EmployeeIndexPage = () => {
                         </tbody>          
                     </Table>
                     <div style={{ textAlign: 'right' }}>
-                        <Button className='button-primary-outline' as={Link} to="/basket">
-                            Edit Basket
+                        <Button className='button-primary' as={Link} to="/basket">
+                            Checkout User's Basket
                         </Button>
                     </div>
                 </div>
@@ -321,13 +323,17 @@ const EmployeeIndexPage = () => {
                         const returnDate = calculateReturnDate(rentLength);
                         const isMinimumTerm = rentLength <= 7;
                         const tokens = Math.ceil(rentLength / 7);
+                        const deliveryMethod = deliveryOptions[index];
 
                         item = {
                             ...item,
                             rentLength,
                             returnDate,
-                            tokens
+                            tokens,
+                            deliveryMethod
                         }
+
+                        console.log("Item in search: ", item);
   
                         return (
                             <tr key={index} style={{ verticalAlign: 'middle' }}>
