@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Container, Table, Button, Form } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
 import branchFrontEndService from '../services/storefront/branchFrontEndService';
+import memberFrontEndService from '../services/account/memberFrontEndService';
 
 
 const EmployeeIndexPage = () => {
@@ -51,7 +52,13 @@ const EmployeeIndexPage = () => {
         })
     );
     setSearchMedia(mediaWithBranches);
-    console.log("Media with branches: ", mediaWithBranches);
+  }
+
+  const fetchUserData = async () => {
+    console.log("Email to search for: ", searchEmail);
+    const userData = await memberFrontEndService.get('/readRecords', { Email: searchEmail });
+    console.log("User data: ", userData.data[0]);
+    setUserDetails(userData.data[0]);
   }
 
   const handlePKInputChange = async (e) => {
@@ -81,17 +88,18 @@ const EmployeeIndexPage = () => {
   };
 
   const handleCheckboxChange = (e) => {
-    setUniqueTitles(e.target.checked); // Update state when checkbox is toggled
-};
+    setUniqueTitles(e.target.checked);
+  };
 
-const handleEmailInputChange = (e) => {
-    setSearchEmail(e.target.value);
-}
+  const handleEmailInputChange = (e) => {
+    const value = e.target.value;
+    setSearchEmail(value);
+  };
 
   return (
     <>
      <Container fluid="lg">
-     <Row><Col><br></br></Col></Row>
+     <Row><Col><br /></Col></Row>
         <Row>
             <div className='content-panel'>
                 <Col className="justify-content-center">
@@ -105,16 +113,16 @@ const handleEmailInputChange = (e) => {
                         value={searchEmail}
                         onChange={handleEmailInputChange}
                     />
-                    <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }} onClick={ handleSearch }>Search</Button>
+                    <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }} onClick={ fetchUserData }>Search</Button>
                     </div>
                     </Form>
                 </Col>
-                <br></br>
+                <br />
                 <Row>
                   <Col>
                     <span>
                       <strong>Account Details</strong><br />
-                      Name: {[user.FirstName || 'Firstname', ' ', user.Surname || 'Surname']}<br />
+                      Name: <br /> {[user.FirstName || 'Firstname', ' ', user.Surname || 'Surname']}<br />
                       Email: {user.Email}
                     </span>
                     <br />
@@ -135,14 +143,14 @@ const handleEmailInputChange = (e) => {
             </div>
         </Row>
         <Row>
-            <Row><Col><br></br></Col></Row>
+            <Row><Col><br /></Col></Row>
             <Col className="justify-content-center">
                 <h1>Search by media ID</h1>
                 <Form className="d-flex align-items-center">
                 <div className="search-wrapper d-flex">
                     <Form.Control
                         type="text"
-                        placeholder="Enter ID of item to be checked out..."
+                        placeholder="Enter primary key e.g. 54"
                         className="search-input"
                         value={searchPK}
                         onChange={handlePKInputChange}
@@ -157,7 +165,7 @@ const handleEmailInputChange = (e) => {
                     <div className="search-wrapper d-flex">
                         <Form.Control
                             type="text"
-                            placeholder="Enter title of media to search for..."
+                            placeholder="Enter media title e.g. The Hobbit"
                             className="search-input"
                             value={searchTitle}
                             onChange={handleTitleInputChange}
