@@ -229,7 +229,7 @@ const EmployeeIndexPage = () => {
                                             ID: {item.MediaID}<br />
                                             <strong>{item.Title}</strong><br />
                                             Format: {item.Type}<br />
-                                            Subtotal: {item.tokens}
+                                            Subtotal: {item.tokens} tokens
                                         </span>
                                     </td>
                                     <td>
@@ -325,7 +325,8 @@ const EmployeeIndexPage = () => {
                         item = {
                             ...item,
                             rentLength,
-                            returnDate
+                            returnDate,
+                            tokens
                         }
   
                         return (
