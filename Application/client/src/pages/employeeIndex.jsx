@@ -17,7 +17,7 @@ const EmployeeIndexPage = () => {
   const [deliveryOptions, setDeliveryOptions] = useState(basket.map(() => 'collect'));
   const [uniqueTitles, setUniqueTitles] = useState(false);
   const [searchEmail, setSearchEmail] = useState('');
-  const [user, setUserDetails] = useState('');
+  const [user, setUserDetails] = useState(['', '']);
 
   const today = new Date();
   const startDate = today.toLocaleDateString('en-GB').split('/').join('-');
@@ -55,20 +55,30 @@ const EmployeeIndexPage = () => {
   }
 
   const fetchUserData = async () => {
-    console.log("Email to search for: ", searchEmail);
-    const userData = await memberFrontEndService.get('/readRecords', { Email: searchEmail });
-    console.log("User data: ", userData.data[0]);
-    setUserDetails(userData.data[0]);
+    try {
+        const userData = await memberFrontEndService.get('/readRecords', { Email: searchEmail });
+        if (!userData.data[0]) {
+            userData.data[0] = '';
+            userData.data[1] = '';
+        }
+        else {
+            var convertedDate = new Date(userData.data[0].RegisterDate);
+            convertedDate = convertedDate.toLocaleDateString('en-GB').split('/').join('-');
+            userData.data[0].RegisterDate = convertedDate;
+        }
+        
+        const userBranch = await fetchUserBranch(userData.data[0].BranchID);
+        userData.data.push(userBranch.data[0]);
+        setUserDetails(userData.data);
+    } catch (error) {
+        console.error('Error during search: ', error);
+    }
   }
 
-  const handlePKInputChange = async (e) => {
-    const value = e.target.value;
-    setSearchPK(value);
-  }
-
-  const handleTitleInputChange = async (e) => {
-    const value = e.target.value;
-    setSearchTitle(value);
+  const fetchUserBranch = async (userBranchID) => {
+    const branchData = await branchFrontEndService.get('/readRecords', { BranchID: userBranchID });
+    
+    return branchData;
   }
 
   const calculateReturnDate = (rentLength) => {
@@ -80,6 +90,16 @@ const EmployeeIndexPage = () => {
   const adjustRentLength = (index, adjustment) => {
     
   };
+
+  const handlePKInputChange = async (e) => {
+    const value = e.target.value;
+    setSearchPK(value);
+  }
+
+  const handleTitleInputChange = async (e) => {
+    const value = e.target.value;
+    setSearchTitle(value);
+  }
 
   const handleDeliveryChange = (index, value) => {
     setDeliveryOptions((prevOptions) =>
@@ -119,28 +139,43 @@ const EmployeeIndexPage = () => {
                 </Col>
                 <br />
                 <Row>
-                  <Col>
+                  <Col className="d-flex">
                     <span>
                       <strong>Account Details</strong><br />
-                      Name: <br /> {[user.FirstName || 'Firstname', ' ', user.Surname || 'Surname']}<br />
-                      Email: {user.Email}
-                    </span>
-                    <br />
-                    <br />
-                    <span>
-                      <strong>Home Address</strong><br />
-                      {user.FirstLineAddress || 'First Line Address'}<br />
-                      {user.City || 'City'}<br />
-                      {user.Postcode || 'Postcode'}<br />
+                      Name: <br /> {[user[0].FirstName || 'Firstname', ' ', user[0].Surname || 'Surname']}<br />
+                      Email: <br /> {user[0].Email || 'Email address'}
                     </span>
                   </Col>
-                  <Col style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-                    <Button className='button-primary-outline' as={Link} to='/account#account'>
-                      Edit Account
-                    </Button>
+                  <Col classsName="d-flex"><br />
+                    Register Date: <br /> {user[0].RegisterDate}
+                  </Col>
+                </Row>
+                    <br />
+                    <br />
+                <Row>
+                  <Col>
+                    <span>
+                      <strong>Home Address</strong><br />
+                      {user[0].FirstLineAddress || 'First Line Address'}<br />
+                      {user[0].City || 'City'}<br />
+                      {user[0].Postcode || 'Postcode'}<br />
+                    </span>
+                  </Col>
+                  <Col>
+                    <span>
+                        <strong>Current Branch</strong><br />
+                        {user[1].FirstLineAddress || 'First Line Address'}<br />
+                        {user[1].City || 'City'}<br />
+                        {user[1].Postcode || 'Postcode'}<br />
+                    </span>
                   </Col>
                 </Row>
             </div>
+            <Col>
+                <div>
+                    
+                </div>
+            </Col>
         </Row>
         <Row>
             <Row><Col><br /></Col></Row>
@@ -150,7 +185,7 @@ const EmployeeIndexPage = () => {
                 <div className="search-wrapper d-flex">
                     <Form.Control
                         type="text"
-                        placeholder="Enter primary key e.g. 54"
+                        placeholder="Enter media ID e.g. 54"
                         className="search-input"
                         value={searchPK}
                         onChange={handlePKInputChange}
@@ -173,7 +208,7 @@ const EmployeeIndexPage = () => {
                         <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }} onClick={ handleSearch }>Search</Button>
                     </div>
                     <div>
-                        <label for="uniqueTitles">Unique Titles</label>
+                        <label htmlFor="uniqueTitles">Unique Titles</label>
                         <input
                             type="checkbox"
                             name="uniqueTitles"
