@@ -25,13 +25,21 @@ class Service {
 
     // ------------------------------------- Create Methods ---------------------------------------------------
     /**
-     * Creates a new record
-     * @param {Array} recordValues - Array of record values in order.
-     * @returns 
+     * Creates a new record in the relative table based on dependency injection.
+     * @param {Object} record - Record to create.
+     * @returns {Promise<Object>} - Created Record.
      */
-    createRecordByQuery(recordValues) {
-        this.object.mapObject(recordValues);
-        return this.dbHandler.createByQuery(this.object);
+    createRecordByQuery(record) {
+        return this.dbHandler.createByQuery(record);
+    }
+
+    /**
+     * Creates multiple records in the relative table based on dependency injection.
+     * @param {Object[]} records - Records to create.
+     * @returns {Promise<Object[]>} - Created Records.
+     */
+    createRecordsByQuery(records){
+        return this.dbHandler.createMultipleByQuery(records);
     }
 
     // ------------------------------------- Read Methods ---------------------------------------------------

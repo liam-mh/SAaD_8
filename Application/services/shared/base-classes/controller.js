@@ -19,11 +19,20 @@ class Contoller {
   // ------------------------------------- Create Methods ---------------------------------------------------
   /**
    * Creates a new record.
-   * @param {Array} recordValues - Array of Record values in order.
-   * @returns
+   * @param {Object} recordValues - Array of Record values in order.
+   * @returns {Promise<Object>} - Created Record.
    */
-  createRecord(recordValues) {
-    return this.service.createRecordByQuery(recordValues);
+  createRecord(record) {
+    return this.service.createRecordByQuery(record);
+  }
+
+  /**
+   * Creates multiple new records.
+   * @param {Object} records 
+   * @returns {Promise<Object>} - Created Records.
+   */
+  createRecords(records){
+    return this.service.createRecordsByQuery(records);
   }
 
   // ------------------------------------- Read Methods ---------------------------------------------------
@@ -33,7 +42,7 @@ class Contoller {
    * 
    * @param {Array} fieldIdentifiers - Array of field identifiers to filter the records.
    * @param {boolean} uniqueFlag - If true, fetch filtered records based on field identifiers.
-   * @returns {Array} - Array of formatted records with all date fields properly formatted.
+   * @returns {Promise<Object>} - Retrieved Records.
    */
   readRecords(fieldIdentifiers={}, uniqueFlag=false) {
     // Fetch raw records 
@@ -42,17 +51,18 @@ class Contoller {
   }
 
   /**
+   * Retrieve Records based on user search input.
    * 
-   * @param {Array} chars 
+   * @param {String} chars 
    */
   autoComplete(chars){
-    const records = this.service.autoComplete(chars);
-    return formatDateFields(records);
+    return this.service.autoComplete(chars);
   }
 
 
   /**
    * Reads and returns multiple fields based on column identifiers.
+   * 
    * @param {Int} primaryKey - Primary key for the record.
    * @param {Array} columns - columns that should be returned
    * @returns

@@ -5,6 +5,10 @@ import { SessionContext } from '../services/sessionContext';
 import { Link } from 'react-router-dom';
 import PaymentCard from '../components/PaymentCard';
 
+//Internal Service imports:
+const mediaHistoryFrontEndService = require("../services/storefront/mediaHistoryFrontEndService");
+
+
 const CheckoutPage = () => {
   const { user, checkout, setBasket } = useContext(SessionContext) || {}; 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);

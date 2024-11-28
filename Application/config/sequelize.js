@@ -1,5 +1,5 @@
 const { Sequelize} = require('sequelize');
-const { Op } = require('sequelize');
+const { Op, ValidationError, DatabaseError } = require('sequelize');
 const dbConfig = require('../config/azure-db/dbConfig');
 
 
