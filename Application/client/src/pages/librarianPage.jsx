@@ -362,7 +362,7 @@ const LibrarianPage = () => {
         <Row><Col><br /></Col></Row>
         <Row>
             <Col>
-            <div className="content-panel">
+            <div className="content-panel" style={{maxheight: '60vh', overflow: 'auto'}}>
             <Table hover className="aml-table">
                 <thead>
                     <tr>
