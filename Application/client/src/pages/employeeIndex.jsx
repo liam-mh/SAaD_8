@@ -10,7 +10,7 @@ import memberFrontEndService from '../services/account/memberFrontEndService';
 import mediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService';
 
 
-const LibrarianPage = () => {
+const EmployeeIndexPage = () => {
   const [searchMedia, setSearchMedia] = useState([]);
   const [searchPK, setSearchPK] = useState('');
   const [searchTitle, setSearchTitle] = useState('');
@@ -499,4 +499,4 @@ const LibrarianPage = () => {
   );
 };
 
-export default LibrarianPage;
+export default EmployeeIndexPage;

@@ -12,7 +12,7 @@ import MediaPage from './pages/media';
 import BasketPage from './pages/basket';
 import SearchPage from './pages/search';
 import CheckoutPage from './pages/checkout';
-import LibrarianPage from './pages/librarianPage';
+import EmployeeIndexPage from './pages/employeeIndex';
 
 function App() {
   return (
@@ -28,7 +28,7 @@ function App() {
           <Route path="/basket" element={<BasketPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/employee" element={<LibrarianPage />} />
+          <Route path="/employee" element={<EmployeeIndexPage />} />
         </Routes>
         <Footer />
       </Router>
