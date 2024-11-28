@@ -2,6 +2,7 @@ const fetchFromApiGateway = require("./apiService");
 
 class FrontEndService {
   constructor(baseRoute) {
+
     if (!baseRoute) {
       throw new Error("Base route is required");
     }

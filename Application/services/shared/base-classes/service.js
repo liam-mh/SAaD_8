@@ -98,8 +98,7 @@ class Service {
      * @returns 
      */
     updateRecordByQuery(newValues) {
-        this.object.mapObject(newValues);
-        return this.dbHandler.updateByQuery(this.object);
+        return this.dbHandler.updateByQuery(newValues);
     }
 
     /**

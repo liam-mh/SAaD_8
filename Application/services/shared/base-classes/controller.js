@@ -73,12 +73,13 @@ class Contoller {
 
   // ------------------------------------- Update Methods ---------------------------------------------------
   /**
-   * Update a records fields using parallel arrays.
-   * @param {Array} newValues - Array of new values.
-   * @returns
+   * Update a record based on a unique key.
+   * @param {String}
+   * @param {Object} newObject - Object of new values.
+   * @returns {Promise<Object>} - Created Records.
    */
-  updateRecord(newValues) {
-    return this.service.updateRecordByQuery(newValues);
+  updateRecord(newObject) {
+    return this.service.updateRecordByQuery(newObject);
   }
 
   /**

@@ -12,7 +12,28 @@ class DbHandler {
     this.model = model;
   }
 
-  // ------------------------------------- Validation methods -----------------------------------------------
+  // ------------------------------------- Error Handling -----------------------------------------------
+
+  /**
+   * @private
+   * Handles errors by categorizing them and throwing appropriate messages.
+   * @param {Error} error - The error to handle.
+   * @throws {Error} - Throws categorized errors with specific messages.
+   */
+  #handleError(error) {
+    if (error instanceof ValidationError) {
+      console.error("Validation Error: ", error.errors);
+      throw new Error("Validation failed. Check your input data.");
+    }
+
+    if (error instanceof DatabaseError) {
+      console.error("Database Error: ", error.message);
+      throw new Error("A database error occurred. Please try again later.");
+    }
+
+    console.error("Unexpected Error: ", error.message);
+    throw new Error("An unexpected error occurred: " + error.message);
+  }
 
   /**
    * Connect to the DB.
@@ -20,10 +41,10 @@ class DbHandler {
    */
   async connect() {
     return new Promise((resolve, reject) => {
-      this.connection.connect((err) => {
-        if (err) {
+      this.connection.connect((error) => {
+        if (error) {
           console.error("Database connection failed:", err);
-          reject(err);
+          reject(error);
         } else {
           console.log("Database connected!");
           resolve();
@@ -43,18 +64,7 @@ class DbHandler {
       const dbInsert = await this.model.create(dataObject);
       return dbInsert;
     } catch (error) {
-      if (error instanceof ValidationError) {
-        console.error("Validation Error: ", error.errors);
-        throw new Error("Validation failed. Check your input data.");
-      }
-
-      if (error instanceof DatabaseError) {
-        console.error("Database Error: ", error.message);
-        throw new Error("A database error occurred. Please try again later.");
-      }
-
-      console.error("Unexpected Error: ", error.message);
-      throw new Error("An unexpected error occurred: " + error.message);
+      this.#handleError(error);
     }
   }
 
@@ -65,36 +75,15 @@ class DbHandler {
    */
   async createMultipleByQuery(records) {
     try {
-
-      console.log(records);
       // Insert all records at once, validate per record for security, skip hooks for performance.
       const createdRecords = await this.model.bulkCreate(records, {
-        validate: true, 
-        individualHooks: false, 
+        validate: true,
+        individualHooks: false,
       });
 
       return createdRecords;
-
     } catch (error) {
-      
-      // Error handlin when validating against the model.
-      if (error instanceof ValidationError) {
-        console.error("Validation Error: ", error.errors);
-        throw new Error(
-          "Validation failed. Check the input data for each record."
-        );
-      }
-      
-      // Error handling when interacting with the DB.
-      if (error instanceof DatabaseError) {
-        console.error("Database Error: ", error.message);
-        throw new Error(
-          "A database error occurred while inserting multiple records."
-        );
-      }
-
-      console.error("Unexpected Error: ", error.message);
-      throw new Error("An unexpected error occurred: " + error.message);
+      this.#handleError(error);
     }
   }
 
@@ -145,61 +134,53 @@ class DbHandler {
       // Fetch records based on query options
       return await this.model.findAll(queryOptions);
     } catch (error) {
-      console.error("Error reading records:", error.message);
-      throw new Error("An error occurred while reading records.");
+      this.#handleError(error);
     }
   }
 
-  //!!!check this <-----
+  
   /**
-   * Update a record based on relative dataObjects properties.
-   * @param {Object} dataObject - relative object based on calling service.
+   * Update a record based on relative dataObject's properties and its unique keys.
+   * @param {Object} dataObject - Object containing properties for the update.
    * @returns {Promise<[number, Object[]?]>} - Resolves to an array:
    *  - The first element is the number of rows affected.
-   *  - The second element is an array of the updated records.
+   *  - The second element is an array of the updated records (if `returning` is enabled).
    */
   async updateByQuery(dataObject) {
-    if (!this.model) {
-      throw new Error(`Model for table '${this.model.tableName}' not found.`);
-    }
-    // Extract the primary key value from the data object.
-    const pkValue = dataObject[this.pk];
-
-    const updateData = { ...dataObject };
-    if (Object.keys(updateData).length === 0) {
-      throw new Error("No valid data provided for update.");
-    }
-    delete updateData.this.pk;
-
-    // Only include non-null and defined fields
-    const filteredUpdateData = {};
-    for (const [key, value] of Object.entries(updateData)) {
-      if (value !== null && value !== undefined) {
-        filteredUpdateData[key] = value;
-      }
-    }
-
     try {
-      const dbUpdate = await this.model.update(filteredUpdateData, {
-        where: {
-          [this.pk]: pkValue,
-        },
+
+      // Retrieve unique keys from the model
+      const uniqueKeys = Object.keys(this.model.rawAttributes).filter(
+        (key) => this.model.rawAttributes[key].unique
+      );
+
+      // Find the unique key and its value in the dataObject.
+      const whereClause = {};
+      let foundKey = false;
+
+      for (const uniqueKey of uniqueKeys) {
+        if (dataObject[uniqueKey] !== undefined) {
+          whereClause[uniqueKey] = dataObject[uniqueKey];
+          foundKey = true;
+          break;
+        }
+      }
+
+      if (!foundKey) {
+        throw new Error(
+          "No unique key found in dataObject to identify the record to update."
+        );
+      }
+
+      const dbUpdate = await this.model.update(dataObject, {
+        validate: true,
+        where: whereClause,
+        returning: true, 
       });
+
       return dbUpdate;
     } catch (error) {
-      if (error instanceof ValidationError) {
-        console.error("Validation Error: ", error.errors);
-        throw new Error("Validation failed. Check your input data.");
-      }
-
-      if (error instanceof DatabaseError) {
-        console.error("Database Error: ", error.message);
-        throw new Error("A database error occurred. Please try again later.");
-      }
-
-      // Other errors
-      console.error("Unexpected Error: ", error.message);
-      throw new Error("An unexpected error occurred: " + error.message);
+      this.#handleError(error);
     }
   }
 

@@ -47,18 +47,18 @@ const handleRoutes = (router, serviceName, resources) => {
                 const parsedFields = JSON.parse(fields);
                 const parsedUniqueFlag = uniqueFlag === 'true';
 
-                const records = await controllerInstance.readRecords(parsedFields, parsedUniqueFlag);
-                res.status(200).json({ message: 'Records retrieved successfully', data: records, status: res.status });
+                const read = await controllerInstance.readRecords(parsedFields, parsedUniqueFlag);
+                res.status(200).json({ message: 'Records retrieved successfully', data: read, status: res.statusCode});
             } catch (error) {
                 console.error(`Error reading records from ${resource}:`, error);
-                res.status(500).json({ message: 'Failed to retrieve records', error: error.message, status: res.status });
+                res.status(500).json({ message: 'Failed to retrieve records', error: error.message, status: res.statusCode});
             }
         });
 
         router.post(`/${resource}/createRecord`, async (req, res) => {
             try {
-                const result = await controllerInstance.createRecord(req.body);
-                res.status(201).json({ message: 'Record created successfully', data: result });
+                const created = await controllerInstance.createRecord(req.body);
+                res.status(201).json({ message: 'Record created successfully', data: created, status: res.statusCode});
             } catch (error) {
                 console.error(`Error creating record in ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to create record', error: error.message });
@@ -67,8 +67,8 @@ const handleRoutes = (router, serviceName, resources) => {
 
         router.post(`/${resource}/createRecords`, async (req, res) => {
             try {
-                const result = await controllerInstance.createRecords(req.body);
-                res.status(201).json({ message: 'Record created successfully', data: result });
+                const created = await controllerInstance.createRecords(req.body);
+                res.status(201).json({ message: 'Record created successfully', data: created, status: res.statusCode});
             } catch (error) {
                 console.error(`Error creating record in ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to create record', error: error.message });
@@ -77,8 +77,8 @@ const handleRoutes = (router, serviceName, resources) => {
 
         router.put(`/${resource}/updateRecord`, async (req, res) => {
             try {
-                const result = await controllerInstance.updateRecord(req.body);
-                res.status(200).json({ message: 'Record updated successfully', result });
+                const updated = await controllerInstance.updateRecord(req.body);
+                res.status(200).json({ message: 'Record updated successfully', data: updated, status: res.statusCode });
             } catch (error) {
                 console.error(`Error updating record in ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to update record', error: error.message });
@@ -88,9 +88,9 @@ const handleRoutes = (router, serviceName, resources) => {
         router.delete(`/${resource}/deleteRecord`, async (req, res) => {
             try {
                 const { primaryKey } = req.body;
-                const result = await controllerInstance.deleteRecord(primaryKey);
+                const deleted = await controllerInstance.deleteRecord(primaryKey);
                 if (result.success) {
-                    res.status(200).json({ message: 'Record deleted successfully', result });
+                    res.status(200).json({ message: 'Record deleted successfully', data: deleted, status: res.statusCode});
                 } else {
                     res.status(404).json({ message: 'Record not found' });
                 }
@@ -113,7 +113,7 @@ const handleRoutes = (router, serviceName, resources) => {
                 res.status(200).json({
                     message: 'Autocomplete results retrieved successfully',
                     data: autoCompleteResults,
-                    status: res.statusCode // Using `res.statusCode` as the status has already been set
+                    status: res.statusCode 
                 });
             } catch (error) {
                 console.error(`Error fetching autocomplete results from ${resource}:`, error);
@@ -126,7 +126,7 @@ const handleRoutes = (router, serviceName, resources) => {
         router.get(`/${resource}/fetchMediaByTypeAndLimit`, async (req, res) => {
             try {
                 const carouselMedia = await controllerInstance.handleMediaByTypeAndLimit();
-                res.status(200).json({ message: 'Carousel media retrieved successfully', data: carouselMedia });
+                res.status(200).json({ message: 'Carousel media retrieved successfully', data: carouselMedia, status: res.statusCode});
             } catch (error) {
                 console.error(`Error fetching carousel media from ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to retrieve carousel media', error: error.message });
@@ -136,7 +136,7 @@ const handleRoutes = (router, serviceName, resources) => {
         router.get(`/${resource}/fetchTopFive`, async (req, res) => {
             try {
                 const topFive = await controllerInstance.handleMediaTopFive();
-                res.status(200).json({ message: 'Top five media retrieved successfully', data: topFive });
+                res.status(200).json({ message: 'Top five media retrieved successfully', data: topFive, status: res.statusCode});
             } catch (error) {
                 console.error(`Error fetching top five media from ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to retrieve top five media', error: error.message });

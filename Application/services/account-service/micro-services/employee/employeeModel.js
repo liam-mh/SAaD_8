@@ -6,6 +6,7 @@ const EmployeeModel = sequelize.define('Employee', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
+    unique: "unique_employee"
   },
   FirstName: {
     type: DataTypes.STRING(100),
@@ -18,7 +19,7 @@ const EmployeeModel = sequelize.define('Employee', {
   Email: {
     type: DataTypes.STRING(255),
     allowNull: false,
-    unique: true,
+    unique: "unique_employee",
     validate: {
       isEmail: true,
     },
@@ -26,6 +27,7 @@ const EmployeeModel = sequelize.define('Employee', {
   Password: {
     type: DataTypes.STRING(255),
     allowNull: false,
+    //Can hash in her with bcrypt
   },
   FirstLineAddress: {
     type: DataTypes.STRING(255),
@@ -41,6 +43,7 @@ const EmployeeModel = sequelize.define('Employee', {
   },
   BranchID: {
     type: DataTypes.INTEGER,
+    unique: "unique_employee",
     references: {
       model: 'Branch',
       key: 'BranchID',
