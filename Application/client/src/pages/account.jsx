@@ -33,7 +33,7 @@ const AccountPage = () => {
         [
           {
             MediaID: 1,
-            MemberID: 14,
+            MemberID: memberID,
             BranchID: 1,
             Active: 0,
             RentStart: moment().format("YYYY-MM-DD"),
@@ -80,7 +80,7 @@ const AccountPage = () => {
 
   useEffect(() => {
     const fetchMedia = async () => {
-      checkoutBasket();
+      //checkoutBasket();
     };
     fetchMedia();
   }, []);
