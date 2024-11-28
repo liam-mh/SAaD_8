@@ -47,27 +47,44 @@ const LibrarianPage = () => {
   }
 
   const getBranchInfo = async (mediaItems) => {
-    const mediaWithBranches = await Promise.all(
-        mediaItems.map(async (media) => {
-            const branchResponse = await branchFrontEndService.get('/readRecords', { BranchID: media.BranchID });
-            const branchInfo = branchResponse.data[0];
-            return { ...media, branch: branchInfo };
-        })
-    );
-    setSearchMedia(mediaWithBranches);
-    return mediaWithBranches;
+    try {
+        const mediaWithBranches = await Promise.all(
+            mediaItems.map(async (media) => {
+                try {
+                    const branchResponse = await branchFrontEndService.get('/readRecords', { BranchID: media.BranchID });
+                    const branchInfo = branchResponse.data[0];
+                    return { ...media, branch: branchInfo };
+                } catch (error) {
+                    console.error(`Error fetching branch data for BranchID ${media.BranchID}: `, error);
+                    return { ...media, branch: null };
+                }
+            })
+        );
+        setSearchMedia(mediaWithBranches);
+        return mediaWithBranches;
+    } catch (error) {
+        console.error("Error fetching media items with branch data: ", error);
+    }
   }
 
   const getMediaAvailability = async (mediaItems) => {
-    const mediaWithAvailability = await Promise.all(
-        mediaItems.map(async (media) => {
-            const mediaHistoryRes = await mediaHistoryFrontEndService.get('/readRecords', { MediaID: media.MediaID });
-            var available = mediaHistoryRes.data[0];
-            (!available) ? available = 0 : available = 1;
-            return { ...media, availability: available };
-        })
-    );
-    setSearchMedia(mediaWithAvailability);
+    try {
+        const mediaWithAvailability = await Promise.all(
+            mediaItems.map(async (media) => {
+                try {
+                    const mediaHistoryRes = await mediaHistoryFrontEndService.get('/readRecords', { MediaID: media.MediaID });
+                    var available = mediaHistoryRes.data[0];
+                    (!available) ? available = 0 : available = 1;
+                    return { ...media, availability: available };
+                } catch (error) {
+                    console.error(`Error fetching availability for MediaID ${media.MediaID}: `, error);
+                }
+            })
+        );
+        setSearchMedia(mediaWithAvailability);
+    } catch (error) {
+        console.error("Error fetching media items with availability: ", error);
+    }
   }
 
   const fetchUserData = async () => {
@@ -92,9 +109,13 @@ const LibrarianPage = () => {
   }
 
   const fetchUserBranch = async (userBranchID) => {
-    const branchData = await branchFrontEndService.get('/readRecords', { BranchID: userBranchID });
-    
-    return branchData;
+    try {
+        const branchData = await branchFrontEndService.get('/readRecords', { BranchID: userBranchID });
+        return branchData;
+    } catch (error) {
+        console.error("Error fetching user's branch data: ", error);
+        return null;
+    }
   }
 
   const handleCheckout = async () => {
@@ -255,7 +276,6 @@ const LibrarianPage = () => {
                         </thead>
                         <tbody>
                             {basket.map((item, index) => {
-                            console.log("Item in basket: ", item);
                             const deliveryMessage = item.deliveryMethod === 'collect'
                             ? `In-Store Collection from ${item.branch.Postcode}`
                             : `Home Delivery to ${user[0].Postcode || 'Unknown Address'}`;
