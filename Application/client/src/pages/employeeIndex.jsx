@@ -13,7 +13,7 @@ const EmployeeIndexPage = () => {
   const [searchMedia, setSearchMedia] = useState([]);
   const [searchPK, setSearchPK] = useState('');
   const [searchTitle, setSearchTitle] = useState('');
-  const { basket, setBasket, setCheckout } = useContext(SessionContext) || {};
+  const { basket, setBasket } = useContext(SessionContext) || {};
   const [deliveryOptions, setDeliveryOptions] = useState(basket.map(() => 'collect'));
   const [uniqueTitles, setUniqueTitles] = useState(false);
   const [searchEmail, setSearchEmail] = useState('');
@@ -83,6 +83,22 @@ const EmployeeIndexPage = () => {
     const branchData = await branchFrontEndService.get('/readRecords', { BranchID: userBranchID });
     
     return branchData;
+  }
+
+  const handleCheckout = async () => {
+    /* 
+    Needs to:
+    Bring up confirmation box - Yes / No
+    No - closes confirmation box, no data change
+    Yes:
+        Subtracts total tokens from user
+        Create record in MediaHistory with
+            MediaID, MemberID, BranchID, EmployeeID, Active (tinyint - 1), RentStart (startDate), RentEnd (returnDate), ActualReturn (null)
+        Clears basket
+
+    Search function also needs to be updated to check MediaHistory table for record with field Active 1
+        If active record, mark item as unavailable
+    */
   }
 
   const calculateReturnDate = (rentLength) => {
@@ -214,6 +230,7 @@ const EmployeeIndexPage = () => {
                     <Table hover className="aml-table">
                         <thead>
                             <tr>
+                                <th>Remove</th>
                                 <th>Product</th>
                                 <th>Rent Details</th>
                             </tr>
@@ -226,6 +243,13 @@ const EmployeeIndexPage = () => {
                             : `Home Delivery to ${user[0].Postcode || 'Unknown Address'}`;
                             return (
                                 <tr key={index} style={{ verticalAlign: 'middle' }}>
+                                    <td>
+                                        <div>
+                                            <Button variant="danger" onClick={(e) => handleRemoveFromBasket(e, item)}>
+                                                X
+                                            </Button>
+                                        </div>
+                                    </td>
                                     <td>
                                         <span>
                                             ID: {item.MediaID}<br />
