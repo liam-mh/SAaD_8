@@ -36,8 +36,31 @@ class DbHandler {
   }
 
   /**
+   * Updates the query object to only return unique values by disregarding the pk.
+   * Removes the primary key Attribute from the query.
+   * Sets the remaining model attributes to only return the min value.
+   * 
+   * @param {Object} queryOptions - The current query options Object.
+   * @returns {Object} - An updated query object that will only retun unique values.
+   */
+  #makeUnique(queryOptions){
+    const modelAttributes = Object.keys(this.model.getAttributes()).filter(
+      (attr) => attr !== this.model.primaryKeyAttribute
+    );
+
+    queryOptions.attributes = modelAttributes.map((attr) => [
+      sequelize.fn("MIN", sequelize.col(attr)),
+      attr,
+    ]);
+
+    queryOptions.group = modelAttributes; // Group by all non-pk fields
+
+    return queryOptions;
+  }
+
+  /**
    * Connect to the DB.
-   * @returns Promise - DB connection.
+   * @returns {Promise} - DB connection.
    */
   async connect() {
     return new Promise((resolve, reject) => {
@@ -106,7 +129,7 @@ class DbHandler {
     }
 
     try {
-      const queryOptions = {};
+      let queryOptions = {};
 
       // Build the where clause dynamically
       const whereClause = {};
@@ -119,16 +142,7 @@ class DbHandler {
 
       // Handle uniqueFlag
       if (uniqueFlag) {
-        const modelAttributes = Object.keys(this.model.getAttributes()).filter(
-          (attr) => attr !== this.model.primaryKeyAttribute
-        );
-
-        queryOptions.attributes = modelAttributes.map((attr) => [
-          sequelize.fn("MIN", sequelize.col(attr)),
-          attr,
-        ]);
-
-        queryOptions.group = modelAttributes; // Group by all non-pk fields
+         queryOptions = this.#makeUnique(queryOptions);     
       }
 
       // Fetch records based on query options
@@ -226,6 +240,7 @@ class DbHandler {
    */
   async autoComplete(chars) {
     try {
+      let queryOptions = {};
       // Build WHERE clause: search all fields in LikeQueryFields for a Like match.
       const whereClause = {
         [Op.or]: this.autoCompleteQueryFields.map((field) => ({
@@ -233,10 +248,11 @@ class DbHandler {
         })),
       };
 
-      const results = await this.model.findAll({
-        where: whereClause,
-        limit: 10, // Limit the number of results
-      });
+      queryOptions.where = whereClause;
+      queryOptions.limit =10;
+      queryOptions = this.#makeUnique(queryOptions);
+
+      const results = await this.model.findAll(queryOptions);
 
       return results;
     } catch (error) {
