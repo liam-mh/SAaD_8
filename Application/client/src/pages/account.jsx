@@ -1,61 +1,66 @@
-import { useEffect } from 'react';
-import LoginCard from '../components/LoginCard';
-import moment from 'moment'
-const mediaFrontEndService = require('../services/storefront/mediaFrontEndService');
-const emailFrontEndService = require('../services/notification/emailFrontEndService');
-const branchFrontEndService = require('../services/storefront/branchFrontEndService')
-const mediaHistoryFrontEndService = require('../services/storefront/mediaHistoryFrontEndService');
+import { useEffect } from "react";
+import LoginCard from "../components/LoginCard";
+import moment from "moment";
+const mediaFrontEndService = require("../services/storefront/mediaFrontEndService");
+const emailFrontEndService = require("../services/notification/emailFrontEndService");
+const branchFrontEndService = require("../services/storefront/branchFrontEndService");
+const mediaHistoryFrontEndService = require("../services/storefront/mediaHistoryFrontEndService");
+const employeeFrontEndService = require("../services/account/employeeFrontEndService");
 
 const AccountPage = () => {
+  const checkoutBasket = async () => {
+    try {
+      // This makes the initial record.
+      // Delete if timer runs out, clear basket and exit to a different page?
+      //
+      const transactionCreated = await mediaHistoryFrontEndService.post(
+        "/createRecords",
+        [
+          {
+            MediaID: 1,
+            MemberID: 14,
+            BranchID: 1,
+            Active: 0,
+            RentStart: moment().format("YYYY-MM-DD"),
+            RentEnd: moment().add(7, "days").format("YYYY-MM-DD")
+          },
+          {
+            MediaID: 2,
+            MemberID: 14,
+            BranchID: 1,
+            Active: 0,
+            RentStart: moment().format("YYYY-MM-DD"),
+            RentEnd: moment().add(7, "days").format("YYYY-MM-DD")
+          }
+        ]
+      );
+      console.log(transactionCreated.data);
+    } catch (error) {
+      console.log("FAIL", error);
+    }
+  };
+
   useEffect(() => {
     const fetchMedia = async () => {
-      try {
-        const catalog = await mediaFrontEndService.get('/readRecords', { Title: "The Hobbit", Type: "Book" }, false, false);
-  
-        //Promise.all fetches availability concurrently
-        const availabilityResults = await Promise.all(
-          catalog.data.map(async (media) => {
-          
-            const availability = await mediaHistoryFrontEndService.get('/readRecords', { MediaID: media.MediaID });
-            const activeStatus = availability?.data?.[0]?.Active ?? "Unavailable";
-  
-             return { media, activeStatus }; // Return combined result
-          })
-        );
-  
-        console.log("Final Results:", availabilityResults); 
-
-        const mediaCatalog = await mediaFrontEndService.get('/readRecords', { }, false);
-        console.log(mediaCatalog.data)
-
-      } catch (error) {
-        console.error('Error fetching media records:', error);
-      }
-      try {
-        const carouselMedia = await mediaFrontEndService.fetchMediaByTypeAndLimit();
-        console.log('CAROUSEL MEDIA:',carouselMedia);
-      } catch (error) {
-        console.error('Error fetching media records:', error);
-      }
+      checkoutBasket();
     };
     fetchMedia();
-  }, []); 
-  
+  }, []);
 
   // Function to send an email
   const sendWelcomeEmail = async () => {
     try {
-      const response = await emailFrontEndService.post('/send', {
-        to: 'nicklinguy@yahoo.com', // Replace with recipient's email
-        subject: 'Welcome to Our Service!',
-        message: 'Thank you for signing up. Enjoy your stay!',
+      const response = await emailFrontEndService.post("/send", {
+        to: "nicklinguy@yahoo.com", // Replace with recipient's email
+        subject: "Welcome to Our Service!",
+        message: "Thank you for signing up. Enjoy your stay!",
       });
 
-      console.log('Email sent successfully:', response);
-      alert('Welcome email sent!');
+      console.log("Email sent successfully:", response);
+      alert("Welcome email sent!");
     } catch (error) {
-      console.error('Error sending email:', error);
-      alert('Failed to send email. Please try again later.');
+      console.error("Error sending email:", error);
+      alert("Failed to send email. Please try again later.");
     }
   };
 
@@ -68,8 +73,8 @@ const AccountPage = () => {
       <h2 id="subscription">My Subscription</h2>
       <h2 id="library">My Library</h2>
       <h2 id="wishlist">My Wishlist</h2>
-       {/* Add a button to trigger email sending */}
-       <button onClick={sendWelcomeEmail}>Send Welcome Email</button>
+      {/* Add a button to trigger email sending */}
+      <button onClick={sendWelcomeEmail}>Send Welcome Email</button>
     </>
   );
 };

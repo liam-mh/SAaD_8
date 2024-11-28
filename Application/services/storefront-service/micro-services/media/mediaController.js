@@ -1,5 +1,6 @@
 const {Controller} = require("shared");
 const MediaService = require("./mediaService");
+const {formatDateFields} = require("shared");
 
 class MediaController extends Controller {
     constructor(){
@@ -8,8 +9,14 @@ class MediaController extends Controller {
         this.service = service;
     }
 
-    async handleGetTopMediaByTypeAndLimit(){
-        return this.service.fetchTopMediaByType();
+    async handleMediaByTypeAndLimit(){
+        const records = await this.service.fetchMediaByTypeAndLimit();
+        return formatDateFields(records);
+    }
+
+    async handleMediaTopFive(){
+        const records = await this.service.fetchMediaTopFive();
+        return formatDateFields(records);
     }
 
 }
