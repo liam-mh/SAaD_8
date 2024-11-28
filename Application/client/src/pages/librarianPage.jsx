@@ -7,6 +7,7 @@ import { SessionContext } from '../services/sessionContext';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import branchFrontEndService from '../services/storefront/branchFrontEndService';
 import memberFrontEndService from '../services/account/memberFrontEndService';
+import mediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService';
 
 
 const LibrarianPage = () => {
@@ -26,20 +27,22 @@ const LibrarianPage = () => {
     try {
         if (searchPK) {
             const searchItems = await mediaFrontEndService.get('/readRecords', { MediaID: searchPK });
-            await getBranchInfo(searchItems.data);
+            const mediaWithBranch = await getBranchInfo(searchItems.data);
+            await getMediaAvailability(mediaWithBranch);
             setSearchPK('');
             return console.log("Search by primary key successful.");
         }
         if (searchTitle) {
             const searchItems = await mediaFrontEndService.get('/readRecords', { Title: searchTitle }, uniqueTitles);
-            await getBranchInfo(searchItems.data);
+            const mediaWithBranch = await getBranchInfo(searchItems.data);
+            await getMediaAvailability(mediaWithBranch);
             setSearchTitle('');
             return console.log("Search by title successful.");
         }
         console.warn('No valid search parameters provided.');
     }
     catch (error) {
-        Console.error('Error during search: ', error);
+        console.error('Error during search: ', error);
     }
   }
 
@@ -52,6 +55,19 @@ const LibrarianPage = () => {
         })
     );
     setSearchMedia(mediaWithBranches);
+    return mediaWithBranches;
+  }
+
+  const getMediaAvailability = async (mediaItems) => {
+    const mediaWithAvailability = await Promise.all(
+        mediaItems.map(async (media) => {
+            const mediaHistoryRes = await mediaHistoryFrontEndService.get('/readRecords', { MediaID: media.MediaID });
+            var available = mediaHistoryRes.data[0];
+            (!available) ? available = 0 : available = 1;
+            return { ...media, availability: available };
+        })
+    );
+    setSearchMedia(mediaWithAvailability);
   }
 
   const fetchUserData = async () => {
@@ -130,6 +146,10 @@ const LibrarianPage = () => {
         };
     }
 
+    const isAvailable = (availability) => {
+        return (availability === 1) ? false : true;
+    }
+
     const handleRemoveFromBasket = (e, itemToRemove) => {
         e.preventDefault();
         const updatedBasket = basket.filter(
@@ -169,6 +189,7 @@ const LibrarianPage = () => {
      <Container fluid="lg">
      <Row><Col><br /></Col></Row>
         <Row>
+            {/* User info */}
             <div className='content-panel'>
                 <Col className="justify-content-center">
                     <br />
@@ -220,6 +241,7 @@ const LibrarianPage = () => {
                   </Col>
                 </Row>
             </div>
+            {/* User's basket */}
             <Col>
                 <div className='content-panel' style={{ height: '46vh', overflowY: 'auto' }}>
                     <h4 id="order" className='mt-3'>Order Summary</h4>
@@ -352,14 +374,12 @@ const LibrarianPage = () => {
                             tokens,
                             deliveryMethod
                         }
-
-                        console.log("Item in search: ", item);
   
                         return (
                             <tr key={index} style={{ verticalAlign: 'middle' }}>
                                 <td>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
-                                        {/* Column 3: Title and Info */}
+                                        {/* Column 1: Title and Info */}
                                         <div>
                                             <span>ID: {mediaID}</span><br />
                                             <strong>{item.Title}</strong>
@@ -372,10 +392,12 @@ const LibrarianPage = () => {
                                 </td>
   
                                 <td>
+                                    {/* Column 2: Rent Start Date */}
                                     <span>{startDate}</span>
                                 </td>
   
                                 <td>
+                                    {/* Column 3: Increase/Decrease Return Date + Display */}
                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                         <Button
                                         className="button-primary mb-3"
@@ -397,6 +419,7 @@ const LibrarianPage = () => {
                                 </td>
   
                                 <td>
+                                    {/* Column 4: Branch Info*/}
                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                         <span>{branch.FirstLineAddress || 'First Line'}</span>
                                         <span>{branch.City || 'City'}</span>
@@ -405,6 +428,7 @@ const LibrarianPage = () => {
                                 </td>
   
                                 <td>
+                                    {/* Column 5: Delivery Options */}
                                     <Form.Select
                                         className="form-secondary"
                                         value={deliveryOptions[index]}
@@ -417,14 +441,20 @@ const LibrarianPage = () => {
                                 </td>
   
                                 <td>
+                                    {/* Column 6: Token Cost */}
                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'middle' }}>
                                         {tokens} Tokens
                                     </div>
                                 </td>
 
                                 <td>
+                                    {/* Column 7: Basket/Unavailble Button */}
                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'middle' }}>
-                                        {!isInBasket(item.MediaID) ? (
+                                        {!isAvailable(item.availability) ? (
+                                            <Button className='btn-danger'>
+                                                Unavailable
+                                            </Button>
+                                        ) : !isInBasket(item.MediaID) ? (
                                             <button className="button-primary" onClick={(e) => handleAddToBasket(e, item)}>
                                                 Add to Basket
                                             </button>
