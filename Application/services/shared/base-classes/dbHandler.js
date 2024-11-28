@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 const sequelize = require("../../../config/sequelize");
-const { Op } = require("sequelize");
+const { Op, ValidationError, DatabaseError } = require("sequelize");
 
 /**
  * Base entity class.
@@ -13,24 +13,6 @@ class DbHandler {
   }
 
   // ------------------------------------- Validation methods -----------------------------------------------
-
-  /**
-   * Validates passed service field identifiers against the model's attributes.
-   *
-   * @param {Object} fieldIdentifiers - Object containing the fields to validate.
-   * @throws {Error} - Throws an error if any field is invalid.
-   */
-  validateFields(fieldIdentifiers) {
-    const modelAttributes = Object.keys(this.model.getAttributes());
-
-    for (const key in fieldIdentifiers) {
-      if (!modelAttributes.includes(key)) {
-        throw new Error(
-          `Invalid field key: '${key}' does not match any model attributes.`
-        );
-      }
-    }
-  }
 
   /**
    * Connect to the DB.
@@ -51,37 +33,66 @@ class DbHandler {
   }
 
   /**
-   * Creates a record in the relative table.
+   * Creates a record in the relative table based on injected dependency.
+   *
    * @param {Object} dataObject - Object relative to the calling service.
    * @returns {Promise<Object>} - Resolves to an object representing the created record.
    */
   async createByQuery(dataObject) {
-    if (!this.model) {
-      throw new Error(`Model for table '${this.model.tableName}' not found.`);
-    }
-
-    // Prepare data for insertion
-    const insertData = { ...dataObject };
-    delete insertData.this.pk;
-    if (Object.keys(insertData).length === 0) {
-      throw new Error("No valid data provided for insertion.");
-    }
-
-    // Attempt insertion
     try {
-      const dbInsert = await this.model.create(insertData);
+      const dbInsert = await this.model.create(dataObject);
       return dbInsert;
     } catch (error) {
-      // Sequelize-specific errors
-      if (error instanceof sequelize.ValidationError) {
+      if (error instanceof ValidationError) {
         console.error("Validation Error: ", error.errors);
         throw new Error("Validation failed. Check your input data.");
       }
 
-      if (error instanceof sequelize.DatabaseError) {
+      if (error instanceof DatabaseError) {
         console.error("Database Error: ", error.message);
         throw new Error("A database error occurred. Please try again later.");
       }
+
+      console.error("Unexpected Error: ", error.message);
+      throw new Error("An unexpected error occurred: " + error.message);
+    }
+  }
+
+  /**
+   * Creates multiple records in the relative table based on dependency injection.
+   * @param {Object[]} records - Array of Records to create.
+   * @returns {Promise<Object[]>} - Array of Created Records.
+   */
+  async createMultipleByQuery(records) {
+    try {
+
+      console.log(records);
+      // Insert all records at once, validate per record for security, skip hooks for performance.
+      const createdRecords = await this.model.bulkCreate(records, {
+        validate: true, 
+        individualHooks: false, 
+      });
+
+      return createdRecords;
+
+    } catch (error) {
+      
+      // Error handlin when validating against the model.
+      if (error instanceof ValidationError) {
+        console.error("Validation Error: ", error.errors);
+        throw new Error(
+          "Validation failed. Check the input data for each record."
+        );
+      }
+      
+      // Error handling when interacting with the DB.
+      if (error instanceof DatabaseError) {
+        console.error("Database Error: ", error.message);
+        throw new Error(
+          "A database error occurred while inserting multiple records."
+        );
+      }
+
       console.error("Unexpected Error: ", error.message);
       throw new Error("An unexpected error occurred: " + error.message);
     }
@@ -104,7 +115,6 @@ class DbHandler {
     if (!this.model) {
       throw new Error(`Model for table '${this.model.tableName}' not found.`);
     }
-    
 
     try {
       const queryOptions = {};
@@ -177,12 +187,12 @@ class DbHandler {
       });
       return dbUpdate;
     } catch (error) {
-      if (error instanceof sequelize.ValidationError) {
+      if (error instanceof ValidationError) {
         console.error("Validation Error: ", error.errors);
         throw new Error("Validation failed. Check your input data.");
       }
 
-      if (error instanceof sequelize.DatabaseError) {
+      if (error instanceof DatabaseError) {
         console.error("Database Error: ", error.message);
         throw new Error("A database error occurred. Please try again later.");
       }
@@ -241,19 +251,18 @@ class DbHandler {
           [field]: { [Op.like]: `%${chars}%` },
         })),
       };
-  
+
       const results = await this.model.findAll({
         where: whereClause,
         limit: 10, // Limit the number of results
       });
-  
+
       return results;
     } catch (error) {
       console.error("Error performing autocomplete search:", error);
       throw new Error("Error searching for records");
     }
   }
-  
 
   /**
    * Closes the database connection.

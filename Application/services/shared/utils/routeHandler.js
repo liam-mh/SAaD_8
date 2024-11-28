@@ -65,6 +65,16 @@ const handleRoutes = (router, serviceName, resources) => {
             }
         });
 
+        router.post(`/${resource}/createRecords`, async (req, res) => {
+            try {
+                const result = await controllerInstance.createRecords(req.body);
+                res.status(201).json({ message: 'Record created successfully', data: result });
+            } catch (error) {
+                console.error(`Error creating record in ${resource}:`, error);
+                res.status(500).json({ message: 'Failed to create record', error: error.message });
+            }
+        });
+
         router.put(`/${resource}/updateRecord`, async (req, res) => {
             try {
                 const result = await controllerInstance.updateRecord(req.body);

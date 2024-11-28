@@ -5,52 +5,44 @@ const mediaFrontEndService = require("../services/storefront/mediaFrontEndServic
 const emailFrontEndService = require("../services/notification/emailFrontEndService");
 const branchFrontEndService = require("../services/storefront/branchFrontEndService");
 const mediaHistoryFrontEndService = require("../services/storefront/mediaHistoryFrontEndService");
-const employeeFrontEndService = require("../services/account/employeeFrontEndService")
+const employeeFrontEndService = require("../services/account/employeeFrontEndService");
 
 const AccountPage = () => {
+  const checkoutBasket = async () => {
+    try {
+      // This makes the initial record.
+      // Delete if timer runs out, clear basket and exit to a different page?
+      //
+      const transactionCreated = await mediaHistoryFrontEndService.post(
+        "/createRecords",
+        [
+          {
+            MediaID: 1,
+            MemberID: 14,
+            BranchID: 1,
+            Active: 0,
+            RentStart: moment().format("YYYY-MM-DD"),
+            RentEnd: moment().add(7, "days").format("YYYY-MM-DD")
+          },
+          {
+            MediaID: 2,
+            MemberID: 14,
+            BranchID: 1,
+            Active: 0,
+            RentStart: moment().format("YYYY-MM-DD"),
+            RentEnd: moment().add(7, "days").format("YYYY-MM-DD")
+          }
+        ]
+      );
+      console.log(transactionCreated.data);
+    } catch (error) {
+      console.log("FAIL", error);
+    }
+  };
+
   useEffect(() => {
     const fetchMedia = async () => {
-      try {
-
-        // const catalog = await mediaFrontEndService.get("/readRecords", {Title: "The Hobbit", Type: "Book"}, ); //Outputs media
-        // console.log(catalog.data)
-
-        // const availabilityResults = await Promise.all(
-        //   catalog.data.map(async (media) => {
-        //     const availability = await mediaHistoryFrontEndService.get(
-        //       "/readRecords",
-        //       { MediaID: media.MediaID } 
-        //     );
-            
-        //     const activeStatus =
-        //       availability.data?.[0]?.Active === 1
-        //         ? "Active"
-        //         : `Unavailable (Received: ${availability?.[0]?.Active})`;
-
-        //     return { media, activeStatus }; 
-        //   })
-        //  );
-        // //apend to media
-        // console.log("Final Results:", availabilityResults);
-
-      } catch (error) {
-        console.error("Error fetching media records:", error);
-      }
-      try {
-        const topMedia = await mediaFrontEndService.fetchMediaByTypeAndLimit();
-        console.log(topMedia.data);
-      } catch (error) {
-        console.error("Error fetching media records:", error);
-      }
-      try {
-
-      } catch (error) {
-        console.error("Error fetching media records:", error);
-      }
-      try {
-      } catch (error) {
-        console.error("Error fetching media records:", error);
-      }
+      checkoutBasket();
     };
     fetchMedia();
   }, []);

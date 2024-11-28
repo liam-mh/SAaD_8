@@ -49,9 +49,6 @@ class MediaDbHandler extends DbHandler {
     }
   }
 
-  
-
-
   async fetchMediaTopFive() {
     try {
         const selectedMedia = [];
