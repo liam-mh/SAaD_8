@@ -1,25 +1,25 @@
 import React, { useContext, useState, useEffect } from 'react';
-import LoginCard from '../components/LoginCard';
 import { Button, Container, Row, Col, Table } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
 import { SessionContext } from '../services/sessionContext';
-import { Link } from 'react-router-dom';
-import PaymentCard from '../components/PaymentCard';
 
-//Internal Service imports:
 const mediaHistoryFrontEndService = require("../services/storefront/mediaHistoryFrontEndService");
 const memberSubscriptionFrontEndService = require("../services/account/memberSubscriptionFrontEndService");
+import LoginCard from '../components/LoginCard';
+import PaymentCard from '../components/PaymentCard';
 
 const CheckoutPage = () => {
   const { user, checkout, setBasket } = useContext(SessionContext) || {}; 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [transactionID, setTransactionID] = useState(null);
-  const subscriptionPayment = false; 
   const [confirmation, setConfirmation] = useState(false);
-  const total = checkout.reduce((acc, item) => acc + (item.tokens || 0), 0);
-
   const [memberSubscriptionData, setMemberSubscriptionData] = useState([]);
   const [enoughTokens, setEnoughTokens] = useState(false);
-  console.log(memberSubscriptionData);
+
+  const navigate = useNavigate();
+  
+  const total = checkout.reduce((acc, item) => acc + (item.tokens || 0), 0);
+  const subscriptionPayment = false; 
 
   const loadSubscriptionData = async (memberID) => {
     try {
@@ -40,45 +40,53 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
+    if (!checkout || checkout.length === 0) {
+      navigate('/basket'); 
+    }
+
     if (user) {
       loadSubscriptionData(user.MemberID);
     }
-  }, [user]);
+  }, [user, navigate, checkout]);
+
+  const generateTransactionID = () => {
+    return user.MemberID + '-' + Date.now();
+  };
 
   const handleSelectedPaymentMethod = (method) => {
     setSelectedPaymentMethod(method);
   };
 
-  const generateTransactionID = () => {
-    return user.MemberID + '-' + Date.now()
-  }
-
   const handlePayment = () => {
-
     if (!user) {
       alert("Please log in to proceed with payment.");
       return;
     }
+
     if (subscriptionPayment && !selectedPaymentMethod) {
       alert("Please select a payment method.");
       return;
     }
+
     if (!enoughTokens) {
       alert("Please subscribe to proceed with payment.");
       return;
     }
+
     const paymentMethod = subscriptionPayment ? selectedPaymentMethod : 'token';
-    setTransactionID(generateTransactionID);
+    const newTransactionID = generateTransactionID();
+    setTransactionID(newTransactionID);
 
     const transaction = {
-      transactionID,
+      transactionID: newTransactionID,
       user,
       checkout,
       paymentMethod,
       total
     };
 
-    console.log('Transaction: ', transaction);
+    console.log('Transaction:', transaction);
+
     setBasket([]);
     setConfirmation(true);
   };
