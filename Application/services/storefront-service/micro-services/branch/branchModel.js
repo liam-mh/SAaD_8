@@ -5,6 +5,7 @@ const BranchModel = sequelize.define('Branch', {
   BranchID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    unique: "unique_branch",
     autoIncrement: true,
   },
   FirstLineAddress: {

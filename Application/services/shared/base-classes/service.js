@@ -1,27 +1,24 @@
 //Base service class.
 const DbHandler = require("./dbHandler");
 
+/**
+ * Base service class
+ */
 class Service {
 
     /**
      * Constructor
      * @param {DbHandler} dbHandler - Specific database handler based on derived Service.
      */
-
-    constructor(dbHandler, object) {
+    constructor(dbHandler) {
         if (this.constructor === Service) {
             throw new Error("Cannot instantiate abstract class directly.");
         }
         // Inject specific instances
         this.dbHandler = dbHandler; 
-        this.object = object
     }
 
     // Common methods that all services can use
-
-    // ------------------------------------- Validation methods -----------------------------------------------
-
-    isEmpty = (obj) => Object.keys(obj).length === 0;
 
     // ------------------------------------- Create Methods ---------------------------------------------------
     /**
@@ -50,15 +47,6 @@ class Service {
      * @returns 
      */
     readRecordsByQuery(fieldIdentifiers={}, uniqueFlag=false) {
-        
-        // Skip object mapping and just retrieve all records for the relevant table.
-        if(this.isEmpty(fieldIdentifiers) && !uniqueFlag){
-            return this.dbHandler.readByQuery();
-        }
-
-        // Map to the relevant object.
-        //this.object.mapObject(fieldIdentifiers);
-
         return this.dbHandler.readByQuery(fieldIdentifiers, uniqueFlag);
     }
 
@@ -98,8 +86,7 @@ class Service {
      * @returns 
      */
     updateRecordByQuery(newValues) {
-        this.object.mapObject(newValues);
-        return this.dbHandler.updateByQuery(this.object);
+        return this.dbHandler.updateByQuery(newValues);
     }
 
     /**
@@ -139,20 +126,20 @@ class Service {
 
     /**
      * Delete a single record.
-     * @param {Int} primaryKey - Primary key of the record to be deleted.
-     * @returns {Promise<Object>} - Returns result object.
+     * @param {Object} uniqueKey - A key and value pair to identify the record to delete.
+     * @returns {Promise<Number>} - The number of records deleted.
      */
-    deleteRecordByQuery(primaryKey) {
-        return this.dbHandler.deleteByQuery(primaryKey);
+    deleteRecordByQuery(uniqueKey) {
+        return this.dbHandler.deleteByQuery(uniqueKey);
     }
 
     /**
-     * Delete multiple records.
-     * @param {Array} primaryKeys - Array of primary keys for the records to be deleted.
-     * @returns 
+     * 
+     * @param {Object[]} uniqueKeys - An array of key and value pairs to identify the records to delete.
+     * @returns {Promise<Number>} - The number of records deleted.
      */
-    deleteRecordsByQuery(primaryKeys) {
-        return this.dbHandler.deleteByQuery(primaryKeys);
+    deleteRecordsByQuery(uniqueKeys) {
+        return this.dbHandler.deleteByQuery(uniqueKeys);
     }
 }
 

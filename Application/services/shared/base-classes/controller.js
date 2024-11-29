@@ -1,5 +1,8 @@
 const formatDateFields = require("../utils/dateFormatter");
 
+/**
+ * Base controller class.
+ */
 class Contoller {
   /**
    * Constructor
@@ -73,12 +76,13 @@ class Contoller {
 
   // ------------------------------------- Update Methods ---------------------------------------------------
   /**
-   * Update a records fields using parallel arrays.
-   * @param {Array} newValues - Array of new values.
-   * @returns
+   * Update a record based on a unique key.
+   * @param {String}
+   * @param {Object} newObject - Object of new values.
+   * @returns {Promise<Object>} - Created Records.
    */
-  updateRecord(newValues) {
-    return this.service.updateRecordByQuery(newValues);
+  updateRecord(newObject) {
+    return this.service.updateRecordByQuery(newObject);
   }
 
   /**
@@ -114,16 +118,16 @@ class Contoller {
 
   /**
    * Delete a single record
-   * @param {Int} primaryKey
-   * @returns
+   * @param {Object} uniqueKey - A key and value pair to identify the record to delete.
+   * @returns {Promise<Number>} - The number of records deleted.
    */
-  deleteRecord(primaryKey) {
-    return this.service.deleteRecordByQuery(primaryKey);
+  deleteRecord(uniqueKey) {
+    return this.service.deleteRecordByQuery(uniqueKey);
   }
 
   /**
    * Delete Multiple records.
-   * @param {Array} primaryKeys
+   * @param {Object[]} uniqueKeys - An array of key and value pairs to identify the records to delete.
    */
   deleteRecords(primaryKeys) {
     return this.service.deleteRecordsByQuery(primaryKeys);

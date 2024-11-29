@@ -1,9 +1,13 @@
 const {DbHandler} = require("../../../shared");
-const MediaSubscriptionModel = require("./memberSubscriptionModel");
+const MemberSubscriptionModel = require("./memberSubscriptionModel");
 
+/**
+ * Database handler for member Subscription related requests.
+ * Injects its model as a dependency into its base class.
+ */
 class MemberSubscriptionDbHandler extends DbHandler {
   constructor() {
-    super("MemberID", MediaSubscriptionModel);
+    super(MemberSubscriptionModel);
   }
 }
 

@@ -2,8 +2,8 @@ const {Controller} = require("shared");
 const MemberService = require("./memberService");
 
 /**
- * Controller for member related requests.
- * Injects its service dependency into the controller base class.
+ * Service for member related requests.
+ * Injects its service as a dependency into its base class.
  */
 class MemberController extends Controller {
   constructor() {

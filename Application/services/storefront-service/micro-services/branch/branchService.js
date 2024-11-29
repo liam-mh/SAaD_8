@@ -1,12 +1,14 @@
 const {Service} = require("shared");
 const BranchDbHandler = require("./branchDbHandler");
-const BranchObject = require("./branchObject")
 
+/**
+ * Service for branch related requests.
+ * Injects its database handler as a dependency into its base class.
+ */
 class BranchService extends Service{
     constructor() {
         const dbHandler = new BranchDbHandler();
-        const object = new BranchObject();
-        super(dbHandler, object);
+        super(dbHandler);
       }
 }
 

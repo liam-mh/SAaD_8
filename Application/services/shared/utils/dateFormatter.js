@@ -2,8 +2,8 @@ const moment = require("moment");
 
 /**
  * Format dates for the front end.
- * @param {Object} data
- * @returns {Object} - The data object with formatted date fields.
+ * @param {Object} data - the object with date properties to format.
+ * @returns {Object} - A data object with formatted date fields.
  */
 const formatDateFields = (data) => {
   // Fields that should not be treated as dates.
