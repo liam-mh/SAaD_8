@@ -1,13 +1,14 @@
 const {Service} = require("../../../shared");
 const EmployeeDbHandler = require("./employeDbHandler");
-const EmployeeObject = require("./employeeObject")
 
-
+/**
+ * Service for employee related requests.
+ * Injects its database handler as a dependency into its base class.
+ */
 class EmployeeService extends Service {
     constructor() {
         const dbHandler = new EmployeeDbHandler();
-        const object = new EmployeeObject();
-        super(dbHandler, object); 
+        super(dbHandler); 
       }
 }
 

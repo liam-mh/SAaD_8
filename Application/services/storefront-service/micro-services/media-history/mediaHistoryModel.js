@@ -5,6 +5,7 @@ const MediaHistoryModel = sequelize.define('MediaHistory', {
   HistoryID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    unique: "unique_media_history",
     autoIncrement: true,
   },
   MediaID: {

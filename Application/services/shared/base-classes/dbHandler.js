@@ -3,12 +3,13 @@ const sequelize = require("../../../config/sequelize");
 const { Op, ValidationError, DatabaseError } = require("sequelize");
 
 /**
- * Base entity class.
- * Dependency injection - relative table to access.
+ * Base database handler class.
  */
 class DbHandler {
-  constructor(pk, model) {
-    this.pk = pk;
+  /**
+   * @param {Object} model - the injected model based on derived class.
+   */
+  constructor(model) {
     this.model = model;
   }
 
@@ -16,7 +17,9 @@ class DbHandler {
 
   /**
    * @private
+   *
    * Handles errors by categorizing them and throwing appropriate messages.
+   *
    * @param {Error} error - The error to handle.
    * @throws {Error} - Throws categorized errors with specific messages.
    */
@@ -36,14 +39,16 @@ class DbHandler {
   }
 
   /**
+   * @private
+   *
    * Updates the query object to only return unique values by disregarding the pk.
    * Removes the primary key Attribute from the query.
    * Sets the remaining model attributes to only return the min value.
-   * 
+   *
    * @param {Object} queryOptions - The current query options Object.
-   * @returns {Object} - An updated query object that will only retun unique values.
+   * @returns {Object} - An updated query object that will only return unique values.
    */
-  #makeUnique(queryOptions){
+  #makeRecordsUnique(queryOptions) {
     const modelAttributes = Object.keys(this.model.getAttributes()).filter(
       (attr) => attr !== this.model.primaryKeyAttribute
     );
@@ -56,6 +61,40 @@ class DbHandler {
     queryOptions.group = modelAttributes; // Group by all non-pk fields
 
     return queryOptions;
+  }
+
+  /**
+   * @private
+   *
+   * Validate unique model keys to the passed in data object.
+   * Assign them to a where clause object if they are present in the data object.
+   *
+   * @param {Object} dataObject - The object to compare to the model.
+   * @returns {Object} the returned where clause.
+   */
+  #getUniqueKeys(dataObject) {
+    const whereClause = {};
+
+    const uniqueKeys = Object.keys(this.model.rawAttributes).filter(
+      (key) => this.model.rawAttributes[key].unique
+    );
+
+    let foundKey = false;
+
+    for (const uniqueKey of uniqueKeys) {
+      if (dataObject[uniqueKey] !== undefined) {
+        whereClause[uniqueKey] = dataObject[uniqueKey];
+        foundKey = true;
+        break;
+      }
+    }
+
+    if (!foundKey) {
+      throw new Error(
+        "No unique key found in dataObject to identify the record to update."
+      );
+    }
+    return whereClause;
   }
 
   /**
@@ -77,34 +116,32 @@ class DbHandler {
   }
 
   /**
-   * Creates a record in the relative table based on injected dependency.
+   * Creates a record in the relative table based on the calling service.
    *
    * @param {Object} dataObject - Object relative to the calling service.
    * @returns {Promise<Object>} - Resolves to an object representing the created record.
    */
   async createByQuery(dataObject) {
     try {
-      const dbInsert = await this.model.create(dataObject);
-      return dbInsert;
+      return await this.model.create(dataObject);
     } catch (error) {
       this.#handleError(error);
     }
   }
 
   /**
-   * Creates multiple records in the relative table based on dependency injection.
+   * Creates multiple records in the relative table based on the calling service.
+   *
    * @param {Object[]} records - Array of Records to create.
-   * @returns {Promise<Object[]>} - Array of Created Records.
+   * @returns {Promise<Object[]>} - Resolves to an array of objects representing the created records.
    */
   async createMultipleByQuery(records) {
     try {
       // Insert all records at once, validate per record for security, skip hooks for performance.
-      const createdRecords = await this.model.bulkCreate(records, {
+      return await this.model.bulkCreate(records, {
         validate: true,
         individualHooks: false,
       });
-
-      return createdRecords;
     } catch (error) {
       this.#handleError(error);
     }
@@ -119,9 +156,9 @@ class DbHandler {
    * - Read all unique records disregarding pk.
    * - Read all unique records by grouping provided query fields disregarding pk.
    *
-   * @param {Object} dataObject - Object relative to the calling service. Objects non null properties represent query fields.
+   * @param {Object} dataObject - Object relative to the calling service.
    * @param {Boolean} uniqueFlag - Whether to return only unique values (disregarding pk).
-   * @returns {Promise<Object>} - Resolves to an object representing the returned data.
+   * @returns {Promise<Object>|<Object>[]} - Resolves to an array of objects or an object representing the data read.
    */
   async readByQuery(dataObject = {}, uniqueFlag = false) {
     if (!this.model) {
@@ -142,7 +179,7 @@ class DbHandler {
 
       // Handle uniqueFlag
       if (uniqueFlag) {
-         queryOptions = this.#makeUnique(queryOptions);     
+        queryOptions = this.#makeRecordsUnique(queryOptions);
       }
 
       // Fetch records based on query options
@@ -152,83 +189,43 @@ class DbHandler {
     }
   }
 
-  
   /**
    * Update a record based on relative dataObject's properties and its unique keys.
+   *
    * @param {Object} dataObject - Object containing properties for the update.
-   * @returns {Promise<[number, Object[]?]>} - Resolves to an array:
-   *  - The first element is the number of rows affected.
-   *  - The second element is an array of the updated records (if `returning` is enabled).
+   * @returns {Promise<Object>} - Resolves to an object representing the updated record.
    */
   async updateByQuery(dataObject) {
     try {
+      const whereClause = this.#getUniqueKeys(dataObject);
 
-      // Retrieve unique keys from the model
-      const uniqueKeys = Object.keys(this.model.rawAttributes).filter(
-        (key) => this.model.rawAttributes[key].unique
-      );
-
-      // Find the unique key and its value in the dataObject.
-      const whereClause = {};
-      let foundKey = false;
-
-      for (const uniqueKey of uniqueKeys) {
-        if (dataObject[uniqueKey] !== undefined) {
-          whereClause[uniqueKey] = dataObject[uniqueKey];
-          foundKey = true;
-          break;
-        }
-      }
-
-      if (!foundKey) {
-        throw new Error(
-          "No unique key found in dataObject to identify the record to update."
-        );
-      }
-
-      const dbUpdate = await this.model.update(dataObject, {
+      return await this.model.update(dataObject, {
         validate: true,
         where: whereClause,
-        returning: true, 
+        returning: true,
       });
-
-      return dbUpdate;
     } catch (error) {
       this.#handleError(error);
     }
   }
 
-  //!!!check this <-------
   /**
-   * Delete a record from the DB.
-   * @param {Number} primaryKey - Identifier of record to delete.
-   * @returns {Promise<Number>} - Resolves with the number of records deleted (0 if no records were found).
-   * Rejects with an error object if the deletion fails.
+   * Delete a record from the DB based on unique keys in the model.
+   *
+   * @param {Number} uniqueKey - A key and value pair to identify the record to delete.
+   * @returns {Promise<Number>} - Resolves to the number of records destroyed.
+   * @throws An error object if the deletion fails.
    */
-  async deleteByQuery(primaryKey) {
-    if (!this.model) {
-      throw new Error(`Model for table '${this.model.tableName}' not found.`);
-    }
-
+  async deleteByQuery(uniqueKey) {
+    console.log(uniqueKey)
     try {
-      const deleteResult = await this.model.destroy({
-        where: {
-          [this.pk]: primaryKey,
-        },
+      const whereClause = this.#getUniqueKeys(uniqueKey);
+
+      return await this.model.destroy({
+        where: whereClause
       });
-
-      if (deleteResult === 0) {
-        console.warn(
-          "No records found to delete. Check the primary key value."
-        );
-      } else {
-        console.log("Data deleted successfully");
-      }
-
-      return deleteResult; // Return the number of records deleted
-    } catch (err) {
-      console.error("Error deleting data:", err);
-      throw new Error("Failed to delete record: " + err.message);
+    } catch (error) {
+      this.#handleError(error);
     }
   }
 
@@ -249,12 +246,10 @@ class DbHandler {
       };
 
       queryOptions.where = whereClause;
-      queryOptions.limit =10;
-      queryOptions = this.#makeUnique(queryOptions);
+      queryOptions.limit = 10;
+      queryOptions = this.#makeRecordsUnique(queryOptions);
 
-      const results = await this.model.findAll(queryOptions);
-
-      return results;
+      return await this.model.findAll(queryOptions);
     } catch (error) {
       console.error("Error performing autocomplete search:", error);
       throw new Error("Error searching for records");

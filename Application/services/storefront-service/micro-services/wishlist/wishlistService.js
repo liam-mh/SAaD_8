@@ -1,12 +1,14 @@
 const {Service} = require("shared");
 const WishlistDbHandler = require("./wishlistDbhandler");
-const WishlistObject = require("./wishlistObject");
 
+/**
+ * Service for wishlist related requests.
+ * Injects its database handler as a dependency into its base class.
+ */
 class WishlistService extends Service{
     constructor() {
         const dbHandler = new WishlistDbHandler();
-        const object = new WishlistObject();
-        super(dbHandler, object);
+        super(dbHandler);
       }
 }
 

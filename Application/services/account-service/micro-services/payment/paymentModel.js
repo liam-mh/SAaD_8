@@ -5,6 +5,7 @@ const PaymentModel = sequelize.define('Payment', {
   PaymentID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    unique: "unique_payment",
     autoIncrement: true,
   },
   PaymentType: {
@@ -50,8 +51,6 @@ const PaymentModel = sequelize.define('Payment', {
 }, {
   tableName: 'Payment',
   timestamps: false,
-  // charset: 'utf8mb4',  // Omit if not needed
-  // collate: 'utf8mb4_0900_ai_ci', // Omit if not needed
 });
 
 module.exports = PaymentModel;

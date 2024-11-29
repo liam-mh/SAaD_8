@@ -1,12 +1,14 @@
 const {Service} = require("shared");
 const SubscriptionDbHandler = require("../subscription/subscriptionDbHandler");
-const SubsciptionObject = require("./subscriptionObject")
 
+/**
+ * Service for subscription related requests.
+ * Injects its database handler as a dependency into its base class.
+ */
 class SubscriptionService extends Service {
   constructor() {
     const dbHandler = new SubscriptionDbHandler();
-    const object = new SubsciptionObject();
-    super(dbHandler, object);
+    super(dbHandler);
   }
 }
 

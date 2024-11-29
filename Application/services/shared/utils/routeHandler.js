@@ -16,7 +16,7 @@ const toCamelCase = (resource) =>
  */
 const getController = (resource, serviceName) => {
     try {
-        const controllerResource = toCamelCase(resource); // Convert to camelCase
+        const controllerResource = toCamelCase(resource); // Convert from our route convention to file naming convention.
 
         const controllerPath = path.resolve(
             __dirname,
@@ -87,9 +87,8 @@ const handleRoutes = (router, serviceName, resources) => {
 
         router.delete(`/${resource}/deleteRecord`, async (req, res) => {
             try {
-                const { primaryKey } = req.body;
-                const deleted = await controllerInstance.deleteRecord(primaryKey);
-                if (result.success) {
+                const deleted = await controllerInstance.deleteRecord(req.body);
+                if (deleted.success) {
                     res.status(200).json({ message: 'Record deleted successfully', data: deleted, status: res.statusCode});
                 } else {
                     res.status(404).json({ message: 'Record not found' });

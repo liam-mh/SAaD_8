@@ -50,6 +50,7 @@ const AccountPage = () => {
         ]
       );
 
+      console.log(transactionCreated.data[0].MemberID);
       //Then update the members account we dont want to charge unless the media is rented.
       if (transactionCreated.status === 201) {
         //This could either be something you save in state or you could do some maths with the start and end dates of returned objects.
@@ -66,6 +67,12 @@ const AccountPage = () => {
         }catch(error){
           console.error("Error charging customer", error)
         }
+        //Just put in loop becau
+        
+          const deleted = await mediaHistoryFrontEndService.delete('/deleteRecord', {HistoryID: 96});//Get on creation from transactionCreated.
+          console.log(deleted)
+        
+        
         
       } else {
         console.error("No data added to rental history");
@@ -80,9 +87,11 @@ const AccountPage = () => {
 
   useEffect(() => {
     const fetchMedia = async () => {
-      //checkoutBasket();
+      for(let i = 0; i < 1; i++){
+        //checkoutBasket(), [];
+      }
     };
-    fetchMedia();
+    fetchMedia(), [];
   }, []);
 
   // Function to send an email

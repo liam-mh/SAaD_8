@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize');
 
-const MemberSubscription = sequelize.define('MemberSubscription', {
+const MemberSubscriptionModel = sequelize.define('MemberSubscription', {
   MemberID: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -51,4 +51,4 @@ const MemberSubscription = sequelize.define('MemberSubscription', {
   timestamps: false,
 });
 
-module.exports = MemberSubscription;
+module.exports = MemberSubscriptionModel;
