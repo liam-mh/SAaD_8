@@ -4,28 +4,31 @@ import { Link } from 'react-router-dom';
 import { SessionContext } from '../services/sessionContext';
 import memberFrontEndService from '../services/account/memberFrontEndService';
 
-function LoginCard() {
+function LoginCard({ onLoginSuccess }) {
   const [inputEmail, setEmail] = useState('');
   const [inputPassword, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const { user, setUser } = useContext(SessionContext);
 
   const handleLogin = async (e) => {
-    e.preventDefault(); 
-
+    e.preventDefault();
+  
     try {
       const response = await memberFrontEndService.get('/readRecords', { Email: inputEmail, Password: inputPassword });
-
+  
       if (response?.data) {
         const loggedInUser = response.data[0];
         setUser(loggedInUser);
         setErrorMessage('');
+        if (onLoginSuccess) onLoginSuccess(true); 
       } else {
         setErrorMessage('Invalid email or password. Please try again.');
+        if (onLoginSuccess) onLoginSuccess(false); 
       }
     } catch (error) {
       console.error('Error during login:', error);
       setErrorMessage('An error occurred during login. Please try again later.');
+      if (onLoginSuccess) onLoginSuccess(false); 
     }
   };
 
