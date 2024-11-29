@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import LoginCard from '../components/LoginCard';
 import { Button, Container, Row, Col, Table } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
@@ -7,15 +7,43 @@ import PaymentCard from '../components/PaymentCard';
 
 //Internal Service imports:
 const mediaHistoryFrontEndService = require("../services/storefront/mediaHistoryFrontEndService");
-
+const memberSubscriptionFrontEndService = require("../services/account/memberSubscriptionFrontEndService");
 
 const CheckoutPage = () => {
   const { user, checkout, setBasket } = useContext(SessionContext) || {}; 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [transactionID, setTransactionID] = useState(null);
-  const subscriptionPayment = true; 
+  const subscriptionPayment = false; 
   const [confirmation, setConfirmation] = useState(false);
   const total = checkout.reduce((acc, item) => acc + (item.tokens || 0), 0);
+
+  const [memberSubscriptionData, setMemberSubscriptionData] = useState([]);
+  const [enoughTokens, setEnoughTokens] = useState(false);
+  console.log(memberSubscriptionData);
+
+  const loadSubscriptionData = async (memberID) => {
+    try {
+      const response = await memberSubscriptionFrontEndService.get(
+        '/readRecords',
+        { MemberID: memberID },
+        true
+      );
+      setMemberSubscriptionData(response.data[0] || {});
+      
+      if (response.data[0].RemainingTokens >= total) {
+        setEnoughTokens(true);
+      }
+
+    } catch (error) {
+      console.error("Error fetching subscription data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      loadSubscriptionData(user.MemberID);
+    }
+  }, [user]);
 
   const handleSelectedPaymentMethod = (method) => {
     setSelectedPaymentMethod(method);
@@ -33,6 +61,10 @@ const CheckoutPage = () => {
     }
     if (subscriptionPayment && !selectedPaymentMethod) {
       alert("Please select a payment method.");
+      return;
+    }
+    if (!enoughTokens) {
+      alert("Please subscribe to proceed with payment.");
       return;
     }
     const paymentMethod = subscriptionPayment ? selectedPaymentMethod : 'token';
@@ -87,7 +119,7 @@ const CheckoutPage = () => {
             {/* Account and Login */}    
             <h4 id="details">Your Details</h4>
             {!user ? (
-              <LoginCard />
+              <LoginCard onLoginSuccess={(success) => success} />
             ) : (
               <div className='content-panel'>
                 <Row>
@@ -161,46 +193,65 @@ const CheckoutPage = () => {
           </Col>
 
           <Col>
-            {/* Payment */}        
-            <h4 id="payment">Payment</h4>
-            <div className='content-panel'>
-              <Row style={{ textAlign: 'center' }}>
-                <Col>
-                  <span><strong>Tokens Remaining</strong></span>
-                </Col>
-                <Col>
-                  <span><strong>Refresh Date</strong></span>
-                </Col>
-              </Row>
-              <Row style={{ textAlign: 'center', marginTop: '0.5rem' }}>
-                <Col>
-                  <span className='highlight-primary-outline'>{'5'}</span>
-                </Col>
-                <Col style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                  <span style={{ color: 'var(--primary)' }}>{'11-11-2024'}</span>
-                </Col>
-              </Row>
-            </div>
-
-            {/* Subscription Payment */}  
-            {subscriptionPayment && (
-              <Row className='g-0 mt-4'>
-                <PaymentCard onSelectPaymentMethod={handleSelectedPaymentMethod} />
-              </Row>
-            )}
-
-            {/* Payment Bar */} 
-            {!confirmation && (
-              <Row className='g-0 pt-4'>
-                <Button onClick={handlePayment}  className='button-primary mb-4' style={{ width: '100%', boxShadow: 'var(--drop-shadow)' }} as={Link} to="/checkout#confirmation">
-                  Pay Total: {total}
-                </Button>
-                <span>
-                  For more information on payments and media rental policies, click{" "}
-                  <Link to="/help#rerturn-policy">here</Link>
-                </span>
-              </Row>
-            )}
+            {/* Payment */}  
+            {user && (
+              <>
+                <h4 id="payment">Payment</h4>
+                <div className='content-panel'>
+                  {!memberSubscriptionData.RemainingTokens ? (
+                    <>
+                      <span>
+                        Not subscribed, please click{" "}<Link to="/help#return-policy">here</Link>{" "}To purchase tokens.
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <Row style={{ textAlign: 'center' }}>
+                        <Col>
+                          <span><strong>Tokens Remaining</strong></span>
+                        </Col>
+                        <Col>
+                          <span><strong>Refresh Date</strong></span>
+                        </Col>
+                      </Row>
+                      <Row style={{ textAlign: 'center', marginTop: '0.5rem' }}>
+                        <Col>
+                          <span className='highlight-primary-outline'>{memberSubscriptionData.RemainingTokens}</span>
+                        </Col>
+                        <Col style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                          <span style={{ color: 'var(--primary)' }}>{memberSubscriptionData.SubscriptionDate}</span>
+                        </Col>
+                        {!enoughTokens && (
+                          <span className='pt-3'>
+                            Not enough tokens, please click{" "}<Link to="/help#return-policy">here</Link>{" "}to subscribe.
+                          </span>
+                        )}
+                      </Row>
+                    </>
+                  )}
+                </div>
+    
+                {/* Subscription Payment */}  
+                {subscriptionPayment && (
+                  <Row className='g-0 mt-4'>
+                    <PaymentCard onSelectPaymentMethod={handleSelectedPaymentMethod} />
+                  </Row>
+                )}
+    
+                {/* Payment Bar */} 
+                {!confirmation && (
+                  <Row className='g-0 pt-4'>
+                    <Button onClick={handlePayment} className='button-primary mb-4' style={{ width: '100%', boxShadow: 'var(--drop-shadow)' }} as={Link} to="/checkout#confirmation" disabled={!enoughTokens}>
+                      Pay Total: {total}
+                    </Button>
+                    <span>
+                      For more information on payments and media rental policies, click{" "}
+                      <Link to="/help#return-policy">here</Link>
+                    </span>
+                  </Row>
+                )}
+              </>
+            )}      
           </Col>
         </Row>
       </Container>
