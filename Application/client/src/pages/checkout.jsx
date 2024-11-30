@@ -17,6 +17,7 @@ const CheckoutPage = () => {
   const [confirmation, setConfirmation] = useState(false);
   const [memberSubscriptionData, setMemberSubscriptionData] = useState([]);
   const [enoughTokens, setEnoughTokens] = useState(false);
+  const [reservationID, setReservationID] = useState([]);
 
   const navigate = useNavigate();
   
@@ -71,13 +72,14 @@ const CheckoutPage = () => {
             MediaID: availableMedia.media.MediaID,
             MemberID: user.MemberID,
             BranchID: item.BranchID,
-            Active: 0,
+            Active: 1,
             RentStart: item.startDate,
             RentEnd: item.returnDate,
           };
         }));
 
-        await mediaHistoryFrontEndService.post("/createRecords", reservedMedia);
+        const reservationID = await mediaHistoryFrontEndService.post("/createRecords", reservedMedia);
+        setReservationID(reservationID);
       }
     };
 
