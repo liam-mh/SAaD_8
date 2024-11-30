@@ -217,13 +217,37 @@ class DbHandler {
    * @throws An error object if the deletion fails.
    */
   async deleteByQuery(uniqueKey) {
-    console.log(uniqueKey)
     try {
       const whereClause = this.#getUniqueKeys(uniqueKey);
 
       return await this.model.destroy({
         where: whereClause
       });
+    } catch (error) {
+      this.#handleError(error);
+    }
+  }
+
+  /**
+   * Delete a multiple records from the DB based on unique keys in the model.
+   * 
+   * @param {Object[]} uniqueKeys - Array of Records to create.
+   * @returns {Promise<Object>} - Resolves to an object representing the created record.
+   */
+  async deleteMultipleByQuery(uniqueKeys) {
+    try {
+      // Map each object in the uniqueKeys array to a where clause
+      const whereClauses = uniqueKeys.map((uniqueKey) => this.#getUniqueKeys(uniqueKey));
+  
+      // Combine where clauses.
+      const combinedWhereClause = {
+        [Op.or]: whereClauses,
+      };
+
+      return await this.model.destroy({
+        where: combinedWhereClause,
+      });
+  
     } catch (error) {
       this.#handleError(error);
     }
