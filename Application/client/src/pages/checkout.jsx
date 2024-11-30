@@ -12,20 +12,33 @@ import PaymentCard from '../components/PaymentCard';
 import CountdownTimer from '../components/CountdownTimer';
 
 const CheckoutPage = () => {
-  const { user, checkout, clearCheckout, clearBasket } = useContext(SessionContext) || {}; 
+  const { user, checkout, clearCheckout, clearBasket } = useContext(SessionContext) || {};
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [transactionID, setTransactionID] = useState(null);
   const [confirmation, setConfirmation] = useState(false);
   const [memberSubscriptionData, setMemberSubscriptionData] = useState([]);
   const [enoughTokens, setEnoughTokens] = useState(false);
   const [reservationID, setReservationID] = useState([]);
+  const [anyOutOfStock, setAnyOutOfStock] = useState(false);
 
   const navigate = useNavigate();
   
   const total = checkout.reduce((acc, item) => acc + (item.tokens || 0), 0);
   const subscriptionPayment = false; 
 
-  console.log(checkout);
+  const handleBackToBasket = (status, message='') => {
+    if (status) {
+      alert(`${message} redirecting to basket`);
+      navigate('/basket');
+      clearCheckout();
+    }
+  };
+
+  useEffect(() => {
+    if (anyOutOfStock) { 
+      handleBackToBasket(true, 'One or more pieces of media are now out of stock,'); 
+    };
+  }, [anyOutOfStock])
 
   const loadSubscriptionData = async (memberID) => {
     try {
@@ -57,30 +70,45 @@ const CheckoutPage = () => {
 
         // Reserve media with temp rental record
         const reservedMedia = await Promise.all(checkout.map(async (item) => {
-          const stockData = await mediaFrontEndService.get('/readRecords', { Title: item.Title, Type: item.Type, BranchID: item.BranchID }, false);
-          
+          const stockData = await mediaFrontEndService.get(
+            '/readRecords', { Title: item.Title, Type: item.Type, BranchID: item.BranchID }, false
+          );
           const availabilityResults = await Promise.all(
             stockData.data.map(async (mediaItem) => {
-              const availability = await mediaHistoryFrontEndService.get('/readRecords', { MediaID: mediaItem.MediaID });
+              const availability = await mediaHistoryFrontEndService.get(
+                '/readRecords', { MediaID: mediaItem.MediaID }
+              );
               const activeStatus = availability?.data?.[0]?.Active ?? false;
               return { media: mediaItem, activeStatus };
             })
           );
 
-          const availableMedia = availabilityResults.find(item => item.activeStatus === false);
+          console.log('RESULTS', availabilityResults);
 
-          return {
-            MediaID: availableMedia.media.MediaID,
-            MemberID: user.MemberID,
-            BranchID: item.BranchID,
-            Active: 1,
-            RentStart: item.startDate,
-            RentEnd: item.returnDate,
-          };
+          const availableMedia = await availabilityResults.find(
+            item => item.activeStatus === false 
+   
+          );
+          if (availableMedia) {
+            return {
+              MediaID: availableMedia.media.MediaID,
+              MemberID: user.MemberID,
+              BranchID: item.BranchID,
+              Active: 1,
+              RentStart: item.startDate,
+              RentEnd: item.returnDate,
+            };
+          } else {
+            setAnyOutOfStock(true);
+            return null
+          }
         }));
 
-        const reservationID = await mediaHistoryFrontEndService.post("/createRecords", reservedMedia);
-        setReservationID(reservationID.data);
+        const filteredReservedMedia = reservedMedia.filter(item => item !== null && item !== undefined);
+        if (filteredReservedMedia.length > 0) {
+          const reservationID = await mediaHistoryFrontEndService.post("/createRecords", filteredReservedMedia);
+          setReservationID(reservationID.data);
+        }
       }
     };
 
@@ -171,9 +199,9 @@ const CheckoutPage = () => {
 
       <Container fluid='lg'>
         <h1 className="pb-2 pt-4">Checkout</h1>
-        {user && (
+        {user && reservationID.length > 0 && (
           <div>
-            <CountdownTimer length={10} />
+            <CountdownTimer length={10} onTimeUp={() => handleBackToBasket(true, 'Check out timer is up,')} />
             <p>If you leave the checkout page, media will become avaliable for other members.</p>
           </div>
         )}
@@ -204,7 +232,7 @@ const CheckoutPage = () => {
                     </span>
                   </Col>
                   <Col style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-                    <Button className='button-primary-outline' as={Link} to='/account#account'>
+                    <Button className='button-primary-outline' onClick={removeReservation} as={Link} to='/account#account'>
                       Edit Account
                     </Button>
                   </Col>
@@ -266,7 +294,7 @@ const CheckoutPage = () => {
                   {!memberSubscriptionData.RemainingTokens ? (
                     <>
                       <span>
-                        Not subscribed, please click{" "}<Link to="/help#return-policy">here</Link>{" "}To purchase tokens.
+                        Not subscribed, please click{" "}<Link onClick={removeReservation} to="/help#return-policy">here</Link>{" "}To purchase tokens.
                       </span>
                     </>
                   ) : (

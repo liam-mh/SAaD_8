@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import Countdown from 'react-countdown';
 
-const CountdownTimer = ({ length }) => {
+const CountdownTimer = ({ length, onTimeUp }) => {
     const timerEnd = Date.now() + length * 60 * 1000;
     const [isTimeUp, setIsTimeUp] = useState(false);
 
     const renderer = ({ minutes, seconds, completed }) => {
         if (completed) {
             setIsTimeUp(true);
+            onTimeUp(true);
             return <p>Time's up!</p>;
         } else {
             return (
