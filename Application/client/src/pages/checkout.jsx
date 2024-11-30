@@ -12,7 +12,7 @@ import PaymentCard from '../components/PaymentCard';
 import CountdownTimer from '../components/CountdownTimer';
 
 const CheckoutPage = () => {
-  const { user, checkout, setBasket } = useContext(SessionContext) || {}; 
+  const { user, checkout, clearCheckout, clearBasket } = useContext(SessionContext) || {}; 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [transactionID, setTransactionID] = useState(null);
   const [confirmation, setConfirmation] = useState(false);
@@ -80,12 +80,12 @@ const CheckoutPage = () => {
         }));
 
         const reservationID = await mediaHistoryFrontEndService.post("/createRecords", reservedMedia);
-        setReservationID(reservationID);
+        setReservationID(reservationID.data);
       }
     };
 
     loadData();
-  }, [user, navigate, checkout]);
+  }, [user]);
 
   const generateTransactionID = () => {
     return user.MemberID + '-' + Date.now();
@@ -125,9 +125,21 @@ const CheckoutPage = () => {
 
     console.log('Transaction:', transaction);
 
-    setBasket([]);
+    clearBasket();
     setConfirmation(true);
   };
+
+  const removeReservation = async () => {
+    const historyIDs = reservationID.map(reservation => ({ HistoryID: reservation.HistoryID }));
+    try {
+      await mediaHistoryFrontEndService.delete(
+        "/deleteRecords", historyIDs
+      );
+    } catch (error) {
+      console.error('Error deleting records:', error);
+    }
+    clearCheckout();
+  }
 
   return (
     <>
@@ -238,7 +250,7 @@ const CheckoutPage = () => {
                 </tbody>          
               </Table>
               <div style={{ textAlign: 'right' }}>
-                <Button className='button-primary-outline' as={Link} to="/basket" disabled={confirmation}>
+                <Button className='button-primary-outline' onClick={removeReservation} as={Link} to="/basket" disabled={confirmation}>
                   Edit Basket
                 </Button>
               </div>
