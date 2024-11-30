@@ -2,9 +2,11 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Button, Container, Row, Col, Table } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { SessionContext } from '../services/sessionContext';
+import moment from 'moment';
 
-const mediaHistoryFrontEndService = require("../services/storefront/mediaHistoryFrontEndService");
-const memberSubscriptionFrontEndService = require("../services/account/memberSubscriptionFrontEndService");
+import mediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService';
+import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
+import memberSubscriptionFrontEndService from '../services/account/memberSubscriptionFrontEndService';
 import LoginCard from '../components/LoginCard';
 import PaymentCard from '../components/PaymentCard';
 
@@ -20,6 +22,8 @@ const CheckoutPage = () => {
   
   const total = checkout.reduce((acc, item) => acc + (item.tokens || 0), 0);
   const subscriptionPayment = false; 
+
+  console.log(checkout);
 
   const loadSubscriptionData = async (memberID) => {
     try {
@@ -40,13 +44,44 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
-    if (!checkout || checkout.length === 0) {
-      navigate('/basket'); 
-    }
+    const loadData = async () => {
+      if (!checkout || checkout.length === 0) {
+        navigate('/basket'); 
+        return;
+      }
 
-    if (user) {
-      loadSubscriptionData(user.MemberID);
-    }
+      if (user) {
+        await loadSubscriptionData(user.MemberID);
+
+        // Reserve media with temp rental record
+        const reservedMedia = await Promise.all(checkout.map(async (item) => {
+          const stockData = await mediaFrontEndService.get('/readRecords', { Title: item.Title, Type: item.Type, BranchID: item.BranchID }, false);
+          
+          const availabilityResults = await Promise.all(
+            stockData.data.map(async (mediaItem) => {
+              const availability = await mediaHistoryFrontEndService.get('/readRecords', { MediaID: mediaItem.MediaID });
+              const activeStatus = availability?.data?.[0]?.Active ?? false;
+              return { media: mediaItem, activeStatus };
+            })
+          );
+
+          const availableMedia = availabilityResults.find(item => item.activeStatus === false);
+
+          return {
+            MediaID: availableMedia.media.MediaID,
+            MemberID: user.MemberID,
+            BranchID: item.BranchID,
+            Active: 0,
+            RentStart: item.startDate,
+            RentEnd: item.returnDate,
+          };
+        }));
+
+        await mediaHistoryFrontEndService.post("/createRecords", reservedMedia);
+      }
+    };
+
+    loadData();
   }, [user, navigate, checkout]);
 
   const generateTransactionID = () => {
