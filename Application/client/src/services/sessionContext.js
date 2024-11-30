@@ -60,6 +60,19 @@ export const SessionContextProvider = ({ children }) => {
     localStorage.setItem('checkout', safelyStringify(checkout));
   }, [user, basket, branches, checkout]);
 
+  useEffect(() => {
+    const handleTabClose = () => {
+      localStorage.removeItem('user');
+      localStorage.removeItem('basket');
+      localStorage.removeItem('branches');
+      localStorage.removeItem('checkout');
+    };
+    window.addEventListener('beforeunload', handleTabClose);
+    return () => {
+      window.removeEventListener('beforeunload', handleTabClose);
+    };
+  }, []);
+
   return (
     <SessionContext.Provider 
       value={{ 
