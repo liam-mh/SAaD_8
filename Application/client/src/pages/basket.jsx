@@ -2,9 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Container, Table, Button, Form } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
-import mediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService';
 import { Link } from 'react-router-dom';
-import moment from "moment";
 
 const BasketPage = () => {
   const { basket, setBasket, branches, setCheckout } = useContext(SessionContext) || {};
@@ -42,30 +40,13 @@ const BasketPage = () => {
     return branches.find((branch) => branch.BranchID === BranchID) || null;
   };
 
-  const handleCheckout = async () => {
-    const checkoutData = await Promise.all(basket.map(async (item, index) => {
+  const handleCheckout = () => {
+    const checkoutData = basket.map((item, index) => {
       const rentLength = item.rentLength || 7;
       const returnDate = calculateReturnDate(rentLength);
       const tokens = Math.ceil(rentLength / 7);
-      const deliveryOption = deliveryOptions[index];
+      const deliveryOption = deliveryOptions[index]; 
       const branch = getBranchInfo(item.BranchID);
-
-      // Update db to reserve media whilst in checkout
-      try {
-        await mediaHistoryFrontEndService.post(
-          "/createRecord",
-          {
-            MediaID: 1,
-            MemberID: 0,
-            BranchID: branch.BranchID,
-            Active: 0,
-            RentStart: moment().format("YYYY-MM-DD"),
-            RentEnd: moment().add(7, "days").format("YYYY-MM-DD"),
-          },
-        ); 
-      } catch (error) {
-        console.log('ERROR: ', error);
-      }
 
       return {
         ...item,
@@ -75,7 +56,7 @@ const BasketPage = () => {
         deliveryOption,
         branch
       };
-    }));
+    });
 
     setCheckout(checkoutData);
   };
