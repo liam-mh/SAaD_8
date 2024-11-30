@@ -3,6 +3,7 @@ import { Container, Table, Button, Form } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 const BasketPage = () => {
   const { basket, setBasket, branches, setCheckout } = useContext(SessionContext) || {};
@@ -11,15 +12,7 @@ const BasketPage = () => {
     return <p>No basket information...</p>;
   }
 
-  const today = new Date();
-  const startDate = today.toLocaleDateString('en-GB').split('/').join('-');
-
-  const calculateReturnDate = (rentLength) => {
-    const returnDateObj = new Date(today);
-    returnDateObj.setDate(returnDateObj.getDate() + rentLength);
-    return returnDateObj.toLocaleDateString('en-GB').split('/').join('-');
-  };
-
+  const today = moment().format("YYYY-MM-DD");
   const adjustRentLength = (index, adjustment) => {
     setBasket((prevBasket) =>
       prevBasket.map((item, i) =>
@@ -31,6 +24,9 @@ const BasketPage = () => {
           : item
       )
     );
+  };
+  const calculateReturnDate = (rentLength) => {
+    return moment().add(rentLength, "days").format("YYYY-MM-DD");
   };
 
   const getBranchInfo = (BranchID) => {
@@ -50,7 +46,7 @@ const BasketPage = () => {
 
       return {
         ...item,
-        startDate,
+        today,
         returnDate,
         tokens,
         deliveryOption,
@@ -147,7 +143,7 @@ const BasketPage = () => {
                     </td>
   
                     <td>
-                      <span>{startDate}</span>
+                      <span>{today}</span>
                     </td>
   
                     <td>
