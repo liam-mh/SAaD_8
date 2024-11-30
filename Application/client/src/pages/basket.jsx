@@ -38,6 +38,7 @@ const BasketPage = () => {
 
   const handleCheckout = () => {
     const checkoutData = basket.map((item, index) => {
+      const startDate = today;
       const rentLength = item.rentLength || 7;
       const returnDate = calculateReturnDate(rentLength);
       const tokens = Math.ceil(rentLength / 7);
@@ -46,7 +47,7 @@ const BasketPage = () => {
 
       return {
         ...item,
-        today,
+        startDate,
         returnDate,
         tokens,
         deliveryOption,
