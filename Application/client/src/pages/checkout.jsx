@@ -9,6 +9,7 @@ import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import memberSubscriptionFrontEndService from '../services/account/memberSubscriptionFrontEndService';
 import LoginCard from '../components/LoginCard';
 import PaymentCard from '../components/PaymentCard';
+import CountdownTimer from '../components/CountdownTimer';
 
 const CheckoutPage = () => {
   const { user, checkout, setBasket } = useContext(SessionContext) || {}; 
@@ -158,6 +159,13 @@ const CheckoutPage = () => {
 
       <Container fluid='lg'>
         <h1 className="pb-2 pt-4">Checkout</h1>
+        {user && (
+          <div>
+            <CountdownTimer length={10} />
+            <p>If you leave the checkout page, media will become avaliable for other members.</p>
+          </div>
+        )}
+
         <Row>
           <Col>
 
