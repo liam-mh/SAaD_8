@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+import LoginCard from '../components/LoginCard';
 import { Button, Container, Row, Col, Table } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { SessionContext } from '../services/sessionContext';
@@ -7,8 +8,8 @@ import moment from 'moment';
 import mediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import memberSubscriptionFrontEndService from '../services/account/memberSubscriptionFrontEndService';
-import LoginCard from '../components/LoginCard';
-import PaymentCard from '../components/PaymentCard';
+import LoginCard from '../components/Login-Card/LoginCard';
+import PaymentCard from '../components/Payment-Card/PaymentCard';
 import CountdownTimer from '../components/CountdownTimer';
 
 const CheckoutPage = () => {

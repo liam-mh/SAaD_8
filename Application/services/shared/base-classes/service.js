@@ -8,6 +8,7 @@ class Service {
 
     /**
      * Constructor
+     * 
      * @param {DbHandler} dbHandler - Specific database handler based on derived Service.
      */
     constructor(dbHandler) {
@@ -22,7 +23,8 @@ class Service {
 
     // ------------------------------------- Create Methods ---------------------------------------------------
     /**
-     * Creates a new record in the relative table based on dependency injection.
+     * Creates a new record in the relative table.
+     * 
      * @param {Object} record - Record to create.
      * @returns {Promise<Object>} - Created Record.
      */
@@ -31,7 +33,8 @@ class Service {
     }
 
     /**
-     * Creates multiple records in the relative table based on dependency injection.
+     * Creates multiple records in the relative table..
+     * 
      * @param {Object[]} records - Records to create.
      * @returns {Promise<Object[]>} - Created Records.
      */
@@ -42,7 +45,8 @@ class Service {
     // ------------------------------------- Read Methods ---------------------------------------------------
 
     /**
-     * Reads and returns multiple records based on matching field values.
+     * Reads and returns multiple records based on matching field values from the raative table.
+     * 
      * @param {Array} fieldIdentifiers - Array of field identifiers.
      * @returns 
      */
@@ -51,15 +55,17 @@ class Service {
     }
 
     /**
+     * Reads and returns 10 records containing the users inputed characters from the relative table.
      * 
-     * @param {String} chars 
+     * @param {String} chars - User input.
      */
     autoComplete(chars){
         return this.dbHandler.autoComplete(chars);
     }
 
     /**
-     * Reads and returns a single field matching the PK and column.
+     * Reads and returns a single field matching the PK and column from the relative table.
+     * 
      * @param {Int} primaryKey - Primary key for the record.
      * @param {String} column - Column to be returned.
      * @returns 
@@ -69,7 +75,8 @@ class Service {
     }
 
     /**
-     * Reads and returns multiple fields based on column identifiers.
+     * Reads and returns multiple fields based on column identifiers from the relative table.
+     * 
      * @param {Array} primaryKey - Primary key for the records.
      * @param {Array} columns - Columns that should be returned.
      * @returns 
@@ -81,7 +88,8 @@ class Service {
     // ------------------------------------- Update Methods ---------------------------------------------------
 
     /**
-     * Create Object with new values then pass to dbHandler to update DB.
+     * Update a record in the relative table.
+     * 
      * @param {Array} newValues - Array of new values.
      * @returns 
      */
@@ -91,6 +99,7 @@ class Service {
 
     /**
      * Updates multiple record's fields.
+     * 
      * @param {Array} primaryKeys - Array of primary keys.
      * @param {2D Array} columns - 2D array of column identifiers.
      * @param {2D Array} newValues - 2D array of new values.
@@ -102,6 +111,7 @@ class Service {
 
     /**
      * Update a field in a single record.
+     * 
      * @param {Int} primaryKey - Primary key of record containing field to be updated.
      * @param {String} field - Field to be updated.
      * @param {*} newValue - New value for the field.
@@ -113,6 +123,7 @@ class Service {
 
     /**
      * Update multiple fields in a single record.
+     * 
      * @param {Int} primaryKey - Primary key of record containing fields to be updated.
      * @param {Array} fields - Array of fields to be updated.
      * @param {Array} newValues - Array of new values for each field.
@@ -125,7 +136,8 @@ class Service {
     // ------------------------------------- Delete Methods ---------------------------------------------------
 
     /**
-     * Delete a single record.
+     * Delete a single record from the relative table.
+     * 
      * @param {Object} uniqueKey - A key and value pair to identify the record to delete.
      * @returns {Promise<Number>} - The number of records deleted.
      */
@@ -134,12 +146,13 @@ class Service {
     }
 
     /**
+     * Deletes Multiple records from the relative table.
      * 
      * @param {Object[]} uniqueKeys - An array of key and value pairs to identify the records to delete.
      * @returns {Promise<Number>} - The number of records deleted.
      */
     deleteRecordsByQuery(uniqueKeys) {
-        return this.dbHandler.deleteByQuery(uniqueKeys);
+        return this.dbHandler.deleteMultipleByQuery(uniqueKeys);
     }
 }
 

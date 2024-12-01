@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { Button, Card, Form, Row, Col, CardImg } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { SessionContext } from '../services/sessionContext';
-import memberFrontEndService from '../services/account/memberFrontEndService';
+import { SessionContext } from '../../services/sessionContext';
+import memberFrontEndService from '../../services/account/memberFrontEndService';
 
 function LoginCard({ onLoginSuccess }) {
   const [inputEmail, setEmail] = useState('');
