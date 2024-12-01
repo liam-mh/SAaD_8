@@ -75,10 +75,12 @@ function Header() {
                 <Form className="d-flex align-items-center">
                   <DropdownMenu searchText={searchText} setSearchText={setSearchText} /> 
                   <Link to="/search" state={{ searchTerm: searchText }}>
-                    <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }}>Search</Button>
+                    <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }}>
+                      <i className="bi bi-search"></i>
+                    </Button>
                   </Link>
                   <Button className="button-secondary" style={{ borderRadius: '5px 0 0 5px' }} as={Link} to="/basket">
-                    Basket
+                    <i className="bi bi-basket"></i>
                   </Button>
                   <span className='highlight-primary' style={{ borderRadius: '0 5px 5px 0' }}>{basketNum || '0'}</span>
                 </Form>
