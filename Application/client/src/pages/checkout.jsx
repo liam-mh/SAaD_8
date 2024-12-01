@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react';
-import LoginCard from '../components/LoginCard';
 import { Button, Container, Row, Col, Table } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { SessionContext } from '../services/sessionContext';
