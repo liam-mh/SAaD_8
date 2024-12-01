@@ -99,6 +99,20 @@ const handleRoutes = (router, serviceName, resources) => {
             }
         });
 
+        router.delete(`/${resource}/deleteRecords`, async (req, res) => {
+            try {
+                const deleted = await controllerInstance.deleteRecords(req.body);
+                if (deleted.success) {
+                    res.status(200).json({ message: 'Records deleted successfully', data: deleted, status: res.statusCode});
+                } else {
+                    res.status(404).json({ message: 'Records not found' });
+                }
+            } catch (error) {
+                console.error(`Error deleting records in ${resource}:`, error);
+                res.status(500).json({ message: 'Failed to delete records', error: error.message });
+            }
+        });
+
         router.get(`/${resource}/autoComplete`, async (req, res) => {
             try {
                 // Extract `chars` directly from the query parameters

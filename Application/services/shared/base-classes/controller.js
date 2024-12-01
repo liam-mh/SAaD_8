@@ -119,7 +119,7 @@ class Contoller {
   /**
    * Delete a single record
    * @param {Object} uniqueKey - A key and value pair to identify the record to delete.
-   * @returns {Promise<Number>} - The number of records deleted.
+   * @returns {Promise<Number>} - The number of records deleted (0 or 1).
    */
   deleteRecord(uniqueKey) {
     return this.service.deleteRecordByQuery(uniqueKey);
@@ -127,10 +127,12 @@ class Contoller {
 
   /**
    * Delete Multiple records.
+   * 
    * @param {Object[]} uniqueKeys - An array of key and value pairs to identify the records to delete.
+   * @returns {Promise<Number>} - The number of records deleted (0, 1 or many).
    */
-  deleteRecords(primaryKeys) {
-    return this.service.deleteRecordsByQuery(primaryKeys);
+  deleteRecords(uniqueKeys) {
+    return this.service.deleteRecordsByQuery(uniqueKeys);
   }
 
 }
