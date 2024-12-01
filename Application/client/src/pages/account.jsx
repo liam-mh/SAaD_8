@@ -1,58 +1,57 @@
 import { useEffect } from "react";
-import LoginCard from "../components/LoginCard";
+import LoginCard from "../components/Login-Card/LoginCard";
 import moment from "moment";
 const mediaFrontEndService = require("../services/storefront/mediaFrontEndService");
 const emailFrontEndService = require("../services/notification/emailFrontEndService");
 const branchFrontEndService = require("../services/storefront/branchFrontEndService");
 const mediaHistoryFrontEndService = require("../services/storefront/mediaHistoryFrontEndService");
-const employeeFrontEndService = require("../services/account/employeeFrontEndService")
+const employeeFrontEndService = require("../services/account/employeeFrontEndService");
+const memberSubscriptionFrontEndService = require("../services/account/memberSubscriptionFrontEndService");
 
 const AccountPage = () => {
   useEffect(() => {
     const fetchMedia = async () => {
-      try {
+      // const transactionCreated = await mediaHistoryFrontEndService.post(
+      //   "/createRecords",
+      //   [
+      //     {
+      //       MediaID: 1,
+      //       MemberID: 14,
+      //       BranchID: 1,
+      //       Active: 0,
+      //       RentStart: moment().format("YYYY-MM-DD"),
+      //       RentEnd: moment().add(7, "days").format("YYYY-MM-DD"),
+      //     },
+      //     {
+      //       MediaID: 2,
+      //       MemberID: 14,
+      //       BranchID: 1,
+      //       Active: 1,
+      //       RentStart: moment().format("YYYY-MM-DD"),
+      //       RentEnd: moment().add(7, "days").format("YYYY-MM-DD"),
+      //     },
+      //   ],
+      // );
 
-        // const catalog = await mediaFrontEndService.get("/readRecords", {Title: "The Hobbit", Type: "Book"}, ); //Outputs media
-        // console.log(catalog.data)
+      // console.log(transactionCreated.data[0].HistoryID)
 
-        // const availabilityResults = await Promise.all(
-        //   catalog.data.map(async (media) => {
-        //     const availability = await mediaHistoryFrontEndService.get(
-        //       "/readRecords",
-        //       { MediaID: media.MediaID } 
-        //     );
-            
-        //     const activeStatus =
-        //       availability.data?.[0]?.Active === 1
-        //         ? "Active"
-        //         : `Unavailable (Received: ${availability?.[0]?.Active})`;
+      
 
-        //     return { media, activeStatus }; 
-        //   })
-        //  );
-        // //apend to media
-        // console.log("Final Results:", availabilityResults);
-
-      } catch (error) {
-        console.error("Error fetching media records:", error);
-      }
-      try {
-        const topMedia = await mediaFrontEndService.fetchMediaByTypeAndLimit();
-        console.log(topMedia.data);
-      } catch (error) {
-        console.error("Error fetching media records:", error);
-      }
-      try {
-
-      } catch (error) {
-        console.error("Error fetching media records:", error);
-      }
-      try {
-      } catch (error) {
-        console.error("Error fetching media records:", error);
-      }
+      const transactionDeleted = await mediaHistoryFrontEndService.delete(
+        "/deleteRecords",
+        [
+          {
+            HistoryID: 37
+          },
+          {
+            HistoryID: 38
+          }
+        ]
+      );
+      
+      console.log(transactionDeleted);
     };
-    fetchMedia();
+    //fetchMedia(), [];
   }, []);
 
   // Function to send an email

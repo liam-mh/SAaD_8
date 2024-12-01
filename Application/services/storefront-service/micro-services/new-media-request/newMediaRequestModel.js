@@ -5,6 +5,7 @@ const NewMediaRequestModel = sequelize.define('NewMediaRequest', {
   RequestID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    unique: "unique_new_media_request",
     autoIncrement: true,
   },
   Title: {

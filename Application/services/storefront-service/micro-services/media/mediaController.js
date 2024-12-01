@@ -2,6 +2,10 @@ const {Controller} = require("shared");
 const MediaService = require("./mediaService");
 const {formatDateFields} = require("shared");
 
+/**
+ * Controller for media related requests.
+ * Injects its service as a dependency into its base class.
+ */
 class MediaController extends Controller {
     constructor(){
         const service = new MediaService();

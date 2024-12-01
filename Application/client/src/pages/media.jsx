@@ -3,11 +3,10 @@ import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import Row from 'react-bootstrap/esm/Row';
 import Col from 'react-bootstrap/esm/Col';
-import BranchStockCard from '../components/BranchStockCard';
-import NotificationBanner from '../components/NotificationBanner';
+import BranchStockCard from '../components/Branch-Stock-Card/BranchStockCard';
+import NotificationBanner from '../components/Notification-Banner/NotificationBanner';
 import { useLocation } from 'react-router-dom';
 const mediaFrontEndService = require('../services/storefront/mediaFrontEndService');
-
 
 const MediaPage = () => {
   const location = useLocation();
@@ -78,11 +77,13 @@ const MediaPage = () => {
             <Row className="pt-3 g-0">
               <h3 id="stock">Availability</h3>
               {media.map((mediaItem, index) => (
-                <BranchStockCard 
-                  key={`${mediaItem.Title}-${mediaItem.BranchID}-${index}`} 
-                  media={mediaItem} 
-                  onAddToBasket={handleAddToBasket} 
-                />
+                <Row className='pb-4 g-0'>
+                  <BranchStockCard 
+                    key={`${mediaItem.Title}-${mediaItem.BranchID}-${index}`} 
+                    media={mediaItem} 
+                    onAddToBasket={handleAddToBasket} 
+                  />
+              </Row>
               ))}
             </Row>
 

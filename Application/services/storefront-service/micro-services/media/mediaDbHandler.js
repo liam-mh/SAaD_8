@@ -2,12 +2,16 @@ const { DbHandler } = require("shared");
 const MediaModel = require("./mediaModel");
 const sequelize = require('../../../../config/sequelize');
 
+/**
+ * Database handler for media related requests.
+ * Injects its model as a dependency into its base class.
+ */
 class MediaDbHandler extends DbHandler {
   autoCompleteQueryFields = ["Author", "Genre", "Title", "Type"];
   types = ["Book", "Journal", "CD", "Periodical", "DVD", "Game"];
 
   constructor() {
-    super("MediaID", MediaModel);
+    super(MediaModel);
   }
 
    /**
@@ -48,9 +52,6 @@ class MediaDbHandler extends DbHandler {
       throw error;
     }
   }
-
-  
-
 
   async fetchMediaTopFive() {
     try {

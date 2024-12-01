@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Container, Col, Row, Form, FormGroup } from 'react-bootstrap';
-import MediaPagination from '../components/MediaPagination';
+import MediaPagination from '../components/Media-Pagination/MediaPagination';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 
 const SearchPage = () => {

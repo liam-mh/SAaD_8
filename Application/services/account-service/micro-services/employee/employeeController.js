@@ -3,7 +3,7 @@ const EmployeeService = require("./employeeService")
 
 /**
  * Controller for employee related requests.
- * Injects its service dependency into the controller base class.
+ * Injects its service as a dependency into its base class.
  */
 class EmployeeController extends Controller {
   constructor() { 

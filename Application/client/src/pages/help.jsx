@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import Col from 'react-bootstrap/esm/Col';
 import Row from 'react-bootstrap/esm/Row';
-import MediaRequestForm from '../components/MediaRequestForm';
+import MediaRequestForm from '../components/Media-Request-Form/MediaRequestForm';
 
 const HelpPage = () => {
   return (

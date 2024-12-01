@@ -5,6 +5,7 @@ const MediaHistoryModel = sequelize.define('MediaHistory', {
   HistoryID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    unique: "unique_media_history",
     autoIncrement: true,
   },
   MediaID: {
@@ -13,6 +14,16 @@ const MediaHistoryModel = sequelize.define('MediaHistory', {
     references: {
       model: 'Media',
       key: 'MediaID',
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  },
+  MemberID: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Member',
+      key: 'MemberID',
     },
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
@@ -29,18 +40,18 @@ const MediaHistoryModel = sequelize.define('MediaHistory', {
   },
   EmployeeID: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
     references: {
       model: 'Employee',
       key: 'EmployeeID',
     },
     onUpdate: 'CASCADE',
-    onDelete: 'SET NULL', // assuming employee can be removed but history remains
+    onDelete: 'SET NULL', 
   },
   Active: {
     type: DataTypes.TINYINT(1),
     allowNull: false,
-    defaultValue: 1,  // Assuming '1' for active and '0' for inactive
+    defaultValue: 1,  
   },
   RentStart: {
     type: DataTypes.DATE,

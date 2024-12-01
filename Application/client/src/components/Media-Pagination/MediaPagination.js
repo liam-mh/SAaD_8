@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { Pagination, Row, Col } from 'react-bootstrap';
-import MediaCard from './MediaCard';
+import MediaCard from '../Media-Card/MediaCard';
 
 const MediaPagination = ({ media, numColumn, numRow, displayFirst = null }) => {
   const mediaContainerRef = useRef(null); // Reference for scrolling
