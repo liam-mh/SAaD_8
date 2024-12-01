@@ -37,6 +37,7 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
+    if (confirmation) return;
     if (anyOutOfStock) { 
       handleBackToBasket(true, 'One or more pieces of media are now out of stock,'); 
     };
@@ -61,6 +62,7 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
+    if (confirmation) return;
     const loadData = async () => {
       if (!checkout || checkout.length === 0) {
         navigate('/basket'); 
@@ -253,7 +255,7 @@ const CheckoutPage = () => {
 
       <Container fluid='lg'>
         <h1 className="pb-2 pt-4">Checkout</h1>
-        {user && reservationID.length > 0 && (
+        {user && reservationID.length > 0 && !confirmation &&(
           <div>
             <CountdownTimer length={10} onTimeUp={() => handleBackToBasket(true, 'Check out timer is up,')} />
             <p>If you leave the checkout page, media will become avaliable for other members.</p>
@@ -281,14 +283,15 @@ const CheckoutPage = () => {
                     <span>
                       <strong>Home Address</strong><br />
                       {user.FirstLineAddress || 'First Line Address'}<br />
-                      {user.City || 'City'}<br />
-                      {user.Postcode || 'Postcode'}<br />
+                      {user.City || 'City'}, {user.Postcode || 'Postcode'}<br />
                     </span>
                   </Col>
                   <Col style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-                    <Button className='button-primary-outline' onClick={removeReservation} as={Link} to='/account#account'>
-                      Edit Account
-                    </Button>
+                    {!confirmation && (
+                      <Button className='button-primary-outline' onClick={removeReservation} as={Link} to='/account#account'>
+                        Edit Account
+                      </Button>
+                    )}
                   </Col>
                 </Row>
               </div>
@@ -331,11 +334,13 @@ const CheckoutPage = () => {
                   })}
                 </tbody>          
               </Table>
-              <div style={{ textAlign: 'right' }}>
-                <Button className='button-primary-outline' onClick={removeReservation} as={Link} to="/basket" disabled={confirmation}>
-                  Edit Basket
-                </Button>
-              </div>
+              {!confirmation && (
+                <div style={{ textAlign: 'right' }}>
+                  <Button className='button-primary-outline' onClick={removeReservation} as={Link} to="/basket" disabled={confirmation}>
+                    Edit Basket
+                  </Button>
+                </div>
+              )}
             </div>
           </Col>
 
