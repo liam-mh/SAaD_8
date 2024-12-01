@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import LoginCard from "../components/LoginCard";
+import LoginCard from "../components/Login-Card/LoginCard";
 import moment from "moment";
 const mediaFrontEndService = require("../services/storefront/mediaFrontEndService");
 const emailFrontEndService = require("../services/notification/emailFrontEndService");

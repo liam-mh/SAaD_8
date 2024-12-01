@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Container, Nav, Form, Button, Row, Col } from 'react-bootstrap';
-import { SessionContext } from '../services/sessionContext';
-import DropdownMenu from './DropdownMenu';
+import { SessionContext } from '../../services/sessionContext';
+import DropdownMenu from '../Drop-Down-Menu/DropdownMenu';
 
 function Header() {
   const { basket } = useContext(SessionContext) || {}; 

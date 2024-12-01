@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { SessionContext } from '../services/sessionContext';
-import branchFrontEndService from '../services/storefront/branchFrontEndService';
+import { SessionContext } from '../../services/sessionContext';
+import branchFrontEndService from '../../services/storefront/branchFrontEndService';
 
 function BranchStockCard({ media, onAddToBasket }) {
     if (!media) { return <p>Loading media information...</p>; }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import WhatsNewCarousel from '../components/WhatsNewCarousel';
-import MediaPagination from '../components/MediaPagination';
+import WhatsNewCarousel from '../components/Whats-New-Carousel/WhatsNewCarousel';
+import MediaPagination from '../components/Media-Pagination/MediaPagination';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 
 const IndexPage = () => {

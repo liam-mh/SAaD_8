@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
-import LoginCard from '../components/LoginCard';
+import LoginCard from '../components/Login-Card/LoginCard';
 import { Button, Container, Row, Col, Table } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
 import { Link } from 'react-router-dom';
-import PaymentCard from '../components/PaymentCard';
+import PaymentCard from '../components/Payment-Card/PaymentCard';
 
 //Internal Service imports:
 const mediaHistoryFrontEndService = require("../services/storefront/mediaHistoryFrontEndService");
