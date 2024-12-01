@@ -51,7 +51,7 @@ const AccountPage = () => {
       
       console.log(transactionDeleted);
     };
-    fetchMedia(), [];
+    //fetchMedia(), [];
   }, []);
 
   // Function to send an email
