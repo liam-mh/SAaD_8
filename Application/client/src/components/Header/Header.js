@@ -3,12 +3,12 @@ import { Link, useLocation } from 'react-router-dom';
 import { Container, Nav, Form, Button, Row, Col } from 'react-bootstrap';
 import { SessionContext } from '../../services/sessionContext';
 import DropdownMenu from '../Drop-Down-Menu/DropdownMenu';
+import branchFrontEndService from '../../services/storefront/branchFrontEndService';
 
 function Header() {
-  const { basket } = useContext(SessionContext) || {}; 
+  const { user, basket } = useContext(SessionContext) || {}; 
   const basketNum = basket.length;
-  const localBranch = {};
-
+  const [localBranch, setLocalBranch] = useState(null);
   const location = useLocation();
   const minimalHeader = location.pathname === '/checkout';
 
@@ -24,6 +24,24 @@ function Header() {
   useEffect(() => {
     setSearchText('');
   }, [location]);
+
+  useEffect(() => {
+    if (user && !localBranch) {
+      async function loadData() {
+        try {
+          const getBranch = await branchFrontEndService.get('/readRecords', { BranchID: user.BranchID });
+          console.log(getBranch);
+          setLocalBranch(getBranch.data[0]);
+        } catch (error) {
+          console.log('Error getting header branch information', error);
+        }
+      }
+
+      loadData();
+    };
+  }, [user]);
+
+  
 
   return (
     <header className={headerClass}>
@@ -49,7 +67,9 @@ function Header() {
           <>
             <Row className="border-bottom border-secondary">
               <Col>
-                <span>Your local store: <strong>{ localBranch.FirstLineAddress || 'First Line'}, { localBranch.City || 'City' }</strong></span>
+                {localBranch && (
+                  <span><strong>Home Branch: </strong>{ localBranch.FirstLineAddress }, {[ localBranch.City, ' ', localBranch.Postcode ]}</span>
+                )}                
               </Col>
               <Col className="text-end">
                 <p className="d-inline">Need </p>
