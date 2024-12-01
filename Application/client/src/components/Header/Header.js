@@ -11,6 +11,7 @@ function Header() {
   const [localBranch, setLocalBranch] = useState(null);
   const location = useLocation();
   const minimalHeader = location.pathname === '/checkout';
+  const disableNav = location.pathname === '/search';
 
   const headerClass = 
     location.pathname === '/' || 
@@ -110,14 +111,16 @@ function Header() {
             {/* Navigation Links */}
             <Row>
               <Col>
-                <Nav className="justify-content-start">
-                  <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Book'}}>Books</Nav.Link>
-                  <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Journal'}}>Journals</Nav.Link>
-                  <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Periodical'}}>Periodicals</Nav.Link>
-                  <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'CD' }}>CDs</Nav.Link>
-                  <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'DVD' }}>DVDs</Nav.Link>
-                  <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Game' }}>Games</Nav.Link>
-                </Nav>
+                {!disableNav && (
+                  <Nav className="justify-content-start">
+                    <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Book'}}>Books</Nav.Link>
+                    <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Journal'}}>Journals</Nav.Link>
+                    <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Periodical'}}>Periodicals</Nav.Link>
+                    <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'CD' }}>CDs</Nav.Link>
+                    <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'DVD' }}>DVDs</Nav.Link>
+                    <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Game' }}>Games</Nav.Link>
+                  </Nav>
+                )}
               </Col>
               <Col>
                 <Nav className="justify-content-end">
