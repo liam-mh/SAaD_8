@@ -42,8 +42,6 @@ function Header() {
     };
   }, [user]);
 
-  
-
   return (
     <header className={headerClass}>
       <Container fluid>
