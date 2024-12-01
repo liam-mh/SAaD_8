@@ -7,6 +7,8 @@ import moment from 'moment';
 import mediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import memberSubscriptionFrontEndService from '../services/account/memberSubscriptionFrontEndService';
+import paymentFrontEndService from '../services/account/paymentFrontEndService';
+import emailFrontEndService from '../services/notification/emailFrontEndService';
 import LoginCard from '../components/Login-Card/LoginCard';
 import PaymentCard from '../components/Payment-Card/PaymentCard';
 import CountdownTimer from '../components/CountdownTimer';
@@ -70,9 +72,11 @@ const CheckoutPage = () => {
 
         // Reserve media with temp rental record
         const reservedMedia = await Promise.all(checkout.map(async (item) => {
+          // Get all copies of media ta a branch
           const stockData = await mediaFrontEndService.get(
             '/readRecords', { Title: item.Title, Type: item.Type, BranchID: item.BranchID }, false
           );
+          // Get rent status of each copy
           const availabilityResults = await Promise.all(
             stockData.data.map(async (mediaItem) => {
               const availability = await mediaHistoryFrontEndService.get(
@@ -82,9 +86,7 @@ const CheckoutPage = () => {
               return { media: mediaItem, activeStatus };
             })
           );
-
-          console.log('RESULTS', availabilityResults);
-
+          // If one is available, reserve it
           const availableMedia = await availabilityResults.find(
             item => item.activeStatus === false 
    
@@ -104,6 +106,7 @@ const CheckoutPage = () => {
           }
         }));
 
+        // Check if any of the media was unavailable, if so return to basket
         const filteredReservedMedia = reservedMedia.filter(item => item !== null && item !== undefined);
         if (filteredReservedMedia.length > 0) {
           const reservationID = await mediaHistoryFrontEndService.post("/createRecords", filteredReservedMedia);
@@ -123,35 +126,86 @@ const CheckoutPage = () => {
     setSelectedPaymentMethod(method);
   };
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
+
+    // Check all correct fields filled in
     if (!user) {
       alert("Please log in to proceed with payment.");
       return;
     }
-
     if (subscriptionPayment && !selectedPaymentMethod) {
       alert("Please select a payment method.");
       return;
     }
-
     if (!enoughTokens) {
       alert("Please subscribe to proceed with payment.");
       return;
     }
 
+    // Remove Tokens from member
+    const remainingTokens = memberSubscriptionData.RemainingTokens - total;
+    await memberSubscriptionFrontEndService.put(
+      "/updateRecord",
+      {
+        MemberID: user.MemberID,
+        RemainingTokens: remainingTokens,
+      }
+    );
+
+    // Create Payment Record if subscription
     const paymentMethod = subscriptionPayment ? selectedPaymentMethod : 'token';
+    if (subscriptionPayment) {
+      await paymentFrontEndService.put(
+        "/createRecord",
+        {
+          PaymentType: paymentMethod,
+          PaymentReason: 'Purchase',
+          Date: moment().format("YYYY-MM-DD"),
+          MemberID: user.MemberID,
+          Price: parseFloat(total.toFixed(2)),
+          EmployeeID: null,
+        }
+      );
+    }
+
+    // Send email confirmation
     const newTransactionID = generateTransactionID();
     setTransactionID(newTransactionID);
 
-    const transaction = {
-      transactionID: newTransactionID,
-      user,
-      checkout,
-      paymentMethod,
-      total
-    };
+    // Construct the plain-text order summary
+    const orderSummary = checkout.map((item, index) => {
+      const deliveryMessage = item.deliveryOption === 'collect'
+        ? `In-Store Collection, ${item.branch.Postcode}`
+        : `Home Delivery, ${user?.Postcode || 'Unknown Address'}`;
 
-    console.log('Transaction:', transaction);
+      return `
+        Media Title: ${item.Title}
+        Format: ${item.Type}
+        Subtotal: ${item.tokens} tokens
+        Start Date: ${item.startDate}
+        Return Date: ${item.returnDate}
+        Delivery: ${deliveryMessage}
+      `;
+    }).join("\n--------------------------\n"); 
+
+    await emailFrontEndService.post("/send", {
+      to: user.Email, // put in personal to test
+      subject: "AML Transaction Confirmation",
+      message: `
+    Hi ${user.FirstName},
+
+    Here is your order confirmation #${newTransactionID}
+
+    Order Summary:
+    --------------------------
+    ${orderSummary}
+    --------------------------
+    Total: ${total}
+    Payment Method: ${paymentMethod}
+
+    Thank you for using the Advanced Media Library!
+      `,
+    });
 
     clearBasket();
     setConfirmation(true);
@@ -309,7 +363,11 @@ const CheckoutPage = () => {
                       </Row>
                       <Row style={{ textAlign: 'center', marginTop: '0.5rem' }}>
                         <Col>
-                          <span className='highlight-primary-outline'>{memberSubscriptionData.RemainingTokens}</span>
+                          <span className='highlight-primary-outline'>{
+                            confirmation 
+                            ? memberSubscriptionData.RemainingTokens-total 
+                            : memberSubscriptionData.RemainingTokens}
+                          </span>
                         </Col>
                         <Col style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                           <span style={{ color: 'var(--primary)' }}>{memberSubscriptionData.SubscriptionDate}</span>
