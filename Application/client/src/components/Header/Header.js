@@ -3,14 +3,15 @@ import { Link, useLocation } from 'react-router-dom';
 import { Container, Nav, Form, Button, Row, Col } from 'react-bootstrap';
 import { SessionContext } from '../../services/sessionContext';
 import DropdownMenu from '../Drop-Down-Menu/DropdownMenu';
+import branchFrontEndService from '../../services/storefront/branchFrontEndService';
 
 function Header() {
-  const { basket } = useContext(SessionContext) || {}; 
+  const { user, basket } = useContext(SessionContext) || {}; 
   const basketNum = basket.length;
-  const localBranch = {};
-
+  const [localBranch, setLocalBranch] = useState(null);
   const location = useLocation();
   const minimalHeader = location.pathname === '/checkout';
+  const disableNav = location.pathname === '/search';
 
   const headerClass = 
     location.pathname === '/' || 
@@ -24,6 +25,24 @@ function Header() {
   useEffect(() => {
     setSearchText('');
   }, [location]);
+
+  useEffect(() => {
+    if (user && !localBranch) {
+      async function loadData() {
+        try {
+          const getBranch = await branchFrontEndService.get('/readRecords', { BranchID: user.BranchID });
+          console.log(getBranch);
+          setLocalBranch(getBranch.data[0]);
+        } catch (error) {
+          console.log('Error getting header branch information', error);
+        }
+      }
+
+      loadData();
+    };
+  }, [user]);
+
+  
 
   return (
     <header className={headerClass}>
@@ -49,7 +68,9 @@ function Header() {
           <>
             <Row className="border-bottom border-secondary">
               <Col>
-                <span>Your local store: <strong>{ localBranch.FirstLineAddress || 'First Line'}, { localBranch.City || 'City' }</strong></span>
+                {localBranch && (
+                  <span><strong>Home Branch: </strong>{ localBranch.FirstLineAddress }, {[ localBranch.City, ' ', localBranch.Postcode ]}</span>
+                )}                
               </Col>
               <Col className="text-end">
                 <p className="d-inline">Need </p>
@@ -75,10 +96,12 @@ function Header() {
                 <Form className="d-flex align-items-center">
                   <DropdownMenu searchText={searchText} setSearchText={setSearchText} /> 
                   <Link to="/search" state={{ searchTerm: searchText }}>
-                    <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }}>Search</Button>
+                    <Button className="button-secondary me-2" style={{ borderRadius: '0 5px 5px 0' }}>
+                      <i className="bi bi-search"></i>
+                    </Button>
                   </Link>
                   <Button className="button-secondary" style={{ borderRadius: '5px 0 0 5px' }} as={Link} to="/basket">
-                    Basket
+                    <i className="bi bi-basket"></i>
                   </Button>
                   <span className='highlight-primary' style={{ borderRadius: '0 5px 5px 0' }}>{basketNum || '0'}</span>
                 </Form>
@@ -88,14 +111,16 @@ function Header() {
             {/* Navigation Links */}
             <Row>
               <Col>
-                <Nav className="justify-content-start">
-                  <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Book'}}>Books</Nav.Link>
-                  <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Journal'}}>Journals</Nav.Link>
-                  <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Periodical'}}>Periodicals</Nav.Link>
-                  <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'CD' }}>CDs</Nav.Link>
-                  <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'DVD' }}>DVDs</Nav.Link>
-                  <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Game' }}>Games</Nav.Link>
-                </Nav>
+                {!disableNav && (
+                  <Nav className="justify-content-start">
+                    <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Book'}}>Books</Nav.Link>
+                    <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Journal'}}>Journals</Nav.Link>
+                    <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Periodical'}}>Periodicals</Nav.Link>
+                    <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'CD' }}>CDs</Nav.Link>
+                    <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'DVD' }}>DVDs</Nav.Link>
+                    <Nav.Link as={Link} className="nav-link-secondary" to='/search' state={{preFilterType: 'Game' }}>Games</Nav.Link>
+                  </Nav>
+                )}
               </Col>
               <Col>
                 <Nav className="justify-content-end">
