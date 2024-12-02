@@ -133,9 +133,27 @@ const EmployeeIndexPage = () => {
     if (empConfirmed) {
         console.log("Basket checked out.");
 
-        remainingTokens = await calculateMemberTokens();
-        
+        const remainingTokens = await calculateMemberTokens();
 
+        basket.map(async (item) => {
+            try {
+                console.log("Current item: ", item)
+                const returnDate = formatDateForDB(item.returnDate);
+                const historyResponse = await mediaHistoryFrontEndService.post('/createRecord', {
+                    MediaID: item.MediaID,
+                    MemberID: user[0].MemberID,
+                    BranchID: item.branch.BranchID,
+                    EmployeeID: null,
+                    Active: 1,
+                    RentStart: startDate,
+                    RentEnd: returnDate,
+                    ActualReturn: null
+                })
+                console.log("Media History response: ", historyResponse);
+            } catch (error) {
+                console.error("Error while writing to media history table: ", error);
+            }
+        })
     } else {
         console.log("Checkout canceled.");
     }
@@ -144,8 +162,8 @@ const EmployeeIndexPage = () => {
     Bring up confirmation box - Yes / No
     No - closes confirmation box, no data change
     Yes:
-        Subtracts total tokens from user
-        Create record in MediaHistory with
+        Subtracts total tokens from user - DONE
+        Create record in MediaHistory with - DONE
             MediaID, MemberID, BranchID, EmployeeID, Active (tinyint - 1), RentStart (startDate), RentEnd (returnDate), ActualReturn (null)
         Clears basket
         Sends notification via email/sms with order confirmation
@@ -171,9 +189,15 @@ const EmployeeIndexPage = () => {
             return null;
         }
     } catch (error) {
-        console.error("Error when calculating remaining tokens: ", error);
+        console.error("Error calculating remaining tokens: ", error);
     }
   }
+
+  const formatDateForDB = (date) => {
+    const [day, month, year] = date.split('-');
+
+    return `${year}-${month}-${day}`;
+  };
 
   const calculateReturnDate = (rentLength) => {
     const returnDateObj = new Date(today);
