@@ -8,6 +8,7 @@ import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import branchFrontEndService from '../services/storefront/branchFrontEndService';
 import memberFrontEndService from '../services/account/memberFrontEndService';
 import mediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService';
+import memberSubscriptionFrontEndService from '../services/account/memberSubscriptionFrontEndService';
 
 
 const EmployeeIndexPage = () => {
@@ -19,9 +20,18 @@ const EmployeeIndexPage = () => {
   const [uniqueTitles, setUniqueTitles] = useState(false);
   const [searchEmail, setSearchEmail] = useState('');
   const [user, setUserDetails] = useState(['', '']);
+  const [totalTokenCost, setTotalTokenCost] = useState(0);
 
   const today = new Date();
   const startDate = today.toLocaleDateString('en-GB').split('/').join('-');
+
+  useEffect(() => {
+    var totalTokens = 0;
+    basket.map(item => {
+        totalTokens += item.tokens; 
+    })
+    setTotalTokenCost(totalTokens);
+  }, [basket])
 
   const handleSearch = async () => {
     try {
@@ -119,6 +129,16 @@ const EmployeeIndexPage = () => {
   }
 
   const handleCheckout = async () => {
+    const empConfirmed = window.confirm(`Are you sure you would like to checkout this basket to the user ${user[0].FirstName} ${user[0].Surname}?`);
+    if (empConfirmed) {
+        console.log("Basket checked out.");
+
+        remainingTokens = await calculateMemberTokens();
+        
+
+    } else {
+        console.log("Checkout canceled.");
+    }
     /* 
     Needs to:
     Bring up confirmation box - Yes / No
@@ -128,10 +148,31 @@ const EmployeeIndexPage = () => {
         Create record in MediaHistory with
             MediaID, MemberID, BranchID, EmployeeID, Active (tinyint - 1), RentStart (startDate), RentEnd (returnDate), ActualReturn (null)
         Clears basket
-
-    Search function also needs to be updated to check MediaHistory table for record with field Active 1
-        If active record, mark item as unavailable
+        Sends notification via email/sms with order confirmation
     */
+  }
+
+  const calculateMemberTokens = async () => {
+    try {
+        const memberID = user[0].MemberID;
+        const memberSubResponse = await memberSubscriptionFrontEndService.get('/readRecords', { MemberID: memberID });
+        const memberTokens = memberSubResponse.data[0].RemainingTokens;
+
+        if (memberTokens >= totalTokenCost) {
+            const remainingTokens = memberTokens - totalTokenCost;
+            await memberSubscriptionFrontEndService.put("/updateRecord",
+            {
+                MemberID: memberID,
+                RemainingTokens: remainingTokens,
+            });
+            return remainingTokens;
+        }
+        else {
+            return null;
+        }
+    } catch (error) {
+        console.error("Error when calculating remaining tokens: ", error);
+    }
   }
 
   const calculateReturnDate = (rentLength) => {
@@ -308,8 +349,11 @@ const EmployeeIndexPage = () => {
                             })}
                         </tbody>          
                     </Table>
+                    <div style={{ textAlign: 'left' }}>
+                        <h3>Total cost: {totalTokenCost} tokens</h3>
+                    </div>
                     <div style={{ textAlign: 'right' }}>
-                        <Button className='button-primary' as={Link} to="/basket">
+                        <Button className='button-primary' onClick={handleCheckout}>
                             Checkout User's Basket
                         </Button>
                     </div>
