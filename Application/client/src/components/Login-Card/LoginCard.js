@@ -16,13 +16,19 @@ function LoginCard() {
     try {
       const response = await memberFrontEndService.get('/readRecords', { Email: inputEmail, Password: inputPassword });
 
-      if (response?.data) {
-        const loggedInUser = response.data[0];
-        setUser(loggedInUser);
-        setErrorMessage('');
-      } else {
-        setErrorMessage('Invalid email or password. Please try again.');
-      }
+      if (response?.data.length === 0) { 
+
+        setErrorMessage('Invalid email or password. Please try again.'); 
+        
+        } else { 
+        
+        const loggedInUser = response.data[0]; 
+        
+        setUser(loggedInUser); 
+        
+        setErrorMessage(''); 
+        
+        } 
     } catch (error) {
       console.error('Error during login:', error);
       setErrorMessage('An error occurred during login. Please try again later.');

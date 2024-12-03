@@ -7,11 +7,12 @@ const sequelize = require('../../../../config/sequelize');
  * Injects its model as a dependency into its base class.
  */
 class MediaDbHandler extends DbHandler {
-  autoCompleteQueryFields = ["Author", "Genre", "Title", "Type"];
   types = ["Book", "Journal", "CD", "Periodical", "DVD", "Game"];
 
   constructor() {
-    super(MediaModel);
+    const autoCompleteQueryFields = ["Author", "Genre", "Title", "Type"];
+    const removeFromGrouping = ['BranchID'];
+    super(MediaModel, removeFromGrouping, autoCompleteQueryFields);
   }
 
    /**

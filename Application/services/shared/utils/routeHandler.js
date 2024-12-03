@@ -46,7 +46,7 @@ const handleRoutes = (router, serviceName, resources) => {
                 const { fields, uniqueFlag } = req.query;
                 const parsedFields = JSON.parse(fields);
                 const parsedUniqueFlag = uniqueFlag === 'true';
-
+                //204 implement empty
                 const read = await controllerInstance.readRecords(parsedFields, parsedUniqueFlag);
                 res.status(200).json({ message: 'Records retrieved successfully', data: read, status: res.statusCode});
             } catch (error) {

@@ -36,19 +36,6 @@ const AccountPage = () => {
       // console.log(transactionCreated.data[0].HistoryID)
 
       
-
-      const transactionDeleted = await mediaHistoryFrontEndService.delete(
-        "/deleteRecords",
-        [
-          {
-            HistoryID: 37
-          },
-          {
-            HistoryID: 38
-          }
-        ]
-      );
-      
       console.log(transactionDeleted);
     };
     fetchMedia(), [];

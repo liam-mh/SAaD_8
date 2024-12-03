@@ -9,9 +9,7 @@
     "test": "jest",
     "eject": "react-scripts eject"
   },
-  "jest": {
-    "testEnvironment": "node"
-  },
+  "jest": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -23,7 +21,8 @@
     "react-bootstrap": "^2.10.5",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
-    "react-scripts": "^5.0.0"
+    "react-scripts": "^5.0.0",
+    "sinon": "^19.0.2"
   },
   "browserslist": {
     "production": [
@@ -39,6 +38,9 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.25.9",
+    "babel-jest": "^29.7.0",
     "jest": "^27.5.1",
     "supertest": "^7.0.0"
   }

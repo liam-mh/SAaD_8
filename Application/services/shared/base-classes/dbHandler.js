@@ -8,9 +8,13 @@ const { Op, ValidationError, DatabaseError } = require("sequelize");
 class DbHandler {
   /**
    * @param {Object} model - the injected model based on derived class.
+   * @param {Array<String>} removeFromGrouping - An array of keys to disregard when grouping to get unique values.
    */
-  constructor(model) {
+
+  constructor(model, removeFromGrouping=[], autoCompleteQueryFields=[]) {
     this.model = model;
+    this.removeFromGrouping = removeFromGrouping;
+    this.autoCompleteQueryFields = autoCompleteQueryFields
   }
 
   // ------------------------------------- Error Handling -----------------------------------------------
@@ -50,7 +54,7 @@ class DbHandler {
    */
   #makeRecordsUnique(queryOptions) {
     const modelAttributes = Object.keys(this.model.getAttributes()).filter(
-      (attr) => attr !== this.model.primaryKeyAttribute
+      (attr) => attr !== this.model.primaryKeyAttribute && !this.removeFromGrouping.includes(attr)
     );
 
     queryOptions.attributes = modelAttributes.map((attr) => [
@@ -161,14 +165,9 @@ class DbHandler {
    * @returns {Promise<Object>|<Object>[]} - Resolves to an array of objects or an object representing the data read.
    */
   async readByQuery(dataObject = {}, uniqueFlag = false) {
-    if (!this.model) {
-      throw new Error(`Model for table '${this.model.tableName}' not found.`);
-    }
-
     try {
       let queryOptions = {};
 
-      // Build the where clause dynamically
       const whereClause = {};
       for (const [key, value] of Object.entries(dataObject)) {
         if (value !== null && value !== undefined) {
@@ -177,13 +176,15 @@ class DbHandler {
       }
       queryOptions.where = whereClause;
 
-      // Handle uniqueFlag
+      // Handle uniqueFlag.
       if (uniqueFlag) {
         queryOptions = this.#makeRecordsUnique(queryOptions);
       }
 
-      // Fetch records based on query options
-      return await this.model.findAll(queryOptions);
+      // Fetch records based on dynamic query options.
+      const mediaRecords = await this.model.findAll(queryOptions);
+
+      return mediaRecords;
     } catch (error) {
       this.#handleError(error);
     }
@@ -273,7 +274,8 @@ class DbHandler {
       queryOptions.limit = 10;
       queryOptions = this.#makeRecordsUnique(queryOptions);
 
-      return await this.model.findAll(queryOptions);
+      const results = await this.model.findAll(queryOptions);
+      return results;
     } catch (error) {
       console.error("Error performing autocomplete search:", error);
       throw new Error("Error searching for records");
