@@ -11,45 +11,8 @@ const memberSubscriptionFrontEndService = require("../services/account/memberSub
 const AccountPage = () => {
   useEffect(() => {
     const fetchMedia = async () => {
-      // const transactionCreated = await mediaHistoryFrontEndService.post(
-      //   "/createRecords",
-      //   [
-      //     {
-      //       MediaID: 1,
-      //       MemberID: 14,
-      //       BranchID: 1,
-      //       Active: 0,
-      //       RentStart: moment().format("YYYY-MM-DD"),
-      //       RentEnd: moment().add(7, "days").format("YYYY-MM-DD"),
-      //     },
-      //     {
-      //       MediaID: 2,
-      //       MemberID: 14,
-      //       BranchID: 1,
-      //       Active: 1,
-      //       RentStart: moment().format("YYYY-MM-DD"),
-      //       RentEnd: moment().add(7, "days").format("YYYY-MM-DD"),
-      //     },
-      //   ],
-      // );
-
-      // console.log(transactionCreated.data[0].HistoryID)
-
-      
-
-      const transactionDeleted = await mediaHistoryFrontEndService.delete(
-        "/deleteRecords",
-        [
-          {
-            HistoryID: 37
-          },
-          {
-            HistoryID: 38
-          }
-        ]
-      );
-      
-      console.log(transactionDeleted);
+     
+  
     };
     //fetchMedia(), [];
   }, []);
