@@ -38,16 +38,18 @@ const MediaPage = () => {
       <Container fluid='lg'>
         <Row>
           {/* Media Artwork */}
-          <Col className='content-panel g-0' style={{ paddingRight: '1.5rem' }}>
-            {mediaItem ? (
-              <img 
-                src={mediaArtwork} 
-                alt={mediaItem.Title || 'Media Image'} 
-                style={{ width: '100%', aspectRatio: '1', objectFit: 'contain' }} 
-              />
-            ) : (
-              <p>Loading image...</p>
-            )}
+          <Col style={{ paddingRight: '1.5rem' }}>
+            <div className='content-panel'>
+              {mediaItem ? (
+                <img 
+                  src={mediaArtwork} 
+                  alt={mediaItem.Title || 'Media Image'} 
+                  style={{ width: '100%', aspectRatio: '1', objectFit: 'contain' }} 
+                />
+              ) : (
+                <p>Loading image...</p>
+              )}
+            </div>
           </Col>
 
           {/* Media Information*/}
