@@ -38,7 +38,7 @@ const MediaPage = () => {
       <Container fluid='lg'>
         <Row>
           {/* Media Artwork */}
-          <Col style={{ paddingRight: '1.5rem' }}>
+          <Col className='p-0' style={{ paddingRight: '1.5rem' }}>
             <div className='content-panel'>
               {mediaItem ? (
                 <img 
@@ -78,8 +78,13 @@ const MediaPage = () => {
             
             <Row className="pt-3 g-0">
               <h3 id="stock">Availability</h3>
+              <Row className='g-1'>
+                <Col><span><strong>Branch</strong></span></Col>
+                <Col xs={1}><span><strong>Stock</strong></span></Col>
+                <Col xs={3} className="text-end"><span><strong>Basket</strong></span></Col>
+              </Row>
               {media.map((mediaItem, index) => (
-                <Row className='pb-4 g-0'>
+                <Row className='pb-3 g-0'>
                   <BranchStockCard 
                     key={`${mediaItem.Title}-${mediaItem.BranchID}-${index}`} 
                     media={mediaItem} 

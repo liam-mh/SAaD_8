@@ -67,7 +67,7 @@ function BranchStockCard({ media, onAddToBasket }) {
     };
 
     return (
-        <div className="content-panel" style={{ width: '100%' }}>
+        <div className="content-panel" style={{ width: '100%', padding: '0.5rem' }}>
             <Row className="align-items-center">
                 <Col>
                     {branch ? (
@@ -79,19 +79,19 @@ function BranchStockCard({ media, onAddToBasket }) {
                         <span>Loading branch information...</span>
                     )}
                 </Col>
-                <Col className="text-center">
-                    <span>In Stock: {availableStockCount}</span>
+                <Col xs={1} className='text-center'>
+                    <span>{availableStockCount}</span>
                 </Col>
-                <Col className="text-end">
+                <Col xs={3} className="text-end">
                     {availableStockCount > 0 ? (
                         <div>
                             {isInBasket ? (
                                 <button className="button-secondary" onClick={handleRemoveFromBasket}>
-                                    Remove from Basket
+                                    <i className="bi bi-x-circle-fill"></i>
                                 </button>
                             ) : (
                                 <button className="button-primary" onClick={handleAddToBasket}>
-                                    Add to Basket
+                                    <i className="bi bi-basket"></i>
                                 </button>
                             )}
                         </div>
