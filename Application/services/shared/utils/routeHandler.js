@@ -88,7 +88,7 @@ const handleRoutes = (router, serviceName, resources) => {
         router.delete(`/${resource}/deleteRecord`, async (req, res) => {
             try {
                 const deleted = await controllerInstance.deleteRecord(req.body);
-                if (deleted.success) {
+                if (deleted) {
                     res.status(200).json({ message: 'Record deleted successfully', data: deleted, status: res.statusCode});
                 } else {
                     res.status(404).json({ message: 'Record not found' });
@@ -102,7 +102,7 @@ const handleRoutes = (router, serviceName, resources) => {
         router.delete(`/${resource}/deleteRecords`, async (req, res) => {
             try {
                 const deleted = await controllerInstance.deleteRecords(req.body);
-                if (deleted.success) {
+                if (deleted === req.body.length) {
                     res.status(200).json({ message: 'Records deleted successfully', data: deleted, status: res.statusCode});
                 } else {
                     res.status(404).json({ message: 'Records not found' });

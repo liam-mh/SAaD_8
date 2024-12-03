@@ -1,20 +1,47 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { SessionContext } from '../../services/sessionContext';
 import branchFrontEndService from '../../services/storefront/branchFrontEndService';
+import mediaFrontEndService from '../../services/storefront/mediaFrontEndService';
+import mediaHistoryFrontEndService from '../../services/storefront/mediaHistoryFrontEndService';
+import { Col, Row } from 'react-bootstrap';
 
 function BranchStockCard({ media, onAddToBasket }) {
     if (!media) { return <p>Loading media information...</p>; }
     const { basket, setBasket, branches, setBranches } = useContext(SessionContext);
-    const isInStock = true;
     const [branch, setCardBranch] = useState();
+    const [stock, setStock] = useState([]);
+    const [availability, setAvailability] = useState([]);
+    const [availableStockCount, setAvailableStockCount] = useState(0);
 
     useEffect(() => {
-        async function loadData() {
-            const branchData = await branchFrontEndService.get('/readRecords', { BranchID: media.BranchID });
-            setCardBranch(branchData.data[0]);
+        async function loadDataAndCheckStock() {
+            try {
+                const [branchData, stockData] = await Promise.all([
+                    branchFrontEndService.get('/readRecords', { BranchID: media.BranchID }),
+                    mediaFrontEndService.get('/readRecords', { Title: media.Title, Type: media.Type, BranchID: media.BranchID }, false)
+                ]);
+
+                setCardBranch(branchData.data[0]);
+                setStock(stockData.data);
+
+                const availabilityResults = await Promise.all(
+                    stockData.data.map(async (mediaItem) => {
+                        const availability = await mediaHistoryFrontEndService.get('/readRecords', { MediaID: mediaItem.MediaID });
+                        const activeStatus = availability?.data?.[0]?.Active ?? false;
+                        return { media: mediaItem, activeStatus };
+                    })
+                );
+
+                setAvailability(availabilityResults);
+
+                const availableItems = availabilityResults.filter(item => item.activeStatus === false);
+                setAvailableStockCount(availableItems.length);
+            } catch (error) {
+                console.error("Error loading data or checking stock:", error);
+            }
         }
-    
-        loadData();
+
+        loadDataAndCheckStock();
     }, []);
 
     const isInBasket = basket.some(item => 
@@ -40,34 +67,41 @@ function BranchStockCard({ media, onAddToBasket }) {
     };
 
     return (
-        <div className="content-panel">
-            {branch ? (
-                <span>
-                    {branch.FirstLineAddress || 'First Line'}<br />
-                    {branch.City || 'City'}<br />
-                    {branch.Postcode || 'Postcode'}<br />
-                </span>
-            ) : (
-                <p>Loading branch information...</p>
-            )}
-    
-            {isInStock ? (
-                <div>
-                    {isInBasket ? (
-                        <button className="button-secondary" onClick={handleRemoveFromBasket}>
-                            Remove from Basket
-                        </button>
+        <div className="content-panel" style={{ width: '100%' }}>
+            <Row className="align-items-center">
+                <Col>
+                    {branch ? (
+                        <span>
+                            {branch.FirstLineAddress || 'First Line'}<br />
+                            {branch.City || 'City'}, {branch.Postcode || 'Postcode'}<br />
+                        </span>
                     ) : (
-                        <button className="button-primary" onClick={handleAddToBasket}>
-                            Add to Basket
-                        </button>
+                        <span>Loading branch information...</span>
                     )}
-                </div>
-            ) : (
-                <span className="highlight-secondary-outline">Out Of Stock</span>
-            )}
+                </Col>
+                <Col className="text-center">
+                    <span>In Stock: {availableStockCount}</span>
+                </Col>
+                <Col className="text-end">
+                    {availableStockCount > 0 ? (
+                        <div>
+                            {isInBasket ? (
+                                <button className="button-secondary" onClick={handleRemoveFromBasket}>
+                                    Remove from Basket
+                                </button>
+                            ) : (
+                                <button className="button-primary" onClick={handleAddToBasket}>
+                                    Add to Basket
+                                </button>
+                            )}
+                        </div>
+                    ) : (
+                        <span className="highlight-secondary-outline">Out Of Stock</span>
+                    )}
+                </Col>
+            </Row>
         </div>
-    );    
+    );       
 }
 
 export default BranchStockCard;
