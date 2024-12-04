@@ -46,7 +46,7 @@ function BranchStockCard({ media, onAddToBasket }) {
     }, []);
 
     useEffect(() => {
-        if (user.BranchID === media.BranchID) {
+        if (user && user.BranchID === media.BranchID) {
             setIsUserLocalBranch(true);
         }
     }, [user])
