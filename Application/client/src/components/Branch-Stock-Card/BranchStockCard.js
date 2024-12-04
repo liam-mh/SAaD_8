@@ -93,17 +93,19 @@ function BranchStockCard({ media, onAddToBasket }) {
                     {availableStockCount > 0 ? (
                         <div>
                             {isInBasket ? (
-                                <button className="button-secondary" onClick={handleRemoveFromBasket}>
+                                <button className="button-secondary-outline" onClick={handleRemoveFromBasket} Title='Remove from basket'>
                                     <i className="bi bi-x-circle-fill"></i>
                                 </button>
                             ) : (
-                                <button className="button-primary" onClick={handleAddToBasket}>
+                                <button className="button-primary" onClick={handleAddToBasket} Title='Add to basket'>
                                     <i className="bi bi-basket"></i>
                                 </button>
                             )}
                         </div>
                     ) : (
-                        <span className="highlight-secondary-outline">Out Of Stock</span>
+                        <span style={{ color: 'red', paddingRight: '1rem' }} Title='Out of stock'>
+                            <i className="bi bi-x-circle-fill"></i>
+                        </span>
                     )}
                 </Col>
             </Row>
