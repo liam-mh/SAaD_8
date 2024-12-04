@@ -38,8 +38,8 @@ const MediaPage = () => {
 
   const handleAddToWishlist = async () => {
     try {
-      if (!user && !usedWishlistButton) {
-        const addToWishlist = await wishlistFrontEndSevice.post(
+      if (user && !usedWishlistButton) {
+        const addToWishlist = await wishlistFrontEndService.post(
           '/createRecord', 
           {
             MemberID: user.MemberID,
