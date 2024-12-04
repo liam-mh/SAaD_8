@@ -10,6 +10,7 @@ import { useLocation } from 'react-router-dom';
 import wishlistFrontEndSevice from '../services/storefront/wishlistFrontEndSevice';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 const MediaPage = () => {
   const { user } = useContext(SessionContext) || {};
@@ -18,6 +19,7 @@ const MediaPage = () => {
   const [media, setMedia] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationText, setNotificationText] = useState('');
+  const [usedWishlistButton, setUsedWishlistButton] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -37,7 +39,6 @@ const MediaPage = () => {
   };
 
   const handleAddToWishlist = async () => {
-    console.log('ADDING TO WISHLIST');
     try {
       await wishlistFrontEndSevice.post(
         '/createRecord', 
@@ -52,6 +53,8 @@ const MediaPage = () => {
     } catch (error) {
       console.log(error);
     }
+
+    setUsedWishlistButton(true);
   }
 
   return (
@@ -89,9 +92,16 @@ const MediaPage = () => {
                   Author: {mediaItem ? mediaItem.Author : 'Author'}<br />
                   Published: {mediaItem ? mediaItem.PublishDate : 'Publish Date'}
                 </p>
-                <button className="button-wishlist" onClick={handleAddToWishlist} title="Add to Wishlist">
-                  <i className="bi bi-star-fill"></i>
-                </button>
+                {!usedWishlistButton ? (
+                  <button className="button-wishlist" onClick={handleAddToWishlist} title="Add to Wishlist">
+                    <i className="bi bi-star-fill"></i>
+                  </button>
+                ) : (
+                  <span style={{ color: 'var(--wishlist)' }}>
+                    <i className="bi bi-star-fill"></i> Item in <Link to='/account#wishlist' className="nav-link-wishlist">wishlist</Link>
+                  </span>
+                )}
+                
               </Col>
               <Col>
                 <span>

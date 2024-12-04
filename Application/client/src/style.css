@@ -6,6 +6,8 @@
     --primary-dark: color-mix(in srgb, var(--primary) 75%, black 40%);    
     --secondary: #132054; 
     --secondary-light: color-mix(in srgb, var(--secondary) 75%, white 40%);
+    --wishlist: rgb(114, 8, 220);
+    --wishlist-light: color-mix(in srgb, var(--wishlist) 75%, white 40%);
     --drop-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
     --border-radius: 0.5rem;
 }
@@ -213,11 +215,11 @@ html, body {
 }
 
 .button-wishlist {
-    border: 2px solid rgb(114, 8, 220);
-    color: rgb(114, 8, 220);
+    border: 2px solid var(--wishlist);
+    color: var(--wishlist);
 }
 .button-wishlist:hover {
-    background-color: rgb(114, 8, 220);
+    background-color: var(--wishlist);
     color: white;
 }
 
@@ -235,6 +237,13 @@ a:hover {
 }
 .nav-link-secondary:hover {
     color: var(--secondary-light);
+}
+
+.nav-link-wishlist {
+    color: var(--wishlist);
+}
+.nav-link-wishlist:hover {
+    color: var(--wishlist-light);
 }
 
 /* CAROUSEL ------------------------------------------------------------------------------------ */
