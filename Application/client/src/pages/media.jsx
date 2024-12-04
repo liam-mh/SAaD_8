@@ -1,14 +1,18 @@
 // media.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import Row from 'react-bootstrap/esm/Row';
 import Col from 'react-bootstrap/esm/Col';
+import { SessionContext } from '../services/sessionContext';
 import BranchStockCard from '../components/Branch-Stock-Card/BranchStockCard';
 import NotificationBanner from '../components/Notification-Banner/NotificationBanner';
 import { useLocation } from 'react-router-dom';
-const mediaFrontEndService = require('../services/storefront/mediaFrontEndService');
+import wishlistFrontEndSevice from '../services/storefront/wishlistFrontEndSevice';
+import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
+import moment from 'moment';
 
 const MediaPage = () => {
+  const { user } = useContext(SessionContext) || {};
   const location = useLocation();
   const { mediaType, mediaTitle } = location.state || {};
   const [media, setMedia] = useState([]);
@@ -31,6 +35,24 @@ const MediaPage = () => {
     setNotificationText(mediaItem.Title);
     setShowNotification(true);
   };
+
+  const handleAddToWishlist = async () => {
+    console.log('ADDING TO WISHLIST');
+    try {
+      await wishlistFrontEndSevice.post(
+        '/createRecord', 
+        {
+          MemberID: user.MemberID,
+          Title: mediaTitle,
+          Type: mediaType,
+          DateTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+          WishType: 'Wishlist'
+        }
+      )
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
@@ -60,13 +82,16 @@ const MediaPage = () => {
             </Row>
             <Row className='content-panel g-0'>
               <Col>
-                <span>
+                <p>
                   <strong>Details</strong><br />
                   Format: {mediaItem ? mediaItem.Type : 'Type'}<br />
                   Genre: {mediaItem ? mediaItem.Genre : 'Genre'}<br />
                   Author: {mediaItem ? mediaItem.Author : 'Author'}<br />
                   Published: {mediaItem ? mediaItem.PublishDate : 'Publish Date'}
-                </span>
+                </p>
+                <button className="button-wishlist" onClick={handleAddToWishlist} title="Add to Wishlist">
+                  <i className="bi bi-star-fill"></i>
+                </button>
               </Col>
               <Col>
                 <span>
