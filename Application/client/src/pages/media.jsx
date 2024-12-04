@@ -7,7 +7,7 @@ import { SessionContext } from '../services/sessionContext';
 import BranchStockCard from '../components/Branch-Stock-Card/BranchStockCard';
 import NotificationBanner from '../components/Notification-Banner/NotificationBanner';
 import { useLocation } from 'react-router-dom';
-import wishlistFrontEndSevice from '../services/storefront/wishlistFrontEndSevice';
+import wishlistFrontEndService from '../services/storefront/wishlistFrontEndSevice';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
@@ -40,22 +40,43 @@ const MediaPage = () => {
 
   const handleAddToWishlist = async () => {
     try {
-      await wishlistFrontEndSevice.post(
-        '/createRecord', 
-        {
-          MemberID: user.MemberID,
-          Title: mediaTitle,
-          Type: mediaType,
-          DateTime: moment().format("YYYY-MM-DD HH:mm:ss"),
-          WishType: 'Wishlist'
-        }
-      )
+      if (!user && !usedWishlistButton) {
+        const addToWishlist = await wishlistFrontEndSevice.post(
+          '/createRecord', 
+          {
+            MemberID: user.MemberID,
+            Title: mediaTitle,
+            Type: mediaType,
+            DateTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+            WishType: 'Wishlist'
+          }
+        )
+      }
     } catch (error) {
       console.log(error);
     }
 
     setUsedWishlistButton(true);
   }
+
+  useEffect(() => {
+    if (!user) return;
+    async function checkWishlist() {
+      const isMediaInWishlist = await wishlistFrontEndService.get(
+        '/readRecords', 
+        {
+          MemberID: user.MemberID,
+          Title: mediaTitle,
+          Type: mediaType 
+        }
+      );
+      if (isMediaInWishlist.data.length > 0) {
+        setUsedWishlistButton(true);
+      }
+    }
+
+    checkWishlist();
+  }, [user])
 
   return (
     <>
@@ -92,16 +113,21 @@ const MediaPage = () => {
                   Author: {mediaItem ? mediaItem.Author : 'Author'}<br />
                   Published: {mediaItem ? mediaItem.PublishDate : 'Publish Date'}
                 </p>
-                {!usedWishlistButton ? (
-                  <button className="button-wishlist" onClick={handleAddToWishlist} title="Add to Wishlist">
-                    <i className="bi bi-star-fill"></i>
-                  </button>
-                ) : (
-                  <span style={{ color: 'var(--wishlist)' }}>
-                    <i className="bi bi-star-fill"></i> Item in <Link to='/account#wishlist' className="nav-link-wishlist">wishlist</Link>
-                  </span>
-                )}
-                
+                {
+                  !user ? (
+                    <span style={{ color: 'var(--wishlist)' }}>
+                      <Link to='/account#account' className="nav-link-wishlist">Login</Link> to add to wishlist
+                    </span>
+                  ) : !usedWishlistButton ? (
+                    <button className="button-wishlist" onClick={handleAddToWishlist} title="Add to Wishlist">
+                      <i className="bi bi-star-fill"></i>
+                    </button>
+                  ) : (
+                    <span style={{ color: 'var(--wishlist)' }}>
+                      <i className="bi bi-star-fill"></i> Item in <Link to='/account#wishlist' className="nav-link-wishlist">wishlist</Link>
+                    </span>
+                  )
+                }                
               </Col>
               <Col>
                 <span>
