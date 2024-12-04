@@ -145,6 +145,7 @@ html, body {
 .highlight-secondary,
 .highlight-primary-outline,
 .highlight-secondary-outline,
+.highlight-orange-outline,
 .button-primary,
 .button-secondary,
 .button-primary-outline,
@@ -221,6 +222,12 @@ html, body {
 .button-wishlist:hover {
     background-color: var(--wishlist);
     color: white;
+}
+
+.highlight-orange-outline {
+    border: 2px solid orange;
+    background-color: white;
+    color: orange;
 }
 
 /* NAVIGATION ---------------------------------------------------------------------------------- */
@@ -379,17 +386,24 @@ a:hover {
 }
 
 /* TABLE --------------------------------------------------------------------------------------- */
+.aml-table thead{
+    position: sticky;
+    top: 0;
+    margin: 0;
+    border-bottom: 2px solid var(--primary); 
+    background-color: white;
+}
+
+.aml-table tbody {
+    border-bottom: 2px solid var(--primary); 
+}
+
 .aml-table tbody tr {
     border-bottom: 2px solid #E0E0E0; 
 }
 
 .aml-table tbody tr:last-child {
     border-bottom: none; 
-}
-
-.aml-table tbody {
-    border-top: 2px solid var(--primary); 
-    border-bottom: 2px solid var(--primary); 
 }
 
 /* PAYMENT CARD -------------------------------------------------------------------------------- */
