@@ -10,7 +10,13 @@
     "eject": "react-scripts eject"
   },
   "jest": {
-    "testEnvironment": "jsdom"
+    "testEnvironment": "jsdom",
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(react-bootstrap|classnames)/)"
+    ]
   },
   "keywords": [],
   "author": "",
