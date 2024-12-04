@@ -7,11 +7,12 @@ import { Col, Row } from 'react-bootstrap';
 
 function BranchStockCard({ media, onAddToBasket }) {
     if (!media) { return <p>Loading media information...</p>; }
-    const { basket, setBasket, branches, setBranches } = useContext(SessionContext);
+    const { user, basket, setBasket, branches, setBranches } = useContext(SessionContext);
     const [branch, setCardBranch] = useState();
     const [stock, setStock] = useState([]);
     const [availability, setAvailability] = useState([]);
     const [availableStockCount, setAvailableStockCount] = useState(0);
+    const [isUserLocalBranch, setIsUserLocalBranch] = useState(false);
 
     useEffect(() => {
         async function loadDataAndCheckStock() {
@@ -44,6 +45,12 @@ function BranchStockCard({ media, onAddToBasket }) {
         loadDataAndCheckStock();
     }, []);
 
+    useEffect(() => {
+        if (user.BranchID === media.BranchID) {
+            setIsUserLocalBranch(true);
+        }
+    }, [user])
+
     const isInBasket = basket.some(item => 
         item.Title === media.Title && 
         item.Type === media.Type && 
@@ -65,9 +72,9 @@ function BranchStockCard({ media, onAddToBasket }) {
             !(item.Title === media.Title && item.Type === media.Type && item.BranchID === media.BranchID)
         ));
     };
-
+    
     return (
-        <div className="content-panel" style={{ width: '100%', padding: '0.5rem' }}>
+        <div className={isUserLocalBranch ? 'content-panel-highlight-primary' : 'content-panel'} style={{ width: '100%', padding: '0.5rem' }}>
             <Row className="align-items-center">
                 <Col>
                     {branch ? (

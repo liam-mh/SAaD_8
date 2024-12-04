@@ -38,7 +38,7 @@ html, body {
 }
 
 /* CONTENT PANELS ------------------------------------------------------------------------------ */
-.content-panel, .content-panel-no-padding, .search-dropdown {
+.content-panel, .content-panel-no-padding, .content-panel-highlight-primary, .search-dropdown {
     background-color: white;
     box-shadow: var(--drop-shadow);
     border-radius: var(--border-radius);
@@ -50,6 +50,9 @@ html, body {
 }
 .content-panel-no-padding {
     margin: 0%;
+}
+.content-panel-highlight-primary {
+    border: 2px solid var(--primary);
 }
 
 .card-media-type {
