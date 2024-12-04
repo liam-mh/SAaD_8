@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { SessionContext } from "../../services/sessionContext";
 import memberFrontEndService from "../../services/account/memberFrontEndService";
 
-function LoginCard() {
+function LoginCard({ onLoginSuccess }) {
   const [inputEmail, setEmail] = useState("");
   const [inputPassword, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -26,18 +26,19 @@ function LoginCard() {
 
       if (response?.data.length === 0) {
         setErrorMessage("Invalid email or password. Please try again.");
+        if (onLoginSuccess) onLoginSuccess(false);
       } else {
         const loggedInUser = response.data[0];
-
         setUser(loggedInUser);
-
         setErrorMessage("");
+        if (onLoginSuccess) onLoginSuccess(true); 
       }
     } catch (error) {
       console.error("Error during login:", error);
       setErrorMessage(
         "An error occurred during login. Please try again later."
       );
+      if (onLoginSuccess) onLoginSuccess(false);
     }
   };
 

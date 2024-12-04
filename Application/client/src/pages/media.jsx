@@ -1,4 +1,3 @@
-// media.jsx
 import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/esm/Container';
 import Row from 'react-bootstrap/esm/Row';
@@ -8,22 +7,29 @@ import NotificationBanner from '../components/Notification-Banner/NotificationBa
 import { useLocation } from 'react-router-dom';
 const mediaFrontEndService = require('../services/storefront/mediaFrontEndService');
 
-
 const MediaPage = () => {
   const location = useLocation();
   const { mediaType, mediaTitle } = location.state || {};
   const [media, setMedia] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationText, setNotificationText] = useState('');
+  
+
+  const [errorMessage, setErrorMessage] = useState('');  // For error handling
 
   useEffect(() => {
     async function loadData() {
-      const allItems = await mediaFrontEndService.get('/readRecords', {Title: mediaTitle, Type: mediaType} , true);
-      setMedia(allItems.data);
+      try {
+        const allItems = await mediaFrontEndService.get('/readRecords', { Title: mediaTitle, Type: mediaType }, true);
+        setMedia(allItems.data);
+        allItems.data.length === 0 ? setErrorMessage('No media available') : setErrorMessage('');
+      } catch (error) {
+        setErrorMessage('Something went wrong');  // Set error message on failure
+      }
     }
 
     loadData();
-  }, []);
+  }, [mediaTitle, mediaType]);
 
   const mediaItem = media.length > 0 ? media[0] : null;
   const mediaArtwork = mediaItem ? mediaFrontEndService.generateImageSrc(mediaItem.Title, mediaItem.Type) : null;
@@ -35,7 +41,10 @@ const MediaPage = () => {
 
   return (
     <>
+      {errorMessage && <div>{errorMessage}</div>}  
+
       {showNotification && <NotificationBanner mediaTitle={notificationText} />}
+      
       <Container fluid='lg'>
         <Row>
           {/* Media Artwork */}
@@ -85,8 +94,6 @@ const MediaPage = () => {
                 />
               ))}
             </Row>
-
-            
           </Col>
         </Row>
       </Container>
