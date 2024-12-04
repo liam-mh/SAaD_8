@@ -153,7 +153,7 @@ const AccountPage = () => {
                         {/* Reserve */}
                         <td>
                           {!reservation ? (
-                            <Button className='button-secondary-outline' onClick={handleReserve} Title='Reserve Media'>
+                            <Button className='button-secondary-outline' onClick={() => handleReserve(item)} Title='Reserve Media'>
                               <i className="bi bi-calendar-plus"></i>
                             </Button>
                           ) : (
