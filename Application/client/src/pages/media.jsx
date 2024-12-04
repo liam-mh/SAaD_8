@@ -1,16 +1,14 @@
 // media.jsx
 import React, { useEffect, useState, useContext } from 'react';
-import Container from 'react-bootstrap/esm/Container';
-import Row from 'react-bootstrap/esm/Row';
-import Col from 'react-bootstrap/esm/Col';
+import { useLocation, Link } from 'react-router-dom';
+import { Container, Row, Col } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
-import BranchStockCard from '../components/Branch-Stock-Card/BranchStockCard';
-import NotificationBanner from '../components/Notification-Banner/NotificationBanner';
-import { useLocation } from 'react-router-dom';
 import wishlistFrontEndService from '../services/storefront/wishlistFrontEndSevice';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
+
+import BranchStockCard from '../components/Branch-Stock-Card/BranchStockCard';
+import NotificationBanner from '../components/Notification-Banner/NotificationBanner';
 
 const MediaPage = () => {
   const { user } = useContext(SessionContext) || {};
