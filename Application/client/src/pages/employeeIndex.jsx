@@ -9,18 +9,21 @@ import branchFrontEndService from '../services/storefront/branchFrontEndService'
 import memberFrontEndService from '../services/account/memberFrontEndService';
 import mediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService';
 import memberSubscriptionFrontEndService from '../services/account/memberSubscriptionFrontEndService';
+import emailFrontEndService from '../services/notification/emailFrontEndService';
 
 
 const EmployeeIndexPage = () => {
   const [searchMedia, setSearchMedia] = useState([]);
   const [searchPK, setSearchPK] = useState('');
   const [searchTitle, setSearchTitle] = useState('');
-  const { basket, setBasket } = useContext(SessionContext) || {};
+  const { basket, setBasket, clearBasket } = useContext(SessionContext) || {};
   const [deliveryOptions, setDeliveryOptions] = useState(basket.map(() => 'collect'));
   const [uniqueTitles, setUniqueTitles] = useState(false);
   const [searchEmail, setSearchEmail] = useState('');
-  const [user, setUserDetails] = useState(['', '']);
+  const [user, setUserDetails] = useState(['', '']); // user[0] = user data, user[1] = branch data
   const [totalTokenCost, setTotalTokenCost] = useState(0);
+  const [confirmation, setConfirmation] = useState(false);
+  const [transactionID, setTransactionID] = useState(null);
 
   const today = new Date();
   const startDate = today.toLocaleDateString('en-GB').split('/').join('-');
@@ -133,13 +136,10 @@ const EmployeeIndexPage = () => {
     if (empConfirmed) {
         console.log("Basket checked out.");
 
-        const remainingTokens = await calculateMemberTokens();
-
         basket.map(async (item) => {
             try {
-                console.log("Current item: ", item)
                 const returnDate = formatDateForDB(item.returnDate);
-                const historyResponse = await mediaHistoryFrontEndService.post('/createRecord', {
+                await mediaHistoryFrontEndService.post('/createRecord', {
                     MediaID: item.MediaID,
                     MemberID: user[0].MemberID,
                     BranchID: item.branch.BranchID,
@@ -149,25 +149,16 @@ const EmployeeIndexPage = () => {
                     RentEnd: returnDate,
                     ActualReturn: null
                 })
-                console.log("Media History response: ", historyResponse);
             } catch (error) {
                 console.error("Error while writing to media history table: ", error);
             }
         })
+
+        await calculateMemberTokens();
+        await generateEmail();
     } else {
         console.log("Checkout canceled.");
     }
-    /* 
-    Needs to:
-    Bring up confirmation box - Yes / No
-    No - closes confirmation box, no data change
-    Yes:
-        Subtracts total tokens from user - DONE
-        Create record in MediaHistory with - DONE
-            MediaID, MemberID, BranchID, EmployeeID, Active (tinyint - 1), RentStart (startDate), RentEnd (returnDate), ActualReturn (null)
-        Clears basket
-        Sends notification via email/sms with order confirmation
-    */
   }
 
   const calculateMemberTokens = async () => {
@@ -197,6 +188,57 @@ const EmployeeIndexPage = () => {
     const [day, month, year] = date.split('-');
 
     return `${year}-${month}-${day}`;
+  };
+
+  const generateTransactionID = () => {
+    return user[0].MemberID + '-' + Date.now();
+  };
+
+  const generateEmail = async () => {
+    const newTransactionID = generateTransactionID();
+    setTransactionID(newTransactionID);
+
+    // Construct the plain-text order summary
+    const orderSummary = basket.map((item, index) => {
+        const deliveryMessage = item.deliveryMethod === 'collect'
+        ? `In-Store Collection, ${item.branch.Postcode}`
+        : `Home Delivery, ${user[0].Postcode || 'Unknown Address'}`;
+
+        return `
+        Media Title: ${item.Title}
+        Format: ${item.Type}
+        Subtotal: ${item.tokens} tokens
+        Start Date: ${startDate}
+        Return Date: ${item.returnDate}
+        Delivery: ${deliveryMessage}
+        `;
+    }).join("\n\t--------------------------\n"); 
+
+    try {
+        await emailFrontEndService.post("/send", {
+            to: user[0].Email, // put in personal to test
+            subject: "AML Transaction Confirmation",
+            message: `
+            Hi ${user[0].FirstName},
+    
+            Here is your order confirmation #${newTransactionID}
+    
+            Order Summary:
+            --------------------------
+            ${orderSummary}
+            --------------------------
+            Total: ${totalTokenCost}
+            Payment Method: Subscription
+    
+            Thank you for using the Advanced Media Library!
+            `,
+        })
+    } catch (error) {
+        console.error("Error when sending email: ", error);
+    }
+
+    clearBasket();
+    setConfirmation(true);
   };
 
   const calculateReturnDate = (rentLength) => {
@@ -272,6 +314,20 @@ const EmployeeIndexPage = () => {
 
   return (
     <>
+        {/* Confirmation */}
+        {confirmation && (
+            <div id="confirmation" className="whats-new py-4 d-flex align-items-center justify-content-center">
+                <div className="content-panel" style={{ textAlign: 'center' }}>
+                    <h4>Order Confirmation</h4>
+                    <p>
+                        Order placed successfully.<br />
+                        Here is {user[0].FirstName}'s order number:
+                    </p>
+                    <p><strong>#{transactionID}</strong></p>
+                </div>
+            </div>
+        )}
+
      <Container fluid="lg">
      <Row><Col><br /></Col></Row>
         <Row>
@@ -279,7 +335,7 @@ const EmployeeIndexPage = () => {
             <div className='content-panel'>
                 <Col className="justify-content-center">
                     <br />
-                    <h4><b>Enter user's email address</b></h4>
+                    <h4><b>1) Enter user's email address</b></h4>
                     <Form className="d-flex align-items-center">
                     <div className="search-wrapper d-flex">
                     <Form.Control
@@ -329,8 +385,8 @@ const EmployeeIndexPage = () => {
             </div>
             {/* User's basket */}
             <Col>
-                <div className='content-panel' style={{ height: '46vh', overflowY: 'auto' }}>
-                    <h4 id="order" className='mt-3'>Order Summary</h4>
+                <div className='content-panel' style={{ height: '40vh', overflowY: 'auto' }}>
+                    <h4 id="order" className='mt-3'>3) Order Summary</h4>
                     <Table hover className="aml-table">
                         <thead>
                             <tr>
@@ -373,21 +429,26 @@ const EmployeeIndexPage = () => {
                             })}
                         </tbody>          
                     </Table>
-                    <div style={{ textAlign: 'left' }}>
-                        <h3>Total cost: {totalTokenCost} tokens</h3>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                        <Button className='button-primary' onClick={handleCheckout}>
-                            Checkout User's Basket
-                        </Button>
-                    </div>
                 </div>
+                <br />
+                {basket.length > 0 && (
+                    <div className='content-panel' style={{ height: '5vh', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ textAlign: 'left'}}>
+                            <h4>Total cost: {totalTokenCost} tokens</h4>
+                        </div>
+                        <div style={{ textAlign: 'right'}}>
+                            <Button className='button-primary' onClick={handleCheckout}>
+                                Checkout User's Basket
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </Col>
         </Row>
         <Row>
             <Row><Col><br /></Col></Row>
             <Col className="justify-content-center">
-                <h1>Search by media ID</h1>
+                <h1>2) Search by media ID</h1>
                 <Form className="d-flex align-items-center">
                 <div className="search-wrapper d-flex">
                     <Form.Control
@@ -402,7 +463,7 @@ const EmployeeIndexPage = () => {
                 </Form>
             </Col>
             <Col className="justify-content-center">
-                <h1>Search by media title</h1>
+                <h1>2) Search by media title</h1>
                 <Form className="align-items-center">
                     <div className="search-wrapper d-flex">
                         <Form.Control
@@ -430,7 +491,7 @@ const EmployeeIndexPage = () => {
         <Row><Col><br /></Col></Row>
         <Row>
             <Col>
-            <div className="content-panel" style={{maxheight: '60vh', overflow: 'auto'}}>
+            <div className="content-panel" style={{maxHeight: '75vh', overflow: 'auto'}}>
             <Table hover className="aml-table">
                 <thead>
                     <tr>
