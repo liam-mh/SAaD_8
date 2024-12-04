@@ -6,8 +6,5 @@ import './style.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  //Remove this from index.js 
-  //<React.StrictMode>
-    <App />
-  //</React.StrictMode>
+  <App />
 );

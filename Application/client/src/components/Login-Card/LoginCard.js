@@ -4,14 +4,15 @@ import { Link } from "react-router-dom";
 import { SessionContext } from "../../services/sessionContext";
 import memberFrontEndService from "../../services/account/memberFrontEndService";
 
-function LoginCard({ onLoginSuccess }) {
-  const [inputEmail, setEmail] = useState("");
-  const [inputPassword, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const { user, setUser } = useContext(SessionContext);
 
+function LoginCard({ onLoginSuccess }) {
+  const [inputEmail, setEmail] = useState('');
+  const [inputPassword, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const { user, setUser } = useContext(SessionContext);
   const handleLogin = async (e) => {
     e.preventDefault();
+
 
     try {
       if (!inputEmail || !inputPassword) {
@@ -26,12 +27,12 @@ function LoginCard({ onLoginSuccess }) {
 
       if (response?.data.length === 0) {
         setErrorMessage("Invalid email or password. Please try again.");
-        if (onLoginSuccess) onLoginSuccess(false);
+        if (onLoginSuccess) onLoginSuccess(false); 
       } else {
         const loggedInUser = response.data[0];
+        setErrorMessage('');
         setUser(loggedInUser);
-        setErrorMessage("");
-        if (onLoginSuccess) onLoginSuccess(true); 
+        if (onLoginSuccess) onLoginSuccess(true);
       }
     } catch (error) {
       console.error("Error during login:", error);
