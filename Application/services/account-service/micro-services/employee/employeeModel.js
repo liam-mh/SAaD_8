@@ -1,5 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize');
+const bcrypt = require('bcrypt');
+
+const SALT_ROUNDS = 10;
 
 const EmployeeModel = sequelize.define('Employee', {
   EmployeeID: {

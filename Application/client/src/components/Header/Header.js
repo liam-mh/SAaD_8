@@ -10,7 +10,7 @@ function Header() {
   const basketNum = basket.length;
   const [localBranch, setLocalBranch] = useState(null);
   const location = useLocation();
-  const minimalHeader = location.pathname === '/checkout';
+  const minimalHeader = location.pathname === '/checkout' || location.pathname === '/returns' || location.pathname === '/employee' ;
   const disableNav = location.pathname === '/search';
 
   const headerClass = 

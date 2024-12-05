@@ -3,12 +3,15 @@ import { Button, Card, Form, Row, Col, CardImg } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { SessionContext } from "../../services/sessionContext";
 import memberFrontEndService from "../../services/account/memberFrontEndService";
+import employeeFrontEndService from "../../services/account/employeeFrontEndService";
+import { useLayoutEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 function LoginCard({ onLoginSuccess }) {
   const [inputEmail, setEmail] = useState('');
   const [inputPassword, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const { user, setUser } = useContext(SessionContext);
+  const { user, setUser, employee, setEmployee } = useContext(SessionContext);
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -18,17 +21,31 @@ function LoginCard({ onLoginSuccess }) {
         return; 
       }
 
-      const response = await memberFrontEndService.get("/readRecords", {
-        Email: inputEmail,
-        Password: inputPassword,
-      });
+      let response;
 
+      if (location.pathname === '/employee') {
+        response = await employeeFrontEndService.get("/readRecords", {
+          Email: inputEmail,
+          Password: inputPassword,
+        });
+      } else {
+        response = await memberFrontEndService.get("/readRecords", {
+          Email: inputEmail,
+          Password: inputPassword,
+        });
+      }
+
+  
       if (response === null) {
         setErrorMessage("Invalid email or password. Please try again.");
         if (onLoginSuccess) onLoginSuccess(false); 
       } else {
         setErrorMessage('');
-        setUser(response.data[0]);
+        if (location.pathname === '/employee') {
+          setEmployee(response.data[0]); 
+        } else {
+          setUser(response.data[0]); 
+        }
         if (onLoginSuccess) onLoginSuccess(true);
       }
     } catch (error) {
@@ -42,10 +59,11 @@ function LoginCard({ onLoginSuccess }) {
 
   const handleLogout = () => {
     setUser(null);
+    setEmployee(null);
   };
 
   return (
-    !user && (
+    (!user || !employee) && (
       <Card className="content-panel-no-padding" style={{ width: "600px" }}>
         <Card.Body>
           <Row>
