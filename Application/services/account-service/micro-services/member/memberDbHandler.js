@@ -7,7 +7,8 @@ const MemberModel = require("./memberModel")
  */
 class MemberDbHandler extends DbHandler {
   constructor() {
-    super(MemberModel);
+    const removeFromGrouping = ['Password'];
+    super(MemberModel, removeFromGrouping);
   }
 }
 

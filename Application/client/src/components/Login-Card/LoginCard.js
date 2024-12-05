@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { SessionContext } from "../../services/sessionContext";
 import memberFrontEndService from "../../services/account/memberFrontEndService";
 
-
 function LoginCard({ onLoginSuccess }) {
   const [inputEmail, setEmail] = useState('');
   const [inputPassword, setPassword] = useState('');
@@ -12,7 +11,6 @@ function LoginCard({ onLoginSuccess }) {
   const { user, setUser } = useContext(SessionContext);
   const handleLogin = async (e) => {
     e.preventDefault();
-
 
     try {
       if (!inputEmail || !inputPassword) {
@@ -25,13 +23,12 @@ function LoginCard({ onLoginSuccess }) {
         Password: inputPassword,
       });
 
-      if (response?.data.length === 0) {
+      if (response === null) {
         setErrorMessage("Invalid email or password. Please try again.");
         if (onLoginSuccess) onLoginSuccess(false); 
       } else {
-        const loggedInUser = response.data[0];
         setErrorMessage('');
-        setUser(loggedInUser);
+        setUser(response.data[0]);
         if (onLoginSuccess) onLoginSuccess(true);
       }
     } catch (error) {

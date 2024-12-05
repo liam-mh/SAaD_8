@@ -12,10 +12,16 @@ const fetchFromApiGateway = async (endpoint, options = {}) => {
     try {
         const response = await fetch(`${API_GATEWAY}${endpoint}`, options);
         
-        if (!response.ok) {
+        if (!response.ok && response.status !== 204) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return await response.json();
+
+        // Handle 204 No Content
+        if (response.status === 204) {
+            return null; 
+        }
+
+        return await response.json(); 
     } catch (error) {
         console.error('Error fetching data:', error);
         throw error;  

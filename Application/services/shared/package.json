@@ -4,6 +4,7 @@
     "main": "index.js",
     "private": true,
     "dependencies": {
+        "bcrypt": "^5.1.1",
         "sequelize": "^6.37.5"
     }
 }
