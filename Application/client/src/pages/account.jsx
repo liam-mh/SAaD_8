@@ -4,35 +4,30 @@ import { SessionContext } from '../services/sessionContext';
 import { useNavigate } from 'react-router-dom';
 import wishlistFrontEndSevice from '../services/storefront/wishlistFrontEndSevice';
 import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
+import mediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService';
 
 import LoginCard from "../components/Login-Card/LoginCard";
 
 const AccountPage = () => {
   const { user } = useContext(SessionContext) || {};
   const [wishlistItems, setWishlistItems] = useState([]);
-
   const navigate = useNavigate();
-  
-  /**
-   * WISHLIST SCHEMA
-  {
-    WishlistID: '',
-    MemberID: '',
-    Title: '',
-    Type: '',
-    DateTime: '',
-    WishType: 'Wishlist || Reservation'
-  }
-  */
 
   // load user wishlist
   useEffect (() => {
     const loadData = async () => {
       try {
-        const response = await wishlistFrontEndSevice.get(
+        const stockData = await wishlistFrontEndSevice.get(
           '/readRecords', { MemberID: user.MemberID }
         );
-        setWishlistItems(response.data || {});
+        const availabilityResults = await Promise.all(
+          stockData.data.map(async (mediaItem) => {
+              const availability = await mediaHistoryFrontEndService.get('/readRecords', { MediaID: mediaItem.MediaID });
+              const activeStatus = availability?.data?.[0]?.Active ?? false;
+              return { ...mediaItem, available: !activeStatus };
+          })
+        );
+        setWishlistItems(availabilityResults || {});
       } catch (error) {
         console.error("Error fetching wishlist data:", error);
       }
@@ -113,11 +108,8 @@ const AccountPage = () => {
                 <tbody>
                   {wishlistItems.map((item, index) => {
                     const mediaArtwork = mediaFrontEndService.generateImageSrc(item.Title, item.Type);
-                    const reservation = 
-                      item.WishType === 'Reservation'
-                      ? true
-                      : false
-                    ;
+                    const reservation = item.WishType === 'Reservation';
+                    const isAvailable = item.available;
 
                     return (
                       <tr key={index} style={{ verticalAlign: 'middle' }}>
@@ -152,23 +144,34 @@ const AccountPage = () => {
       
                         {/* Reserve */}
                         <td>
-                          {!reservation ? (
-                            <Button className='button-secondary-outline' onClick={() => handleReserve(item)} Title='Reserve Media'>
+                          {!isAvailable && !reservation ? (
+                            <Button
+                              className="button-secondary-outline"
+                              onClick={() => handleReserve(item)}
+                              title="Reserve Media"
+                            >
                               <i className="bi bi-calendar-plus"></i>
                             </Button>
-                          ) : (
-                            <span className='highlight-orange-outline'  Title='In Queue For Media'>
+                          ) : reservation ? (
+                            <span
+                              className="highlight-orange-outline"
+                              title="In Queue For Media"
+                            >
                               <i className="bi bi-clock-fill"></i>
                             </span>
-                          )}
+                          ) : null}
                         </td>
 
                         {/* Rent */}
                         <td>
-                          {!reservation && (
+                          {isAvailable && !reservation ? (
                             <Button className='button-primary' onClick={() => handleRent(item)} Title='Rent Media'>
                               <i className="bi bi-plus-lg"></i>
                             </Button>
+                          ) : (
+                            <span style={{ color: 'red', paddingRight: '1rem' }} Title='Out of stock'>
+                              <i className="bi bi-x-circle-fill"></i>
+                            </span>
                           )}
                         </td>
                       </tr>
