@@ -12,8 +12,8 @@ class FrontEndService {
   /**
    * Perform a GET request.
    * @param {string} path - The service endpoint path.
-   * @param {object} [fields={}] - The fields retrieve.
-   * @param {boolean} [uniqueFlag=true] - Indicates whether to fetch only unique records disregarding pk or all records.
+   * @param {object} [fields={}] - The fields to retrieve.
+   * @param {boolean} [uniqueFlag=true] - Indicates whether to fetch only unique records (disregarding pk and route specific keys) or all records.
    * @returns {Promise<object>} - The API response.
    */
   async get(path, fields = {}, uniqueFlag = false) {
