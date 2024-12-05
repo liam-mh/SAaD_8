@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import mediaFrontEndService from '../../services/storefront/mediaFrontEndService';
 import newMediaRequestFrontEndService from '../../services/storefront/newMediaRequestFrontEndService';
+import emailFrontEndService from '../../services/notification/emailFrontEndService';
 import moment from 'moment';
 
 import MediaCard from '../Media-Card/MediaCard';
@@ -41,6 +42,19 @@ const MediaRequestForm = ({ MemberID }) => {
 							MemberID: MemberID
 						}
 					);
+					await emailFrontEndService.post("/send", {
+						to: 'procurements@AML.com', // put in personal to test
+						subject: "New Media Request",
+						message: 
+						`
+							A new media item has been requested, 
+							please login to the portal to approve.
+
+							Title: ${mediaTitle}
+							Type: ${mediaType}
+							Reason: ${mediaReason}
+						`,
+					  });
 				} catch (error) {
 					console.log('error creating submission: ', error);
 				}
