@@ -7,11 +7,12 @@ import { Col, Row } from 'react-bootstrap';
 
 function BranchStockCard({ media, onAddToBasket }) {
     if (!media) { return <p>Loading media information...</p>; }
-    const { basket, setBasket, branches, setBranches } = useContext(SessionContext);
+    const { user, basket, setBasket, branches, setBranches } = useContext(SessionContext);
     const [branch, setCardBranch] = useState();
     const [stock, setStock] = useState([]);
     const [availability, setAvailability] = useState([]);
     const [availableStockCount, setAvailableStockCount] = useState(0);
+    const [isUserLocalBranch, setIsUserLocalBranch] = useState(false);
 
     useEffect(() => {
         async function loadDataAndCheckStock() {
@@ -44,6 +45,12 @@ function BranchStockCard({ media, onAddToBasket }) {
         loadDataAndCheckStock();
     }, []);
 
+    useEffect(() => {
+        if (user && user.BranchID === media.BranchID) {
+            setIsUserLocalBranch(true);
+        }
+    }, [user])
+
     const isInBasket = basket.some(item => 
         item.Title === media.Title && 
         item.Type === media.Type && 
@@ -65,9 +72,9 @@ function BranchStockCard({ media, onAddToBasket }) {
             !(item.Title === media.Title && item.Type === media.Type && item.BranchID === media.BranchID)
         ));
     };
-
+    
     return (
-        <div className="content-panel" style={{ width: '100%' }}>
+        <div className={isUserLocalBranch ? 'content-panel-highlight-primary' : 'content-panel'} style={{ width: '100%', padding: '0.5rem' }}>
             <Row className="align-items-center">
                 <Col>
                     {branch ? (
@@ -79,24 +86,26 @@ function BranchStockCard({ media, onAddToBasket }) {
                         <span>Loading branch information...</span>
                     )}
                 </Col>
-                <Col className="text-center">
-                    <span>In Stock: {availableStockCount}</span>
+                <Col xs={1} className='text-center'>
+                    <span>{availableStockCount}</span>
                 </Col>
-                <Col className="text-end">
+                <Col xs={3} className="text-end">
                     {availableStockCount > 0 ? (
                         <div>
                             {isInBasket ? (
-                                <button className="button-secondary" onClick={handleRemoveFromBasket}>
-                                    Remove from Basket
+                                <button className="button-secondary-outline" onClick={handleRemoveFromBasket} Title='Remove from basket'>
+                                    <i className="bi bi-x-circle-fill"></i>
                                 </button>
                             ) : (
-                                <button className="button-primary" onClick={handleAddToBasket}>
-                                    Add to Basket
+                                <button className="button-primary" onClick={handleAddToBasket} Title='Add to basket'>
+                                    <i className="bi bi-basket"></i>
                                 </button>
                             )}
                         </div>
                     ) : (
-                        <span className="highlight-secondary-outline">Out Of Stock</span>
+                        <span style={{ color: 'red', paddingRight: '1rem' }} Title='Out of stock'>
+                            <i className="bi bi-x-circle-fill"></i>
+                        </span>
                     )}
                 </Col>
             </Row>

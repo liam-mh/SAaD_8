@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import Container from 'react-bootstrap/esm/Container';
-import Col from 'react-bootstrap/esm/Col';
-import Row from 'react-bootstrap/esm/Row';
+import React, { useContext } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
+import { SessionContext } from '../services/sessionContext';
 import MediaRequestForm from '../components/Media-Request-Form/MediaRequestForm';
+import LoginCard from '../components/Login-Card/LoginCard';
 
 const HelpPage = () => {
+  const { user } = useContext(SessionContext) || {};
+
   return (
     <>
       <div className='white-background py-4'>
@@ -36,7 +38,11 @@ const HelpPage = () => {
               </Col>
               <Col>
                 <h2 id="submission-form" className='pb-2 pt-4'>Submission Form</h2>
-                <MediaRequestForm />
+                {!user ? (
+                  <LoginCard />
+                ) : (
+                  <MediaRequestForm MemberID={user.MemberID}/>
+                )}
               </Col>
             </Row>
           </div>
