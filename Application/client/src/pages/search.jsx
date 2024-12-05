@@ -37,10 +37,8 @@ const SearchPage = () => {
             try {
                 let res;
                 if (preFilterType) {
-                    console.log('PRE FILTER: ', preFilterType);
                     res = await mediaFrontEndService.get('/readRecords', { Type: preFilterType }, true);
                 } else {
-                    console.log('NO FILTER');
                     res = await mediaFrontEndService.get('/readRecords', {}, true);
                     setAllDataLoaded(true);
                 }

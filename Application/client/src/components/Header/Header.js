@@ -31,7 +31,6 @@ function Header() {
       async function loadData() {
         try {
           const getBranch = await branchFrontEndService.get('/readRecords', { BranchID: user.BranchID });
-          console.log(getBranch);
           setLocalBranch(getBranch.data[0]);
         } catch (error) {
           console.log('Error getting header branch information', error);

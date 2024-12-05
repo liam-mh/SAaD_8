@@ -13,20 +13,9 @@ const IndexPage = () => {
   const [topPicks, setRandomMedia] = useState([]);
   const [hasClickedExploreMore, setHasClickedExploreMore] = useState(false);
 
-  // Load media data
+  // Load media data.
   useEffect(() => {
     async function loadData() {
-      // const newMember = await memberFrontEndService.post("/createRecord", {
-      //   FirstName: "Guy",
-      //   Surname: "Nicklin",
-      //   Email: "nicklinguy@yahoo.com",
-      //   Password: "Hashme1!",
-      //   FirstLineAddress: "71 Lennox road",
-      //   City: "Sheffield",
-      //   Postcode: "S6 4FN",
-      //   BranchID: 1,
-      //   RegisterDate: moment().format("YYYY-MM-DD"),
-      // });
       const allItems = await mediaFrontEndService.get("/readRecords", {}, true);
       const recentItems = await mediaFrontEndService.fetchMediaByTypeAndLimit();
       const randomItems = await mediaFrontEndService.fetchTopFive();

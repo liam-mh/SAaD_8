@@ -28,7 +28,7 @@ function LoginCard({ onLoginSuccess }) {
         if (onLoginSuccess) onLoginSuccess(false); 
       } else {
         setErrorMessage('');
-        setUser(response.data);
+        setUser(response.data[0]);
         if (onLoginSuccess) onLoginSuccess(true);
       }
     } catch (error) {
