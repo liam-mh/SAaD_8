@@ -1,9 +1,10 @@
-const mysql = require("mysql2");
 const sequelize = require("../../../config/sequelize");
 const { Op, ValidationError, DatabaseError } = require("sequelize");
+const bcrypt = require("bcrypt");
 
 /**
  * Base database handler class.
+ * @author Guy Nicklin
  */
 class DbHandler {
   /**
@@ -11,10 +12,10 @@ class DbHandler {
    * @param {Array<String>} removeFromGrouping - An array of keys to disregard when grouping to get unique values.
    */
 
-  constructor(model, removeFromGrouping=[], autoCompleteQueryFields=[]) {
+  constructor(model, removeFromGrouping = [], autoCompleteQueryFields = []) {
     this.model = model;
     this.removeFromGrouping = removeFromGrouping;
-    this.autoCompleteQueryFields = autoCompleteQueryFields
+    this.autoCompleteQueryFields = autoCompleteQueryFields;
   }
 
   // ------------------------------------- Error Handling -----------------------------------------------
@@ -42,6 +43,8 @@ class DbHandler {
     throw new Error("An unexpected error occurred: " + error.message);
   }
 
+  //------------------------------------- Unique Key Handling -----------------------------------------------
+
   /**
    * @private
    *
@@ -54,7 +57,9 @@ class DbHandler {
    */
   #makeRecordsUnique(queryOptions) {
     const modelAttributes = Object.keys(this.model.getAttributes()).filter(
-      (attr) => attr !== this.model.primaryKeyAttribute && !this.removeFromGrouping.includes(attr)
+      (attr) =>
+        attr !== this.model.primaryKeyAttribute &&
+        !this.removeFromGrouping.includes(attr)
     );
 
     queryOptions.attributes = modelAttributes.map((attr) => [
@@ -101,6 +106,28 @@ class DbHandler {
     return whereClause;
   }
 
+  // ------------------------------------- Password Validation -------------------------------------------
+
+  /**
+   * @private
+   *
+   * Validates a plain-text password against a stored hash for the given record.
+   *
+   * @param {Object} result - The current model instance.
+   * @param {String} password - The plain-text password to validate.
+   * @returns {Promise<Boolean>} - Resolves to true if the password matches, otherwise false.
+   */
+  async #validatePassword(result, password) {
+    try {
+      return await result.validatePassword(password);
+    } catch (error) {
+      console.error("Error validating password:", error);
+      throw new Error("Password validation failed.");
+    }
+  }
+
+  //------------------------------------- Connection/Disconnection -------------------------------------------
+
   /**
    * Connect to the DB.
    * @returns {Promise} - DB connection.
@@ -118,6 +145,27 @@ class DbHandler {
       });
     });
   }
+
+  /**
+   * Closes the database connection.
+   * @returns {Promise<void>} - Resolves when the connection is successfully closed.
+   * @throws {Error} - Rejects with an error if the disconnection fails.
+   */
+  async disconnect() {
+    return new Promise((resolve, reject) => {
+      this.connection.end((err) => {
+        if (err) {
+          console.error("Error closing database connection:", err);
+          reject(err);
+        } else {
+          console.log("Database connection closed");
+          resolve();
+        }
+      });
+    });
+  }
+
+  //------------------------------------- CRUD Operations -------------------------------------------
 
   /**
    * Creates a record in the relative table based on the calling service.
@@ -167,24 +215,50 @@ class DbHandler {
   async readByQuery(dataObject = {}, uniqueFlag = false) {
     try {
       let queryOptions = {};
+      let whereClause = {};
 
-      const whereClause = {};
-      for (const [key, value] of Object.entries(dataObject)) {
-        if (value !== null && value !== undefined) {
-          whereClause[key] = value;
+      // Authentication.
+      if (dataObject.Password) {
+        whereClause = this.#getUniqueKeys(dataObject);
+        queryOptions.where = whereClause;
+      } 
+      // Other reads.
+      else 
+      {
+        whereClause = {};
+
+        for (const [key, value] of Object.entries(dataObject)) {
+          if (value !== null && value !== undefined) {
+            whereClause[key] = value;
+          }
         }
-      }
-      queryOptions.where = whereClause;
 
-      // Handle uniqueFlag.
-      if (uniqueFlag) {
-        queryOptions = this.#makeRecordsUnique(queryOptions);
+        queryOptions.where = whereClause;
+
+        // Handle uniqueFlag.
+        if (uniqueFlag) {
+          queryOptions = this.#makeRecordsUnique(queryOptions);
+        }
       }
 
       // Fetch records based on dynamic query options.
-      const mediaRecords = await this.model.findAll(queryOptions);
+      const result = await this.model.findAll(queryOptions);
 
-      return mediaRecords;
+      // Handle password validation if applicable.
+      if (result.length === 1 && dataObject.Password) {
+        const isValidPassword = await this.#validatePassword(
+          result[0],
+          dataObject.Password
+        );
+        if (!isValidPassword) {
+          console.error("Invalid password.");
+          return [];
+        }
+        result[0].Password = undefined;
+        return result;
+      }
+
+      return result;
     } catch (error) {
       this.#handleError(error);
     }
@@ -222,7 +296,7 @@ class DbHandler {
       const whereClause = this.#getUniqueKeys(uniqueKey);
 
       return await this.model.destroy({
-        where: whereClause
+        where: whereClause,
       });
     } catch (error) {
       this.#handleError(error);
@@ -231,15 +305,17 @@ class DbHandler {
 
   /**
    * Delete a multiple records from the DB based on unique keys in the model.
-   * 
+   *
    * @param {Object[]} uniqueKeys - Array of Records to create.
    * @returns {Promise<Object>} - Resolves to an object representing the created record.
    */
   async deleteMultipleByQuery(uniqueKeys) {
     try {
       // Map each object in the uniqueKeys array to a where clause
-      const whereClauses = uniqueKeys.map((uniqueKey) => this.#getUniqueKeys(uniqueKey));
-  
+      const whereClauses = uniqueKeys.map((uniqueKey) =>
+        this.#getUniqueKeys(uniqueKey)
+      );
+
       // Combine where clauses.
       const combinedWhereClause = {
         [Op.or]: whereClauses,
@@ -248,7 +324,6 @@ class DbHandler {
       return await this.model.destroy({
         where: combinedWhereClause,
       });
-  
     } catch (error) {
       this.#handleError(error);
     }

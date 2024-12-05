@@ -46,9 +46,15 @@ const handleRoutes = (router, serviceName, resources) => {
                 const { fields, uniqueFlag } = req.query;
                 const parsedFields = JSON.parse(fields);
                 const parsedUniqueFlag = uniqueFlag === 'true';
-                //204 implement empty
+                
                 const read = await controllerInstance.readRecords(parsedFields, parsedUniqueFlag);
-                res.status(200).json({ message: 'Records retrieved successfully', data: read, status: res.statusCode});
+                if(read.length === 0){
+                    res.status(204).json({ message: 'No records matching request', data: read, status: res.statusCode});
+                }
+                else{
+                    res.status(200).json({ message: 'Records retrieved successfully', data: read, status: res.statusCode});
+                }
+                
             } catch (error) {
                 console.error(`Error reading records from ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to retrieve records', error: error.message, status: res.statusCode});
