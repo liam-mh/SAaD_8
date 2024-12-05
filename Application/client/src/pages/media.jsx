@@ -18,15 +18,21 @@ const MediaPage = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationText, setNotificationText] = useState('');
   const [usedWishlistButton, setUsedWishlistButton] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     async function loadData() {
-      const allItems = await mediaFrontEndService.get('/readRecords', {Title: mediaTitle, Type: mediaType} , true);
-      setMedia(allItems.data);
+      try {
+        const allItems = await mediaFrontEndService.get('/readRecords', { Title: mediaTitle, Type: mediaType }, true);
+        setMedia(allItems.data);
+        allItems.data.length === 0 ? setErrorMessage('No media available') : setErrorMessage('');
+      } catch (error) {
+        setErrorMessage('Something went wrong'); 
+      }
     }
 
     loadData();
-  }, []);
+  }, [mediaTitle, mediaType]);
 
   const mediaItem = media.length > 0 ? media[0] : null;
   const mediaArtwork = mediaItem ? mediaFrontEndService.generateImageSrc(mediaItem.Title, mediaItem.Type) : null;
@@ -78,7 +84,10 @@ const MediaPage = () => {
 
   return (
     <>
+      {errorMessage && <div>{errorMessage}</div>}  
+
       {showNotification && <NotificationBanner mediaTitle={notificationText} />}
+      
       <Container fluid='lg'>
         <Row>
           {/* Media Artwork */}
@@ -152,8 +161,6 @@ const MediaPage = () => {
               </Row>
               ))}
             </Row>
-
-            
           </Col>
         </Row>
       </Container>

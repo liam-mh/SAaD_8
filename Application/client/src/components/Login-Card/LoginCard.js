@@ -39,6 +39,7 @@ function LoginCard({ onLoginSuccess }) {
       setErrorMessage(
         "An error occurred during login. Please try again later."
       );
+      if (onLoginSuccess) onLoginSuccess(false);
     }
   };
 
