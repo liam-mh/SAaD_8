@@ -4,17 +4,28 @@ import Col from "react-bootstrap/esm/Col";
 import { Link } from "react-router-dom";
 import { Container, Table, Button, Form } from "react-bootstrap";
 import { SessionContext } from "../services/sessionContext";
-import mediaFrontEndService from "../services/storefront/mediaFrontEndService";
-import branchFrontEndService from "../services/storefront/branchFrontEndService";
-import memberFrontEndService from "../services/account/memberFrontEndService";
-import mediaHistoryFrontEndService from "../services/storefront/mediaHistoryFrontEndService";
-import memberSubscriptionFrontEndService from "../services/account/memberSubscriptionFrontEndService";
-import emailFrontEndService from "../services/notification/emailFrontEndService";
+import MediaFrontEndService from "../services/storefront/mediaFrontEndService";
+import BranchFrontEndService from "../services/storefront/branchFrontEndService";
+import MemberFrontEndService from "../services/account/memberFrontEndService";
+import MediaHistoryFrontEndService from "../services/storefront/mediaHistoryFrontEndService";
+import MemberSubscriptionFrontEndService from "../services/account/memberSubscriptionFrontEndService";
+import EmailFrontEndService from "../services/notification/emailFrontEndService";
 import LoginCard from "../components/Login-Card/LoginCard";
+import WishlistFrontEndSevice from "../services/storefront/wishlistFrontEndSevice";
+import moment from "moment";
+
+const mediaFrontEndService = new MediaFrontEndService();
+const branchFrontEndService = new BranchFrontEndService();
+const memberFrontEndService = new MemberFrontEndService();
+const mediaHistoryFrontEndService = new MediaHistoryFrontEndService();
+const memberSubscriptionFrontEndService = new MemberSubscriptionFrontEndService();
+const emailFrontEndService = new EmailFrontEndService();
+const wishlistFrontEndSevice = new WishlistFrontEndSevice();
 
 const EmployeeIndexPage = () => {
   const [searchMedia, setSearchMedia] = useState([]);
   const [searchPK, setSearchPK] = useState("");
+  const [historyID, setHistoryID] = useState("");
   const [searchTitle, setSearchTitle] = useState("");
   const { basket, setBasket, clearBasket } =
     useContext(SessionContext) || {};
@@ -67,6 +78,25 @@ const EmployeeIndexPage = () => {
       console.error("Error during search: ", error);
     }
   };
+
+  const returnMedia = async () => {
+    
+    if (historyID) {
+      const returnedMedia = await mediaHistoryFrontEndService.put('/updateRecord', {HistoryID: historyID, Active: 1, ActualReturn: moment().format("YYYY-MM-DD")});
+      if(returnedMedia.status === 200){
+        const wishlist = await wishlistFrontEndSevice.get(
+          '/readRecords', 
+          {
+            Title: returnedMedia.data.Title,
+            Type: returnedMedia.data.Type
+          });
+          
+          if(wishlist.data.length > 0){
+            const member = this.memberFrontEndService.emailMembers(wishlist.data);
+          }
+      } 
+    }
+  }
 
   const getBranchInfo = async (mediaItems) => {
     try {
@@ -323,6 +353,11 @@ const EmployeeIndexPage = () => {
     setSearchPK(value);
   };
 
+  const handleHistoryIdChange = async (e) => {
+    const value = e.target.value;
+    setHistoryID(value);
+  }
+
   const handleTitleInputChange = async (e) => {
     const value = e.target.value;
     setSearchTitle(value);
@@ -386,7 +421,7 @@ const EmployeeIndexPage = () => {
               <Col className="justify-content-center">
                 <br />
                 <h4>
-                  <b>1) Enter user's email address</b>
+                  <b>Enter user's email address</b>
                 </h4>
                 <Form className="d-flex align-items-center">
                   <div className="search-wrapper d-flex">
@@ -464,7 +499,7 @@ const EmployeeIndexPage = () => {
                 style={{ height: "40vh", overflowY: "auto" }}
               >
                 <h4 id="order" className="mt-3">
-                  3) Order Summary
+                  Order Summary
                 </h4>
                 <Table hover className="aml-table">
                   <thead>
@@ -550,7 +585,7 @@ const EmployeeIndexPage = () => {
               </Col>
             </Row>
             <Col className="justify-content-center">
-              <h1>2) Search by media ID</h1>
+              <h1>Search by media ID</h1>
               <Form className="d-flex align-items-center">
                 <div className="search-wrapper d-flex">
                   <Form.Control
@@ -571,7 +606,7 @@ const EmployeeIndexPage = () => {
               </Form>
             </Col>
             <Col className="justify-content-center">
-              <h1>2) Search by media title</h1>
+              <h1>Search by media title</h1>
               <Form className="align-items-center">
                 <div className="search-wrapper d-flex">
                   <Form.Control
@@ -597,6 +632,27 @@ const EmployeeIndexPage = () => {
                     checked={uniqueTitles}
                     onChange={handleCheckboxChange}
                   />
+                </div>
+              </Form>
+            </Col>
+            <Col className="justify-content-center">
+              <h1> Return Media By ID</h1>
+              <Form className="d-flex align-items-center">
+                <div className="search-wrapper d-flex">
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter media ID"
+                    className="search-input"
+                    value={historyID}
+                    onChange={handleHistoryIdChange}
+                  />
+                  <Button
+                    className="button-secondary me-2"
+                    style={{ borderRadius: "0 5px 5px 0" }}
+                    onClick={returnMedia}
+                  >
+                    Search
+                  </Button>
                 </div>
               </Form>
             </Col>

@@ -3,12 +3,14 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
-import wishlistFrontEndService from '../services/storefront/wishlistFrontEndSevice';
-import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
+import WishlistFrontEndService from '../services/storefront/wishlistFrontEndSevice';
+import MediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import moment from 'moment';
-
 import BranchStockCard from '../components/Branch-Stock-Card/BranchStockCard';
 import NotificationBanner from '../components/Notification-Banner/NotificationBanner';
+
+const wishlistFrontEndService = new WishlistFrontEndService();
+const mediaFrontEndService = new MediaFrontEndService();
 
 const MediaPage = () => {
   const { user } = useContext(SessionContext) || {};

@@ -2,10 +2,13 @@ import React, { useState, useContext } from "react";
 import { Button, Card, Form, Row, Col, CardImg } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { SessionContext } from "../../services/sessionContext";
-import memberFrontEndService from "../../services/account/memberFrontEndService";
-import employeeFrontEndService from "../../services/account/employeeFrontEndService";
 import { useLayoutEffect } from "react";
 import { useLocation } from "react-router-dom";
+import MemberFrontEndService from "../../services/account/memberFrontEndService";
+import EmployeeFrontEndService from "../../services/account/employeeFrontEndService";
+
+const memberFrontEndService = new MemberFrontEndService();
+const employeeFrontEndService = new EmployeeFrontEndService();
 
 function LoginCard({ onLoginSuccess }) {
   const [inputEmail, setEmail] = useState('');

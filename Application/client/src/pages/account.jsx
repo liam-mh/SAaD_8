@@ -2,11 +2,12 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Container, Table, Button, } from "react-bootstrap";
 import { SessionContext } from '../services/sessionContext';
 import { useNavigate } from 'react-router-dom';
-import wishlistFrontEndSevice from '../services/storefront/wishlistFrontEndSevice';
-import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
-import mediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService';
-
+import WishlistFrontEndSevice from '../services/storefront/wishlistFrontEndSevice';
 import LoginCard from "../components/Login-Card/LoginCard";
+import MediaFrontEndService from '../services/storefront/mediaFrontEndService';
+
+const mediaFrontEndService = new MediaFrontEndService();
+const wishlistFrontEndSevice = new WishlistFrontEndSevice();
 
 const AccountPage = () => {
   const { user } = useContext(SessionContext) || {};

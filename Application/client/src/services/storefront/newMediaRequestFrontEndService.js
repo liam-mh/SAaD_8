@@ -1,4 +1,4 @@
-const FrontEndService = require("../frontEndService");
+import FrontEndService from "../frontEndService";
 
 class NewMediaRequestFrontEndService extends FrontEndService{
     constructor(){
@@ -6,4 +6,4 @@ class NewMediaRequestFrontEndService extends FrontEndService{
     }
 }
 
-module.exports = new NewMediaRequestFrontEndService();
+export default NewMediaRequestFrontEndService;

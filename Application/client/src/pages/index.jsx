@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import WhatsNewCarousel from "../components/Whats-New-Carousel/WhatsNewCarousel";
 import MediaPagination from "../components/Media-Pagination/MediaPagination";
-import mediaFrontEndService from "../services/storefront/mediaFrontEndService";
-import memberFrontEndService from "../services/account/memberFrontEndService";
 import { First } from "react-bootstrap/esm/PageItem";
 import moment from "moment";
+import MediaFrontEndService from "../services/storefront/mediaFrontEndService";
+
+const mediaFrontEndService = new MediaFrontEndService();
 
 const IndexPage = () => {
   const [allMedia, setAllMedia] = useState([]);

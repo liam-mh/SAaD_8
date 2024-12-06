@@ -1,9 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { SessionContext } from '../../services/sessionContext';
 import branchFrontEndService from '../../services/storefront/branchFrontEndService';
-import mediaFrontEndService from '../../services/storefront/mediaFrontEndService';
-import mediaHistoryFrontEndService from '../../services/storefront/mediaHistoryFrontEndService';
+import MediaFrontEndService from '../../services/storefront/mediaFrontEndService';
+import MediaHistoryFrontEndService from '../../services/storefront/mediaHistoryFrontEndService';
 import { Col, Row } from 'react-bootstrap';
+
+const mediaFrontEndService = new MediaFrontEndService();
+const mediaHistoryFrontEndService = new MediaHistoryFrontEndService(); 
 
 function BranchStockCard({ media, onAddToBasket }) {
     if (!media) { return <p>Loading media information...</p>; }

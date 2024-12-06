@@ -4,14 +4,20 @@ import { Link, useNavigate } from 'react-router-dom';
 import { SessionContext } from '../services/sessionContext';
 import moment from 'moment';
 
-import mediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService';
-import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
-import memberSubscriptionFrontEndService from '../services/account/memberSubscriptionFrontEndService';
-import paymentFrontEndService from '../services/account/paymentFrontEndService';
-import emailFrontEndService from '../services/notification/emailFrontEndService';
+import MediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService';
+import MediaFrontEndService from '../services/storefront/mediaFrontEndService';
+import MemberSubscriptionFrontEndService from '../services/account/memberSubscriptionFrontEndService';
+import PaymentFrontEndService from '../services/account/paymentFrontEndService';
+import EmailFrontEndService from '../services/notification/emailFrontEndService';
 import LoginCard from '../components/Login-Card/LoginCard';
 import PaymentCard from '../components/Payment-Card/PaymentCard';
 import CountdownTimer from '../components/CountdownTimer';
+
+const mediaHistoryFrontEndService = new MediaHistoryFrontEndService();
+const mediaFrontEndService = new MediaFrontEndService();
+const memberSubscriptionFrontEndService = new MemberSubscriptionFrontEndService();
+const paymentFrontEndService = new PaymentFrontEndService();
+const emailFrontEndService = new EmailFrontEndService();
 
 const CheckoutPage = () => {
   const { user, checkout, clearCheckout, clearBasket } = useContext(SessionContext) || {};

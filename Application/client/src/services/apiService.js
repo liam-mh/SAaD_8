@@ -28,4 +28,4 @@ const fetchFromApiGateway = async (endpoint, options = {}) => {
     }
 };
 
-module.exports = fetchFromApiGateway;
+export default fetchFromApiGateway;

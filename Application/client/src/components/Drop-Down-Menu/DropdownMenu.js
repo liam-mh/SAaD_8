@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
-import mediaFrontEndService from '../../services/storefront/mediaFrontEndService';
+import MediaFrontEndService from '../../services/storefront/mediaFrontEndService';
+
+const mediaFrontEndService = new MediaFrontEndService();
 
 function DropdownMenu({ searchText, setSearchText }) {
   const [showDropdown, setShowDropdown] = useState(false);

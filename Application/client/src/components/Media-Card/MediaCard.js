@@ -2,8 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-const mediaFrontEndService = require('../../services/storefront/mediaFrontEndService');
+import MediaFrontEndService from '../../services/storefront/mediaFrontEndService';
 
+const mediaFrontEndService = new MediaFrontEndService();
 
 function MediaCard({ isSearchResult = false, media }) {
   const buttonText = isSearchResult ? "Shop" : "Add To Basket";

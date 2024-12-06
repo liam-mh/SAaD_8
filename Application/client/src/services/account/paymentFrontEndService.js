@@ -1,4 +1,4 @@
-const FrontEndService = require('../frontEndService');
+import FrontEndService from "../frontEndService";
 
 class PaymentFrontEndService extends FrontEndService{
     constructor() {
@@ -6,4 +6,4 @@ class PaymentFrontEndService extends FrontEndService{
     }
 }
 
-module.exports = new PaymentFrontEndService();
+export default PaymentFrontEndService;

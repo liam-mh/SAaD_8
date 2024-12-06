@@ -1,5 +1,5 @@
-const FrontEndService = require("../frontEndService");
-const fetchFromApiGateway = require("../apiService");
+import FrontEndService from "../frontEndService";
+import fetchFromApiGateway from "../apiService";
 
 class MediaFrontEndService extends FrontEndService {
 
@@ -61,4 +61,4 @@ class MediaFrontEndService extends FrontEndService {
   };
 }
 
-module.exports = new MediaFrontEndService();
+export default MediaFrontEndService;
