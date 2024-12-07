@@ -19,7 +19,6 @@ class MemberDbHandler extends DbHandler {
    */
   async fetchEmailsByQuery(memberIDs){
     try {
-      console.log(memberIDs)
       const members = await this.model.findAll({
         where: {
           MemberID: memberIDs 
