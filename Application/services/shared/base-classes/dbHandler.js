@@ -271,7 +271,6 @@ class DbHandler {
    * @returns {Promise<Object>} - Resolves to an object representing the updated record.
    */
   async updateByQuery(dataObject) {
-    console.log(dataObject)
     try {
       const whereClause = this.#getUniqueKeys(dataObject);
 

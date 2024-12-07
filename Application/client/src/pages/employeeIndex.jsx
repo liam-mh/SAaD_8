@@ -90,9 +90,8 @@ const EmployeeIndexPage = () => {
             Title: returnedMedia.data.Title,
             Type: returnedMedia.data.Type
           });
-          
           if(wishlist.data.length > 0){
-            const member = this.memberFrontEndService.emailMembers(wishlist.data);
+            const member = await memberFrontEndService.handleMembersWishlist(wishlist.data);
           }
       } 
     }
