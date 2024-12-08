@@ -1,9 +1,5 @@
-import fetchFromApiGateway from "../apiService";
 import FrontEndService from "../frontEndService";
 import EmailFrontEndService from "../notification/emailFrontEndService";
-import emailFrontEndService from "../notification/emailFrontEndService";
-import Wishlist from "../storefront/wishlistFrontEndSevice";
-import memberSubscriptionFrontEndService from "./memberSubscriptionFrontEndService";
 
 class MemberFrontEndService extends FrontEndService {
   emailFrontEndService = new EmailFrontEndService();

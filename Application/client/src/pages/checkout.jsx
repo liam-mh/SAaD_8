@@ -29,6 +29,8 @@ const CheckoutPage = () => {
   const [reservationID, setReservationID] = useState([]);
   const [anyOutOfStock, setAnyOutOfStock] = useState(false);
 
+  console.log(user)
+
   const navigate = useNavigate();
   
   const total = checkout.reduce((acc, item) => acc + (item.tokens || 0), 0);

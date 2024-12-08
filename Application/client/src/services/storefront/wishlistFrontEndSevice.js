@@ -1,9 +1,9 @@
 import FrontEndService from "../frontEndService";
 
-class Wishlist extends FrontEndService{
+class WishlistFrontEndService extends FrontEndService{
     constructor(){
         super('/storefront/wishlist');
     }
 }
 
-export default Wishlist;
+export default WishlistFrontEndService;

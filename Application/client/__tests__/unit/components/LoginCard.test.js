@@ -4,10 +4,13 @@ import "@testing-library/jest-dom";
 import LoginCard from "../../../src/components/Login-Card/LoginCard";
 import { SessionContext } from "../../../src/services/sessionContext";
 import { BrowserRouter } from "react-router-dom";
-import memberFrontEndService from "../../../src/services/account/memberFrontEndService";
+import MemberFrontEndService from "../../../src/services/account/memberFrontEndService";
+import WishlistFrontEndService from "../../../src/services/storefront/wishlistFrontEndSevice";
 
-// Mock memberFrontEndService.get method
+// Mock frontEndServices method
 jest.mock("../../../src/services/account/memberFrontEndService");
+jest.mock("../../../src/services/storefront/wishlistFrontEndSevice")
+
 
 describe("LoginCard Component Tests", () => {
   let setUserMock;

@@ -165,7 +165,6 @@ const handleRoutes = (router, serviceName, resources) => {
         //------------------------------------- Media specific -------------------------------------------
         
         router.get(`/${resource}/fetchEmails`, async (req, res) => {
-            console.log('Query parameters:', req.query);
             try{
                 const { fields } = req.query;
                 const parsedMemberIDs = JSON.parse(fields);
