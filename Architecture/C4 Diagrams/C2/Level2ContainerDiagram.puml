@@ -58,7 +58,7 @@ System_Ext(smsSys, "SMS", "[Twillo]\n\n\n Sends notifications via SMS.", $sprite
 System_Ext(vendorSystem, "External Vendor System", "[Amazon Marketplace] \n\n Used for procuring media resources.", $sprite="&cart,scale=5.0,color=7E3743")
 System_Ext(paymentGateway, "Payment Gateway", "[Stripe] \n \n Handles subscription payments and transactions.", $sprite="&credit-card,scale=5.0,color=7E3743")
 System_Ext(emailSys, "Email", "[Twillo SendGrid]\n\n Sends notifications via email.", $sprite="&envelope-closed,scale=5.0,color=7E3743")
-System_Ext(2faSys, "2FA", "[Twilio Verify]\n\n 2 factor authentication via email/SMS/voice.", $sprite="&phone,scale=5.0,color=7E3743")
+System_Ext(2faSys, "2FA", "[Twilio Verify]\n\n 2 factor authentication via email/SMS/voice.", $sprite="&lock-locked,scale=5.0,color=7E3743")
 
 
 ' External People '
