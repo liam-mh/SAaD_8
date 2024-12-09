@@ -1,4 +1,4 @@
-const fetchFromApiGateway = require("./apiService");
+import fetchFromApiGateway from "./apiService";
 
 class FrontEndService {
   constructor(baseRoute) {
@@ -121,4 +121,4 @@ class FrontEndService {
   }
 }
 
-module.exports = FrontEndService;
+export default FrontEndService;

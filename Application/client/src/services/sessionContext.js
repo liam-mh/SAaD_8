@@ -7,6 +7,7 @@ export const SessionContextProvider = ({ children }) => {
   const [basket, setBasket] = useState([]);
   const [branches, setBranches] = useState([]);
   const [checkout, setCheckout] = useState([]);
+  const [employee, setEmployee] = useState([]);
 
   const safelyParse = (data) => {
     try {
@@ -22,11 +23,13 @@ export const SessionContextProvider = ({ children }) => {
     const storedBasket = localStorage.getItem('basket');
     const storedBranches = localStorage.getItem('branches');
     const storedCheckout = localStorage.getItem('checkout');
+    const storedEmployee = localStorage.getItem('employee');
 
     setUser(safelyParse(storedUser));
     setBasket(safelyParse(storedBasket) || []);
     setBranches(safelyParse(storedBranches) || []);
     setCheckout(safelyParse(storedCheckout) || []);
+    setEmployee(safelyParse(storedEmployee) || []);
   }, []);
 
   const safelyStringify = (data) => {
@@ -43,7 +46,8 @@ export const SessionContextProvider = ({ children }) => {
     localStorage.setItem('basket', safelyStringify(basket));
     localStorage.setItem('branches', safelyStringify(branches));
     localStorage.setItem('checkout', safelyStringify(checkout));
-  }, [user, basket, branches, checkout]);
+    localStorage.setItem('employee', safelyStringify(employee));
+  }, [user, basket, branches, checkout, employee]);
 
   useEffect(() => {
     const handleTabClose = () => {
@@ -51,6 +55,7 @@ export const SessionContextProvider = ({ children }) => {
       localStorage.removeItem('basket');
       localStorage.removeItem('branches');
       localStorage.removeItem('checkout');
+      localStorage.removeItem('employee');
     };
     window.addEventListener('beforeunload', handleTabClose);
     return () => {
@@ -75,13 +80,17 @@ export const SessionContextProvider = ({ children }) => {
     setCheckout([]);
     localStorage.removeItem('checkout');
   };
+  const clearEmployee = () => {
+    setEmployee([]);
+    localStorage.removeItem('employee')
+  }
 
   return (
     <SessionContext.Provider 
       value={{ 
-        user, basket, branches, checkout,
-        setUser, setBasket, setBranches, setCheckout,
-        clearUser, clearBasket, clearBranches, clearCheckout
+        user, basket, branches, checkout, employee,
+        setUser, setEmployee, setBasket, setBranches, setCheckout,
+        clearUser, clearBasket, clearBranches, clearCheckout, clearEmployee
       }}>
       {children}
     </SessionContext.Provider>

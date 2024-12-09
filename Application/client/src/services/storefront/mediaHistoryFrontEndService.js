@@ -1,4 +1,4 @@
-const FrontEndService = require("../frontEndService");
+import FrontEndService from "../frontEndService";
 
 class MediaHistoryFrontEndService extends FrontEndService{
     constructor(){
@@ -6,4 +6,4 @@ class MediaHistoryFrontEndService extends FrontEndService{
     }
 }
 
-module.exports = new MediaHistoryFrontEndService();
+export default MediaHistoryFrontEndService;

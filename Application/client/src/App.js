@@ -13,6 +13,7 @@ import BasketPage from './pages/basket';
 import SearchPage from './pages/search';
 import CheckoutPage from './pages/checkout';
 import EmployeeIndexPage from './pages/employeeIndex';
+import Returns from './pages/returns';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/employee" element={<EmployeeIndexPage />} />
+          <Route path="/returns" element={<Returns/>} />
         </Routes>
         <Footer />
       </Router>

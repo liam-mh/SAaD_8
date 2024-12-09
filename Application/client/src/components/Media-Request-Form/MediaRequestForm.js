@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
-import mediaFrontEndService from '../../services/storefront/mediaFrontEndService';
-import newMediaRequestFrontEndService from '../../services/storefront/newMediaRequestFrontEndService';
-import emailFrontEndService from '../../services/notification/emailFrontEndService';
 import moment from 'moment';
-
 import MediaCard from '../Media-Card/MediaCard';
+import MediaFrontEndService from '../../services/storefront/mediaFrontEndService';
+import NewMediaRequestFrontEndService from '../../services/storefront/newMediaRequestFrontEndService';
+import EmailFrontEndService from '../../services/notification/emailFrontEndService';
+
+const mediaFrontEndService = new MediaFrontEndService();
+const newMediaRequestFrontEndService = new NewMediaRequestFrontEndService();
+const emailFrontEndService = new EmailFrontEndService();
+
 
 const MediaRequestForm = ({ MemberID }) => {
 	const [mediaTitle, setTitle] = useState('');

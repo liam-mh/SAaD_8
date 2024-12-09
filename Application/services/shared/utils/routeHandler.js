@@ -40,7 +40,7 @@ const handleRoutes = (router, serviceName, resources) => {
     resources.forEach((resource) => {
         const Controller = getController(resource, serviceName);
         const controllerInstance = new Controller();
-
+        
         router.get(`/${resource}/readRecords`, async (req, res) => {
             try {
                 const { fields, uniqueFlag } = req.query;
@@ -53,8 +53,7 @@ const handleRoutes = (router, serviceName, resources) => {
                 }
                 else{
                     res.status(200).json({ message: 'Records retrieved successfully', data: read, status: res.statusCode});
-                }
-                
+                }    
             } catch (error) {
                 console.error(`Error reading records from ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to retrieve records', error: error.message, status: res.statusCode});
@@ -141,7 +140,8 @@ const handleRoutes = (router, serviceName, resources) => {
         });
         
 
-        //media specific
+        //------------------------------------- Media specific -------------------------------------------
+
         router.get(`/${resource}/fetchMediaByTypeAndLimit`, async (req, res) => {
             try {
                 const carouselMedia = await controllerInstance.handleMediaByTypeAndLimit();
@@ -162,6 +162,26 @@ const handleRoutes = (router, serviceName, resources) => {
             }
         });
 
+        //------------------------------------- Media specific -------------------------------------------
+        
+        router.get(`/${resource}/fetchEmails`, async (req, res) => {
+            try{
+                const { fields } = req.query;
+                const parsedMemberIDs = JSON.parse(fields);
+
+                const emailAddresses = await controllerInstance.handleFetchEmails(parsedMemberIDs);
+                if(emailAddresses.length === 0){
+                    res.status(204).json({ message: 'No records matching request', data: emailAddresses, status: res.statusCode});
+                }
+                else{
+                    res.status(200).json({ message: 'Records retrieved successfully', data: emailAddresses, status: res.statusCode});
+                }
+            }
+            catch(error){
+                console.error(`Error fetching emails from ${resource}:`, error);
+                res.status(500).json({ message: 'Failed to retrieve emails', error: error.message });
+            }
+        });
     });
 };
 
