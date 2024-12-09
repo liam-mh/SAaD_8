@@ -8,7 +8,12 @@ import MemberFrontEndService from "../../../src/services/account/memberFrontEndS
 import { useLocation } from "react-router-dom";
 import EmployeeFrontEndService from "../../../src/services/account/employeeFrontEndService";
 
-// Mock frontEndServices method
+/**
+ * Tests for Login card comoponent.
+ * 
+ * @author Guy Nicklin
+ */
+
 jest.mock("../../../src/services/account/memberFrontEndService");
 jest.mock("../../../src/services/account/employeeFrontEndService")
 
@@ -30,6 +35,7 @@ const mockUserData = {
   status: 200,
 };
 
+// Need these to run mock before the test otherwise component will render with null data. 
 MemberFrontEndService.mockImplementation(() => {
   return {
     post: jest.fn(),
@@ -50,6 +56,7 @@ jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn(), 
 }));
 
+
 describe("LoginCard Component Tests", () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -61,7 +68,6 @@ describe("LoginCard Component Tests", () => {
     const mockGet = jest.fn().mockResolvedValue(mockUserData);
     MemberFrontEndService.mockImplementation(() => {
       return {
-        post: jest.fn(),
         get: mockGet,
       };
     });
@@ -77,7 +83,6 @@ describe("LoginCard Component Tests", () => {
       </BrowserRouter>
     );
 
-    // Simulate user input
     fireEvent.change(screen.getByPlaceholderText("Email"), {
       target: { value: "test@yahoo.com" },
     });
@@ -85,7 +90,6 @@ describe("LoginCard Component Tests", () => {
       target: { value: "password123" },
     });
 
-    // Trigger login action
     fireEvent.click(screen.getByText("Login"));
 
     await waitFor(() => {
@@ -104,7 +108,6 @@ describe("LoginCard Component Tests", () => {
     const mockGet = jest.fn().mockResolvedValue(mockUserData);
     EmployeeFrontEndService.mockImplementation(() => {
       return {
-        post: jest.fn(),
         get: mockGet,
       };
     });
@@ -120,7 +123,6 @@ describe("LoginCard Component Tests", () => {
       </BrowserRouter>
     );
 
-    // Simulate user input
     fireEvent.change(screen.getByPlaceholderText("Email"), {
       target: { value: "test@yahoo.com" },
     });
@@ -128,7 +130,6 @@ describe("LoginCard Component Tests", () => {
       target: { value: "password123" },
     });
 
-    // Trigger login action
     fireEvent.click(screen.getByText("Login"));
 
     await waitFor(() => {
@@ -143,7 +144,16 @@ describe("LoginCard Component Tests", () => {
 
   it("should handle network error during login", async () => {
     useLocation.mockReturnValue({ pathname: "/account" });
-    mockGet.mockRejectedValue(new Error("Network Error"));
+
+    const mockGet = jest.fn().mockRejectedValue(new Error("Network Error"));
+    MemberFrontEndService.mockImplementation(() => {
+        return{
+          get : mockGet,
+        }
+    });
+
+    const setUserMock = jest.fn();
+    const setEmployeeMock = jest.fn();
 
     render(
       <BrowserRouter>
@@ -163,19 +173,29 @@ describe("LoginCard Component Tests", () => {
     fireEvent.click(screen.getByText("Login"));
 
     await waitFor(() => {
-      expect(mockGet).toHaveBeenCalled(); // Ensure API was called
+      expect(mockGet).toHaveBeenCalled(); 
       expect(
         screen.getByText(
           "An error occurred during login. Please try again later."
         )
       ).toBeInTheDocument();
-      expect(setUserMock).not.toHaveBeenCalled(); // Ensure setUser was not called
+      expect(setUserMock).not.toHaveBeenCalled();
+      expect(setEmployeeMock).not.toHaveBeenCalled();  
     });
   });
 
   it("should handle invalid email or password", async () => {
-    useLocation.mockReturnValue({ pathname: "/media" });
-    mockGet.mockResolvedValue(null); // Simulate API returning no user
+    useLocation.mockReturnValue({ pathname: "/account" });
+
+    // Successful and empty read returns 204 and null data.
+    const mockGet = jest.fn().mockResolvedValue(null);
+    MemberFrontEndService.mockImplementation(() => {
+        return{
+          get : mockGet,
+        }
+    });
+
+    const setUserMock = jest.fn();
 
     render(
       <BrowserRouter>
@@ -195,16 +215,25 @@ describe("LoginCard Component Tests", () => {
     fireEvent.click(screen.getByText("Login"));
 
     await waitFor(() => {
-      expect(mockGet).toHaveBeenCalled(); // Ensure API was called
+      expect(mockGet).toHaveBeenCalled(); 
       expect(
         screen.getByText("Invalid email or password. Please try again.")
       ).toBeInTheDocument();
-      expect(setUserMock).not.toHaveBeenCalled(); // Ensure setUser was not called
+      expect(setUserMock).not.toHaveBeenCalled();
     });
   });
 
   it("should not submit with empty email or password", async () => {
     useLocation.mockReturnValue({ pathname: "/media" });
+
+    const mockGet = jest.fn();
+    MemberFrontEndService.mockImplementation(() => {
+        return{
+          get : mockGet,
+        }
+    });
+
+    const setUserMock = jest.fn();
 
     render(
       <BrowserRouter>
@@ -218,9 +247,9 @@ describe("LoginCard Component Tests", () => {
     fireEvent.click(screen.getByText("Login"));
 
     await waitFor(() => {
-      expect(mockGet).not.toHaveBeenCalled(); // No API call should have been made
-      expect(setUserMock).not.toHaveBeenCalled(); // No user should be set
-      expect(screen.getByText("Login to your account")).toBeInTheDocument(); // Still on the same page
+      expect(mockGet).not.toHaveBeenCalled(); // No API call should have been made.
+      expect(setUserMock).not.toHaveBeenCalled(); 
+      expect(screen.getByText("Login to your account")).toBeInTheDocument(); 
     });
   });
 });
