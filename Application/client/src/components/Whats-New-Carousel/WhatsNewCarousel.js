@@ -6,9 +6,8 @@ import Col from 'react-bootstrap/Col';
 import Carousel from 'react-bootstrap/Carousel';
 import MediaFrontEndService from '../../services/storefront/mediaFrontEndService';
 
-const mediaFrontEndService = new MediaFrontEndService();
-
 function WhatsNewCarousel({ media }) {
+  const mediaFrontEndService = new MediaFrontEndService();
   const dvds = media.filter(item => item.Type === 'DVD');
   const books = media.filter(item => item.Type === 'Book');
   const journals = media.filter(item => item.Type === 'Journal');

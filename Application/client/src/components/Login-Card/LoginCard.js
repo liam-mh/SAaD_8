@@ -14,6 +14,9 @@ function LoginCard({ onLoginSuccess }) {
   const [inputPassword, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const { user, setUser, employee, setEmployee } = useContext(SessionContext);
+
+  const location = useLocation();
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -24,9 +27,6 @@ function LoginCard({ onLoginSuccess }) {
       }
 
       let response;
-
-      const location = useLocation();
-      console.log("Current location:", location.pathname);
 
       if (location.pathname === "/employee") {
         response = await employeeFrontEndService.get("/readRecords", {

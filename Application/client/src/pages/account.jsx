@@ -1,38 +1,42 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Container, Table, Button, } from "react-bootstrap";
-import { SessionContext } from '../services/sessionContext';
-import { useNavigate } from 'react-router-dom';
-import WishlistFrontEndSevice from '../services/storefront/wishlistFrontEndSevice';
+import React, { useContext, useState, useEffect } from "react";
+import { Container, Table, Button } from "react-bootstrap";
+import { SessionContext } from "../services/sessionContext";
+import { useNavigate } from "react-router-dom";
+import WishlistFrontEndSevice from "../services/storefront/wishlistFrontEndSevice";
 import LoginCard from "../components/Login-Card/LoginCard";
-import MediaFrontEndService from '../services/storefront/mediaFrontEndService';
-
-const mediaFrontEndService = new MediaFrontEndService();
-const wishlistFrontEndSevice = new WishlistFrontEndSevice();
+import MediaFrontEndService from "../services/storefront/mediaFrontEndService";
+import MediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService'
 
 const AccountPage = () => {
+  const mediaFrontEndService = new MediaFrontEndService();
+  const wishlistFrontEndSevice = new WishlistFrontEndSevice();
+  const mediaHistoryFrontEndService = new MediaHistoryFrontEndService();
   const { user } = useContext(SessionContext) || {};
   const [wishlistItems, setWishlistItems] = useState([]);
   const navigate = useNavigate();
 
   // load user wishlist
-  useEffect (() => {
+  useEffect(() => {
     const loadData = async () => {
       try {
-        const stockData = await wishlistFrontEndSevice.get(
-          '/readRecords', { MemberID: user.MemberID }
-        );
+        const stockData = await wishlistFrontEndSevice.get("/readRecords", {
+          MemberID: user.MemberID,
+        });
         const availabilityResults = await Promise.all(
           stockData.data.map(async (mediaItem) => {
-              const availability = await mediaHistoryFrontEndService.get('/readRecords', { MediaID: mediaItem.MediaID });
-              const activeStatus = availability?.data?.[0]?.Active ?? false;
-              return { ...mediaItem, available: !activeStatus };
+            const availability = await mediaHistoryFrontEndService.get(
+              "/readRecords",
+              { MediaID: mediaItem.MediaID }
+            );
+            const activeStatus = availability?.data?.[0]?.Active ?? false;
+            return { ...mediaItem, available: !activeStatus };
           })
         );
         setWishlistItems(availabilityResults || {});
       } catch (error) {
         console.error("Error fetching wishlist data:", error);
       }
-    }
+    };
 
     loadData();
   }, [user]);
@@ -40,16 +44,18 @@ const AccountPage = () => {
   const handleRemove = (itemToRemove) => {
     const RemoveData = async () => {
       try {
-        const response = await wishlistFrontEndSevice.delete(
-          '/deleteRecord', { WishlistID: itemToRemove.WishlistID }
-        );
+        const response = await wishlistFrontEndSevice.delete("/deleteRecord", {
+          WishlistID: itemToRemove.WishlistID,
+        });
         setWishlistItems((prevItems) =>
-          prevItems.filter((item) => item.WishlistID !== itemToRemove.WishlistID)
+          prevItems.filter(
+            (item) => item.WishlistID !== itemToRemove.WishlistID
+          )
         );
       } catch (error) {
         console.error("Error removing wishlist data:", error);
       }
-    }
+    };
 
     RemoveData();
   };
@@ -57,31 +63,28 @@ const AccountPage = () => {
   const handleReserve = (itemToReserve) => {
     const UpdateData = async () => {
       try {
-        const response = await wishlistFrontEndSevice.put(
-          '/updateRecord', 
-          {
-            WishlistID: itemToReserve.WishlistID, 
-            WishType: 'Reservation'
-          }
-        );
+        const response = await wishlistFrontEndSevice.put("/updateRecord", {
+          WishlistID: itemToReserve.WishlistID,
+          WishType: "Reservation",
+        });
         setWishlistItems((prevItems) =>
           prevItems.map((item) =>
             item.WishlistID === itemToReserve.WishlistID
-              ? { ...item, WishType: 'Reservation' }
+              ? { ...item, WishType: "Reservation" }
               : item
           )
         );
       } catch (error) {
         console.error("Error Updating wishlist data:", error);
       }
-    }
+    };
 
     UpdateData();
-  }
+  };
 
   const handleRent = (itemToRent) => {
     const state = { mediaType: itemToRent.Type, mediaTitle: itemToRent.Title };
-    navigate('/media', { state });
+    navigate("/media", { state });
   };
 
   return (
@@ -108,28 +111,40 @@ const AccountPage = () => {
                 </thead>
                 <tbody>
                   {wishlistItems.map((item, index) => {
-                    const mediaArtwork = mediaFrontEndService.generateImageSrc(item.Title, item.Type);
-                    const reservation = item.WishType === 'Reservation';
+                    const mediaArtwork = mediaFrontEndService.generateImageSrc(
+                      item.Title,
+                      item.Type
+                    );
+                    const reservation = item.WishType === "Reservation";
                     const isAvailable = item.available;
 
                     return (
-                      <tr key={index} style={{ verticalAlign: 'middle' }}>
+                      <tr key={index} style={{ verticalAlign: "middle" }}>
                         {/* Product */}
                         <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "3rem",
+                            }}
+                          >
                             <div>
-                              <Button variant="danger" onClick={() => handleRemove(item)}>
+                              <Button
+                                variant="danger"
+                                onClick={() => handleRemove(item)}
+                              >
                                 X
                               </Button>
                             </div>
-                            <div style={{ flex: '0 0 auto' }}>
+                            <div style={{ flex: "0 0 auto" }}>
                               <img
                                 src={mediaArtwork}
                                 alt="Media Artwork"
                                 style={{
-                                  height: '7rem',
-                                  aspectRatio: '1',
-                                  objectFit: 'contain',
+                                  height: "7rem",
+                                  aspectRatio: "1",
+                                  objectFit: "contain",
                                 }}
                               />
                             </div>
@@ -142,7 +157,7 @@ const AccountPage = () => {
                             </div>
                           </div>
                         </td>
-      
+
                         {/* Reserve */}
                         <td>
                           {!isAvailable && !reservation ? (
@@ -166,11 +181,18 @@ const AccountPage = () => {
                         {/* Rent */}
                         <td>
                           {isAvailable && !reservation ? (
-                            <Button className='button-primary' onClick={() => handleRent(item)} Title='Rent Media'>
+                            <Button
+                              className="button-primary"
+                              onClick={() => handleRent(item)}
+                              Title="Rent Media"
+                            >
                               <i className="bi bi-plus-lg"></i>
                             </Button>
                           ) : (
-                            <span style={{ color: 'red', paddingRight: '1rem' }} Title='Out of stock'>
+                            <span
+                              style={{ color: "red", paddingRight: "1rem" }}
+                              Title="Out of stock"
+                            >
                               <i className="bi bi-x-circle-fill"></i>
                             </span>
                           )}

@@ -5,9 +5,8 @@ import { SessionContext } from "../../services/sessionContext";
 import DropdownMenu from "../Drop-Down-Menu/DropdownMenu";
 import BranchFrontEndService from "../../services/storefront/branchFrontEndService";
 
-const branchFrontEndService = new BranchFrontEndService();
-
 function Header() {
+  const branchFrontEndService = new BranchFrontEndService();
   const { employee, user, basket } = useContext(SessionContext) || {};
   const basketNum = basket.length;
   const [localBranch, setLocalBranch] = useState(null);
