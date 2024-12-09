@@ -5,7 +5,6 @@
 title C4 Level 2: Advanced Media Library System - Container Diagram
 skinparam defaultFontSize 16
 
-
 ' Define colour coding '
 UpdateBoundaryStyle($bgColor="#E0B6BD", $fontColor="brown", $borderColor="brown")
 AddRelTag("Relationship", $textColor="black", $lineColor="black", $lineStyle="dashed")
@@ -15,14 +14,15 @@ AddElementTag("mobileApp", $bgColor="black", $borderColor="lightblue", $shape=Ei
 AddElementTag("apiGateway", $bgColor="#A9D18E", $fontColor="black", $borderColor="black", $legendText="API Gateway (Node.js/Express.js)")
 AddElementTag("esb", $bgColor="#00FBFF", $fontColor="black", $borderColor="black", $legendText="Enterprise Service Bus (ESB)")
 AddElementTag("backendAPI", $bgColor="#9DC3E6", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Backend API (Node.js/Express.js)")
-AddElementTag("database", $bgColor="#4d8ddb", $fontColor="black", $borderColor="black", $legendText="Database (Azure MySQL)")
+AddElementTag("database", $bgColor="#0043b0", $fontColor="black", $borderColor="black", $legendText="Database (Azure MySQL)")
 
 
 ' Define the main system boundaries '
 System_Boundary(aml, "Advanced Media Library (AML)") {
 Container(webApp, "Web Application", "React.js", "Provides a front-end interface for users to interact with.", $tags="webApp")
 Container(mobileApp, "Mobile Application", "iOS/Android", "Allows users to view and borrow media on the go.", $tags="mobileApp")
-Container(apiGateway, "API Gateway", "Node.js/Express.js", "Routes external traffic to the appropriate internal service.", $tags="apiGateway", $baseShape="hexagon")
+Container(apiGateway, "API Gateway", "Node.js/Express.js", "Central entry point for client requests.", $tags="apiGateway", $baseShape="hexagon")
+Container(routeHandler, "Route Handler", "Node.js/Express.js", "Dynamically manages internal routes for services.", $tags="apiGateway")
 
 /' Removed ESB per Essam feedback 28/10/24
 Container(esb, "Enterprise Service Bus", " ", "Manages communication between services and handles routing, transformation, and mediation.", $tags="esb", $baseShape="storage")
@@ -55,7 +55,8 @@ Container(externalAPIGateway, "External API Gateway", "Node.js", "Manages extern
 System_Ext(smsSys, "SMS", "[Twillo]\n\n\n Sends notifications via SMS.", $sprite="&phone,scale=5.0,color=7E3743")
 System_Ext(vendorSystem, "External Vendor System", "[Amazon Marketplace] \n\n Used for procuring media resources.", $sprite="&cart,scale=5.0,color=7E3743")
 System_Ext(paymentGateway, "Payment Gateway", "[Stripe] \n \n Handles subscription payments and transactions.", $sprite="&credit-card,scale=5.0,color=7E3743")
-System_Ext(emailSys, "Email", "[Twillo]\n\n Sends notifications via email.", $sprite="&envelope-closed,scale=5.0,color=7E3743")
+System_Ext(emailSys, "Email", "[Twillo SendGrid]\n\n Sends notifications via email.", $sprite="&envelope-closed,scale=5.0,color=7E3743")
+System_Ext(2faSys, "2FA", "[Twilio Verify]\n\n 2 factor authentication via email/SMS/voice.", $sprite="&phone,scale=5.0,color=7E3743")
 
 
 ' External People '
@@ -91,10 +92,11 @@ Rel_U(emailSys, purchaseMgr, "Sends email notifications ", $tags="Relationship")
 Rel(webApp, apiGateway, " ", "RESTful API", $tags="Relationship")
 Rel(mobileApp, apiGateway, " ", "RESTful API", $tags="Relationship")
 
+Rel(apiGateway, routeHandler, "Forwards requests based on route matching ", $tags="Relationship")
 
-Rel(apiGateway, backendAPIStorefront, "Routes user requests for browsing or interacting with media ", $tags="Relationship")
-Rel(apiGateway, backendAPIAccount, "Routes requests for account registration, login and editing ", $tags="Relationship")
-Rel(apiGateway, backendAPIInventory, "Routes requests related to media inventory, procurement and asset management ", $tags="Relationship")
+Rel(routeHandler, backendAPIStorefront, "Routes user requests for browsing or interacting with media ", $tags="Relationship")
+Rel(routeHandler, backendAPIAccount, "Routes requests for account registration, login and editing ", $tags="Relationship")
+Rel(routeHandler, backendAPIInventory, "Routes requests related to media inventory, procurement and asset management ", $tags="Relationship")
 
 
 
@@ -124,8 +126,9 @@ Rel(backendAPIInventory, notificationService, "Manages notifications for media p
 
 
 ' Relationships - Notifcation Service '
-Rel(notificationService, externalAPIGateway, " ", $tags="Relationship")
 Rel(notificationService, amlDB, " ", $tags="Invisible")
+Rel(notificationService, emailSys, "Sends subscription and media notifications via email ", $tags="Relationship")
+Rel(notificationService, smsSys, "Sends subscription and media notifications via SMS ", $tags="Relationship")
 
 
 'Relationships - Database '
@@ -133,10 +136,9 @@ Rel_D(amlDB, externalAPIGateway, " ", $tags="Invisible")
 
 
 ' Relationships - External Systems '
-Rel_L(externalAPIGateway, emailSys, "Sends subscription and media notifications via email ", $tags="Relationship")
-Rel(externalAPIGateway, smsSys, "Sends subscription and media notifications via SMS ", $tags="Relationship")
 Rel(externalAPIGateway, vendorSystem, "Procure media resources ", $tags="Relationship")
 Rel(externalAPIGateway, paymentGateway, "Processes payments for subscriptions ", $tags="Relationship")
+Rel(externalAPIGateway, 2faSys, "Handles 2fa when signing into an account.", $tags="Relationship")
 
 
 SHOW_LEGEND(true)
