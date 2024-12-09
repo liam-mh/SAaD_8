@@ -1,0 +1,60 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Jest Tests - Client Service",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/Application/client/node_modules/jest/bin/jest.js",
+      "args": ["--runInBand"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "cwd": "${workspaceFolder}/Application/client", 
+      "runtimeArgs": ["--inspect-brk"],
+      "env": {
+        "NODE_ENV": "test"
+      }
+    },
+    {
+      "name": "Debug Jest Tests - Account Service",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/Application/services/account-service/node_modules/jest/bin/jest.js",
+      "args": ["--runInBand"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "cwd": "${workspaceFolder}/Application/services/account-service",
+      "runtimeArgs": ["--inspect-brk"],
+      "env": {
+        "NODE_ENV": "test"
+      }
+    },
+    {
+      "name": "Debug Jest Tests - Storefront Service",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/Application/services/storefront/node_modules/jest/bin/jest.js",
+      "args": ["--runInBand"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "cwd": "${workspaceFolder}/Application/services/storefront",
+      "runtimeArgs": ["--inspect-brk"],
+      "env": {
+        "NODE_ENV": "test"
+      }
+    },
+    {
+      "name": "Debug All Microservices Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test:all"],
+      "cwd": "${workspaceFolder}/Application",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "env": {
+        "NODE_ENV": "test"
+      }
+    }
+  ]
+}

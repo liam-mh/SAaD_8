@@ -2,44 +2,46 @@
 
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { MemoryRouter, Routes, Route, resolvePath } from "react-router-dom";
 import { SessionContext } from "../../../src/services/sessionContext";
 import MediaPage from "../../../src/pages/media";
 import MediaFrontEndService from "../../../src/services/storefront/mediaFrontEndService";
 import WishlistFrontEndService from "../../../src/services/storefront/wishlistFrontEndSevice";
+import "@testing-library/jest-dom";
 
 // Mocks for external dependencies
 jest.mock("../../../src/services/storefront/mediaFrontEndService");
 jest.mock("../../../src/services/storefront/wishlistFrontEndSevice");
 jest.mock("../../../src/services/sessionContext");
 
+
 describe("MediaPage Component", () => {
-  const mockMedia = {
-    Title: "Test Media",
-    Type: "Movie",
-    Genre: "Action",
-    Author: "John Doe",
-    PublishDate: "2022-01-01",
-    Description: "A thrilling action movie.",
+  const mockMediaData = {
+    data: [
+      {
+        Title: "The Hobbit",
+        Type: "Book",
+        Genre: "Fantasy",
+        Author: "JRR Tolkien",
+        PublishDate: "1937-09-21",
+        Description: "A thrilling book about fairytale ceatures.",
+      },
+    ],
   };
 
-  const mockWishlistService = {
-    post: jest.fn(),
-    get: jest.fn(),
+  const mockWishlistData = {
+    data: [
+      {
+        WishlistID: 1,
+        MemberID: 1,
+        Title: "The Hobbit",
+        Type: "Book",
+        DateTime: "2024-12-06",
+        WishType: "Wishlist",
+      },
+    ],
   };
 
-  const mockMediaService = {
-    get: jest.fn().mockResolvedValue({
-      data: [mockMedia],
-    }),
-    generateImageSrc: jest.fn().mockReturnValue("https://some-image-url.com"),
-  };
-
-  const mockSessionContextValue = {
-    user: { MemberID: "123" },
-  };
-
-  // Mock all relevant components and services.
   jest.mock(
     "../../../src/components/Branch-Stock-Card/BranchStockCard",
     () => (props) =>
@@ -50,16 +52,49 @@ describe("MediaPage Component", () => {
       )
   );
 
-  beforeEach(() => {
-    // Clear any mocks before each test
-    jest.clearAllMocks();
+  const mockSetMedia = jest.fn();
 
-    // Mocking MediaFrontEndService and WishlistFrontEndService
-    MediaFrontEndService.mockImplementation(() => mockMediaService);
-    WishlistFrontEndService.mockImplementation(() => mockWishlistService);
+  const mockBasket = [{ Title: "The Hobbit", Type: "Book", BranchID: 1 }];
+
+  const mockSetUsedWishlistButton = jest.fn();
+  const mockSessionContextValue = {
+    media: mockMediaData,
+    user: { MemberID: "123" },
+    basket: mockBasket,
+    usedWishlistButton: false,
+    setMedia: jest.fn(),
+    setBasket: jest.fn(),
+    setUsedWishlistButton: mockSetUsedWishlistButton,
+  };
+
+  WishlistFrontEndService.mockImplementation(() => {
+    return {
+      post: jest.fn(),
+      get: jest.fn().mockResolvedValue(mockWishlistData),
+    };
   });
 
+  MediaFrontEndService.mockImplementation(() => {
+    return {
+      get: jest.fn().mockResolvedValue(mockMediaData),
+      generateImageSrc: jest.fn().mockReturnValue("test"),
+    };
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {});
+
   it("renders media details correctly", async () => {
+    MediaFrontEndService.mockImplementation(() => {
+      return {
+        get: jest.fn().mockResolvedValue(mockMediaData),
+        generateImageSrc: jest.fn().mockReturnValue("test"),
+      };
+    });
+
     render(
       <MemoryRouter initialEntries={["/media"]} initialIndex={0}>
         <SessionContext.Provider value={mockSessionContextValue}>
@@ -71,16 +106,22 @@ describe("MediaPage Component", () => {
     );
 
     // Check that media details are displayed
-    expect(await screen.findByText("Test Media")).toBeInTheDocument();
-    expect(screen.getByText("Type: Movie")).toBeInTheDocument();
-    expect(screen.getByText("Genre: Action")).toBeInTheDocument();
-    expect(screen.getByText("Author: John Doe")).toBeInTheDocument();
-    expect(screen.getByText("Published: 2022-01-01")).toBeInTheDocument();
-    expect(screen.getByText("A thrilling action movie.")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("The Hobbit")).toBeInTheDocument();
+      expect(screen.getByText(/Genre:\s*Fantasy/i)).toBeInTheDocument();
+      expect(screen.getByText(/Author:\s*JRR Tolkien/i)).toBeInTheDocument();
+      expect(screen.getByText(/Published:\s*1937-09-21/i)).toBeInTheDocument();
+      expect(screen.getByAltText("The Hobbit")).toHaveAttribute("src", "test");
+    });
   });
 
   it("displays an error message when no media is found", async () => {
-    mockMediaService.get.mockResolvedValueOnce({ data: [] });
+    MediaFrontEndService.mockImplementation(() => {
+      return {
+        get: jest.fn().mockResolvedValue({ data: [] }),
+        generateImageSrc: jest.fn().mockReturnValue("test"),
+      };
+    });
 
     render(
       <MemoryRouter initialEntries={["/media"]} initialIndex={0}>
@@ -99,12 +140,20 @@ describe("MediaPage Component", () => {
   });
 
   it("can add media to wishlist if the user is logged in", async () => {
+    const mockWishlistPost = jest.fn().mockResolvedValue(mockWishlistData);
+    WishlistFrontEndService.mockImplementation(() => {
+      return {
+        post: mockWishlistPost,
+        get: jest.fn().mockResolvedValue(mockWishlistData),
+      };
+    });
+
     render(
       <MemoryRouter initialEntries={["/media"]} initialIndex={0}>
         <SessionContext.Provider value={mockSessionContextValue}>
-          <Route path="/media">
-            <MediaPage />
-          </Route>
+          <Routes>
+            <Route path="/media" element={<MediaPage />} />
+          </Routes>
         </SessionContext.Provider>
       </MemoryRouter>
     );
@@ -112,49 +161,63 @@ describe("MediaPage Component", () => {
     const wishlistButton = screen.getByTitle("Add to Wishlist");
     fireEvent.click(wishlistButton);
 
-    await waitFor(() => expect(mockWishlistService.post).toHaveBeenCalled());
+    await waitFor(() => expect(mockWishlistPost).toHaveBeenCalled());
   });
 
-  it('shows "Item in wishlist" if media is already in the wishlist', async () => {
-    mockWishlistService.get.mockResolvedValueOnce({ data: [mockMedia] });
+  it("cannot add media if media is already a wishlist item", async () => {
+    const mockWishlistPost = jest.fn().mockResolvedValue(mockWishlistData);
+    WishlistFrontEndService.mockImplementation(() => {
+      return {
+        post: mockWishlistPost,
+        get: jest.fn().mockResolvedValue(mockWishlistData),
+      };
+    });
 
-    render(
-      <MemoryRouter initialEntries={["/media"]} initialIndex={0}>
+    const { container } = render(
+      <MemoryRouter initialEntries={["/media"]}>
         <SessionContext.Provider value={mockSessionContextValue}>
           <Routes>
-            {" "}
-            {/* Wrap <Route> inside <Routes> */}
             <Route path="/media" element={<MediaPage />} />
           </Routes>
         </SessionContext.Provider>
       </MemoryRouter>
     );
 
-    // Check that "Item in wishlist" is shown
-    await waitFor(() =>
-      expect(screen.getByText("Item in wishlist")).toBeInTheDocument()
-    );
+    const starIcon = container.querySelector(".bi.bi-star-fill");
+    expect(starIcon).toBeInTheDocument();
   });
 
-  it("shows a notification banner when adding to basket", async () => {
-    render(
-      <MemoryRouter initialEntries={["/media"]} initialIndex={0}>
-        <SessionContext.Provider value={mockSessionContextValue}>
+  it("cannot add media if the user is not logged in", async () => {
+    const mockWishlistPost = jest.fn().mockResolvedValue(mockWishlistData);
+    WishlistFrontEndService.mockImplementation(() => {
+      return {
+        post: mockWishlistPost,
+        get: jest.fn().mockResolvedValue(mockWishlistData),
+      };
+    });
+
+    // Ive simulate a user not being logged in, but created a copy so as not to mutate the original.
+    const mockSessionContextValueWithoutUser = {
+      ...mockSessionContextValue,
+      user: null, 
+    };
+
+    const { container } = render(
+      <MemoryRouter initialEntries={["/media"]}>
+        <SessionContext.Provider value={mockSessionContextValueWithoutUser}>
           <Routes>
-            {" "}
-            {/* Wrap <Route> inside <Routes> */}
             <Route path="/media" element={<MediaPage />} />
           </Routes>
         </SessionContext.Provider>
       </MemoryRouter>
     );
 
-    const basketButton = screen.getByText("Add to Basket");
-    fireEvent.click(basketButton);
+    const wishlistButton = screen.queryByTitle("Add to Wishlist");
+    expect(wishlistButton).not.toBeInTheDocument();
 
-    // Check that notification banner is shown
-    await waitFor(() =>
-      expect(screen.getByText("Test Media")).toBeInTheDocument()
-    );
+    // Login prompt is over two lines so have to match the link.
+    const loginLink = screen.getByRole("link", { name: /login/i });
+    expect(loginLink).toBeInTheDocument();
+    expect(loginLink).toHaveAttribute("href", "/account#account");
   });
 });

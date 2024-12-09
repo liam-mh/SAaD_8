@@ -29,7 +29,6 @@ const MediaPage = () => {
           { Title: mediaTitle, Type: mediaType },
           true
         );
-
         setMedia(allItems.data);
         allItems.data.length === 0
           ? setErrorMessage("No media available")
@@ -76,6 +75,7 @@ const MediaPage = () => {
   useEffect(() => {
     if (!user) return;
     async function checkWishlist() {
+      console.log(user.MemberID)
       const isMediaInWishlist = await wishlistFrontEndService.get(
         "/readRecords",
         {
@@ -84,7 +84,7 @@ const MediaPage = () => {
           Type: mediaType,
         }
       );
-      if (isMediaInWishlist.data.length > 0) {
+      if (isMediaInWishlist !== null) {
         setUsedWishlistButton(true);
       }
     }

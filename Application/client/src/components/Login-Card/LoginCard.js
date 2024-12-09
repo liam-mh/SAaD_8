@@ -7,13 +7,12 @@ import { useLocation } from "react-router-dom";
 import MemberFrontEndService from "../../services/account/memberFrontEndService";
 import EmployeeFrontEndService from "../../services/account/employeeFrontEndService";
 
-const memberFrontEndService = new MemberFrontEndService();
-const employeeFrontEndService = new EmployeeFrontEndService();
-
 function LoginCard({ onLoginSuccess }) {
-  const [inputEmail, setEmail] = useState('');
-  const [inputPassword, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const memberFrontEndService = new MemberFrontEndService();
+  const employeeFrontEndService = new EmployeeFrontEndService();
+  const [inputEmail, setEmail] = useState("");
+  const [inputPassword, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const { user, setUser, employee, setEmployee } = useContext(SessionContext);
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -21,12 +20,15 @@ function LoginCard({ onLoginSuccess }) {
     try {
       if (!inputEmail || !inputPassword) {
         setErrorMessage("Please enter both email and password");
-        return; 
+        return;
       }
 
       let response;
 
-      if (location.pathname === '/employee') {
+      const location = useLocation();
+      console.log("Current location:", location.pathname);
+
+      if (location.pathname === "/employee") {
         response = await employeeFrontEndService.get("/readRecords", {
           Email: inputEmail,
           Password: inputPassword,
@@ -38,16 +40,15 @@ function LoginCard({ onLoginSuccess }) {
         });
       }
 
-  
       if (response === null) {
         setErrorMessage("Invalid email or password. Please try again.");
-        if (onLoginSuccess) onLoginSuccess(false); 
+        if (onLoginSuccess) onLoginSuccess(false);
       } else {
-        setErrorMessage('');
-        if (location.pathname === '/employee') {
-          setEmployee(response.data[0]); 
+        setErrorMessage("");
+        if (location.pathname === "/employee") {
+          setEmployee(response.data[0]);
         } else {
-          setUser(response.data[0]); 
+          setUser(response.data[0]);
         }
         if (onLoginSuccess) onLoginSuccess(true);
       }
