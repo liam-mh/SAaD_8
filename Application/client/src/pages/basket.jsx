@@ -5,9 +5,8 @@ import MediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
-const mediaFrontEndService = new MediaFrontEndService();
-
 const BasketPage = () => {
+  const mediaFrontEndService = new MediaFrontEndService();
   const { basket, setBasket, branches, setCheckout } = useContext(SessionContext) || {};
   const [deliveryOptions, setDeliveryOptions] = useState(basket.map(() => 'collect'));
   if (!basket || !branches) {

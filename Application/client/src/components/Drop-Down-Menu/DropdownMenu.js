@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import MediaFrontEndService from '../../services/storefront/mediaFrontEndService';
 
-const mediaFrontEndService = new MediaFrontEndService();
-
 function DropdownMenu({ searchText, setSearchText }) {
+  const mediaFrontEndService = new MediaFrontEndService();
   const [showDropdown, setShowDropdown] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
 

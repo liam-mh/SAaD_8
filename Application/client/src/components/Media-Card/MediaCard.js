@@ -4,9 +4,8 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import MediaFrontEndService from '../../services/storefront/mediaFrontEndService';
 
-const mediaFrontEndService = new MediaFrontEndService();
-
 function MediaCard({ isSearchResult = false, media }) {
+  const mediaFrontEndService = new MediaFrontEndService();
   const buttonText = isSearchResult ? "Shop" : "Add To Basket";
   const state = { mediaType: media.Type, mediaTitle: media.Title };
 
