@@ -11,7 +11,8 @@ AddRelTag("Relationship", $textColor="black", $lineColor="black", $lineStyle="da
 AddRelTag("Invisible", $textColor="#E0B6BD", $lineColor="#E0B6BD", $lineStyle="dashed")
 AddElementTag("webApp", $bgColor="black", $borderColor="lightblue", $shape=EightSidedShape(), $legendText="Web Application (React)")
 AddElementTag("mobileApp", $bgColor="black", $borderColor="lightblue", $shape=EightSidedShape(), $legendText="Mobile Application (iOS/Android)")
-AddElementTag("apiGateway", $bgColor="#A9D18E", $fontColor="black", $borderColor="black", $legendText="API Gateway (Node.js/Express.js)")
+AddElementTag("apiGateway", $bgColor="#A9D18E", $fontColor="black", $borderColor="black", $legendText="(Hexagon) API Gateway (Node.js/Express.js)")
+AddElementTag("routeHandler", $bgColor="#A9D18E", $fontColor="black", $borderColor="black", $legendText="Route Handler (Node.js/Express.js)")
 AddElementTag("esb", $bgColor="#00FBFF", $fontColor="black", $borderColor="black", $legendText="Enterprise Service Bus (ESB)")
 AddElementTag("backendAPI", $bgColor="#9DC3E6", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Backend API (Node.js/Express.js)")
 AddElementTag("database", $bgColor="#0043b0", $fontColor="black", $borderColor="black", $legendText="Database (Azure MySQL)")
@@ -22,7 +23,7 @@ System_Boundary(aml, "Advanced Media Library (AML)") {
 Container(webApp, "Web Application", "React.js", "Provides a front-end interface for users to interact with.", $tags="webApp")
 Container(mobileApp, "Mobile Application", "iOS/Android", "Allows users to view and borrow media on the go.", $tags="mobileApp")
 Container(apiGateway, "API Gateway", "Node.js/Express.js", "Central entry point for client requests.", $tags="apiGateway", $baseShape="hexagon")
-Container(routeHandler, "Route Handler", "Node.js/Express.js", "Dynamically manages internal routes for services.", $tags="apiGateway")
+Container(routeHandler, "Route Handler", "Node.js/Express.js", "Dynamically manages internal routes for services.", $tags="routeHandler")
 
 /' Removed ESB per Essam feedback 28/10/24
 Container(esb, "Enterprise Service Bus", " ", "Manages communication between services and handles routing, transformation, and mediation.", $tags="esb", $baseShape="storage")
