@@ -4,6 +4,7 @@
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 title C4 Level 3: Advanced Media Library System - Component Diagram - Account Service
 skinparam defaultFontSize 16
+skinparam backgroundColor white
 
 
 ' Define colour coding '
