@@ -9,13 +9,14 @@ skinparam defaultFontSize 16
 ' Define colour coding '
 UpdateBoundaryStyle($bgColor="#E0B6BD", $fontColor="brown", $borderColor="brown")
 AddRelTag("Relationship", $textColor="black", $lineColor="black", $lineStyle="dashed")
-AddElementTag("apiGateway", $bgColor="#A9D18E", $fontColor="black", $borderColor="black", $legendText="API Gateway (Node.js/Express.js)")
+AddElementTag("routeHandler", $bgColor="#A9D18E", $fontColor="black", $borderColor="black", $legendText="Route Handler (Node.js/Express.js)")
 AddElementTag("controller", $bgColor="#9DC3E6", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Controller (Node.js/Express.js)")
-AddElementTag("service", $bgColor="#89B6E4", $fontColor="black", $borderColor="black",$shape=RectangleShape(), $legendText="Service (Node.js/Express.js)")
-AddElementTag("repo", $bgColor="#75A8E1", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Entity (MySQL)")
-AddElementTag("database", $bgColor="#4D8DDB", $fontColor="black", $borderColor="black", $legendText="Database (Azure MySQL)")
+AddElementTag("service", $bgColor="#76A3D9", $fontColor="black", $borderColor="black",$shape=RectangleShape(), $legendText="Service (Node.js/Express.js)")
+AddElementTag("model", $bgColor="#4F83CB", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Model (Node.js/Express.js)")
+AddElementTag("repo", $bgColor="#2763BE", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Entity (MySQL)")
+AddElementTag("database", $bgColor="#0043B0", $fontColor="black", $borderColor="black", $legendText="Database (Azure MySQL)")
 
-Container(apiGateway, "API Gateway", "Node.js/Express.js", "Routes external traffic to the appropriate internal service.", $tags="apiGateway", $baseShape="hexagon")
+Container(routeHandler, "Route Handler", "Node.js/Express.js", "Manages internal routes for services.", $tags="routeHandler")
 
 Container_Boundary(storefront, "Storefront Service") {
     Component(mediaCtr, "Media Controller", "Node.js/Express.js", "Manages requests for Media table.", $tags="controller")
@@ -30,21 +31,27 @@ Container_Boundary(storefront, "Storefront Service") {
     Component(mediaReqService, "NewMediaRequest Service", "Node.js/Express.js", "Provides funcitonality for requesting new media.", $tags="service")
     Component(wishlistService, "Wishlist Service", "Node.js/Express.js", "Provides functionality for a media wishlist.", $tags="service")
 
-    Component(mediaRepo, "Media Entity", "MySQL", "Handles SQL statements for media details.", $tags="repo")
-    Component(branchRepo, "Branch Entity", "MySQL", "Handles SQL statements for branch info.", $tags="repo")
-    Component(mediaHistRepo, "MediaHistory Entity", "MySQL", "Handles SQL statements for the rental history of media.", $tags="repo")
-    Component(mediaReqRepo, "NewMediaRequest Entity", "MySQL", "Handles SQL statements for requests for new media.", $tags="repo")
-    Component(wishlistRepo, "Wishlist Entity", "MySQL", "Handles SQL statements for member's media wishlists.", $tags="repo")
+    Component(mediaModel, "Media Model", "Node.js/Express.js", "Represents the media table.", $tags="model")
+    Component(branchModel, "Branch Model", "Node.js/Express.js", "Represents the branch table.", $tags="model")
+    Component(mediaHistModel, "MediaHistory Model", "Node.js/Express.js", "Represents the media-history table.", $tags="model")
+    Component(mediaReqModel, "NewMediaRequest Model", "Node.js/Express.js", "Represents the new-media-request table.", $tags="model")
+    Component(wishlistModel, "Wishlist Model", "Node.js/Express.js", "Represents the wishlist table.", $tags="model")
+
+    Component(mediaRepo, "Media DB Handler", "Node.js/Express.js", "Handles SQL statements for media details.", $tags="repo")
+    Component(branchRepo, "Branch DB Handler", "Node.js/Express.js", "Handles SQL statements for branch info.", $tags="repo")
+    Component(mediaHistRepo, "MediaHistory DB Handler", "Node.js/Express.js", "Handles SQL statements for the rental history of media.", $tags="repo")
+    Component(mediaReqRepo, "NewMediaRequest DB Handler", "Node.js/Express.js", "Handles SQL statements for requests for new media.", $tags="repo")
+    Component(wishlistRepo, "Wishlist DB Handler", "Node.js/Express.js", "Handles SQL statements for member's media wishlists.", $tags="repo")
 }
 
 ContainerDb(database, "Database", "Azure MySQL", "Stores all tables the system requires e.g. media data, user data, inventory data.", $tags="database")
 
 ' Relationships - API Gateway to Controller '
-Rel(apiGateway, mediaCtr, "Handles API calls for media related functionality ", $tags="Relationship")
-Rel(apiGateway, branchCtr, "Handles API calls for branch related functionality ", $tags="Relationship")
-Rel(apiGateway, mediaHistCtr, "Handles API calls for media rental history ", $tags="Relationship")
-Rel(apiGateway, mediaReqCtr, "Handles API calls for requesting new media ", $tags="Relationship")
-Rel(apiGateway, wishlistCtr, "Handles API calls for media wishlist functionality ", $tags="Relationship")
+Rel(routeHandler, mediaCtr, "Handles API calls for media related functionality ", $tags="Relationship")
+Rel(routeHandler, branchCtr, "Handles API calls for branch related functionality ", $tags="Relationship")
+Rel(routeHandler, mediaHistCtr, "Handles API calls for media rental history ", $tags="Relationship")
+Rel(routeHandler, mediaReqCtr, "Handles API calls for requesting new media ", $tags="Relationship")
+Rel(routeHandler, wishlistCtr, "Handles API calls for media wishlist functionality ", $tags="Relationship")
 
 ' Relationships - Internal - Controller to Service '
 Rel(mediaCtr, mediaService, " ", $tags="Relationship")
@@ -53,12 +60,19 @@ Rel(mediaHistCtr, mediaHistService, " ", $tags="Relationship")
 Rel(wishlistCtr, wishlistService, " ", $tags="Relationship")
 Rel(mediaReqCtr, mediaReqService, " ", $tags="Relationship")
 
-' Relationships - Internal - Service to Repo '
-Rel(mediaService, mediaRepo, " ", $tags="Relationship")
-Rel(branchService, branchRepo, " ", $tags="Relationship")
-Rel(mediaHistService, mediaHistRepo, " ", $tags="Relationship")
-Rel(mediaReqService, mediaReqRepo, " ", $tags="Relationship")
-Rel(wishlistService, wishlistRepo, " ", $tags="Relationship")
+' Relationships - Internal - Service to Model '
+Rel(mediaService, mediaModel, " ", $tags="Relationship")
+Rel(branchService, branchModel, " ", $tags="Relationship")
+Rel(mediaHistService, mediaHistModel, " ", $tags="Relationship")
+Rel(mediaReqService, mediaReqModel, " ", $tags="Relationship")
+Rel(wishlistService, wishlistModel, " ", $tags="Relationship")
+
+' Relationships - Internal - Model to Repo '
+Rel(mediaModel, mediaRepo, " ", $tags="Relationship")
+Rel(branchModel, branchRepo, " ", $tags="Relationship")
+Rel(mediaHistModel, mediaHistRepo, " ", $tags="Relationship")
+Rel(mediaReqModel, mediaReqRepo, " ", $tags="Relationship")
+Rel(wishlistModel, wishlistRepo, " ", $tags="Relationship")
 
 ' Relationships - Internal - Repo to Database '
 Rel(mediaRepo, database, "CRUD operations on Media table ", $tags="Relationship")
