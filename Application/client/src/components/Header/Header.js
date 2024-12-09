@@ -27,7 +27,6 @@ function Header() {
 
   const [searchText, setSearchText] = useState("");
   useEffect(() => {
-    console.log(employee);
     setSearchText("");
   }, [location]);
 
@@ -40,7 +39,7 @@ function Header() {
           });
           setLocalBranch(getBranch.data[0]);
         } catch (error) {
-          console.log("Error getting header branch information", error);
+          console.error("Error getting header branch information", error);
         }
       }
 
