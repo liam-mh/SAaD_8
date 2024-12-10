@@ -8,7 +8,7 @@ skinparam backgroundColor white
 
 
 ' Define colour coding '
-UpdateBoundaryStyle($bgColor="#E0B6BD", $fontColor="brown", $borderColor="brown")
+UpdateBoundaryStyle($bgColor="#E5E5E5", $borderColor="#772953", $fontColor="#772953")
 AddRelTag("Relationship", $textColor="black", $lineColor="black", $lineStyle="dashed")
 AddElementTag("routeHandler", $bgColor="#A9D18E", $fontColor="black", $borderColor="black", $legendText="Route Handler (Node.js/Express.js)")
 AddElementTag("controller", $bgColor="#9DC3E6", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Controller (Node.js/Express.js)")
