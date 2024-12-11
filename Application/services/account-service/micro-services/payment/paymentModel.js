@@ -1,6 +1,10 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize');
 
+/**
+ * Payment model.
+ * @author Guy Nicklin
+ */
 const PaymentModel = sequelize.define('Payment', {
   PaymentID: {
     type: DataTypes.INTEGER,

@@ -2,6 +2,11 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize');
 const bcrypt = require('bcrypt');
 
+/**
+ * Employee model.
+ * @author Guy Nicklin
+ */
+
 const SALT_ROUNDS = 10;
 
 const EmployeeModel = sequelize.define('Employee', {
@@ -71,17 +76,17 @@ const EmployeeModel = sequelize.define('Employee', {
   timestamps: false,
   hooks: {
     // Hash on create.
-    beforeCreate: async (member) => {
-      if (member.Password) {
-        const hashedPassword = await bcrypt.hash(member.Password, SALT_ROUNDS);
-        member.Password = hashedPassword;
+    beforeCreate: async (employee) => {
+      if (employee.Password) {
+        const hashedPassword = await bcrypt.hash(employee.Password, SALT_ROUNDS);
+        employee.Password = hashedPassword;
       }
     },
     // Hash on update.
-    beforeUpdate: async (member) => {
-      if (member.Password) {
-        const hashedPassword = await bcrypt.hash(member.Password, SALT_ROUNDS);
-        member.Password = hashedPassword;
+    beforeUpdate: async (employee) => {
+      if (employee.Password) {
+        const hashedPassword = await bcrypt.hash(employee.Password, SALT_ROUNDS);
+        employee.Password = hashedPassword;
       }
     },
   },

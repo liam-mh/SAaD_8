@@ -1,6 +1,12 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize');
 
+/**
+ * Member subscription model.
+ * 
+ * @author Guy Nicklin
+ */
+
 const MemberSubscriptionModel = sequelize.define('MemberSubscription', {
   MemberID: {
     type: DataTypes.INTEGER,

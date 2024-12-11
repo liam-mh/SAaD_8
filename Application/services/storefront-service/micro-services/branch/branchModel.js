@@ -1,6 +1,10 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize');
 
+/**
+ * Branch model
+ * @author Guy Nicklin
+ */
 const BranchModel = sequelize.define('Branch', {
   BranchID: {
     type: DataTypes.INTEGER,

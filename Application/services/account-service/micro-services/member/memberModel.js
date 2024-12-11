@@ -2,6 +2,11 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize'); 
 const bcrypt = require('bcrypt');
 
+/**
+ * Member model
+ * @author Guy Nicklin
+ */
+
 const SALT_ROUNDS = 10;
 
 const MemberModel = sequelize.define('Member', {

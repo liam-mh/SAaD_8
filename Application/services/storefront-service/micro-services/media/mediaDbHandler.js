@@ -1,26 +1,28 @@
 const { DbHandler } = require("shared");
 const MediaModel = require("./mediaModel");
-const sequelize = require('../../../../config/sequelize');
+const sequelize = require("../../../../config/sequelize");
 
 /**
  * Database handler for media related requests.
  * Injects its model as a dependency into its base class.
+ * 
+ * @author Guy Nicklin
  */
 class MediaDbHandler extends DbHandler {
   types = ["Book", "Journal", "CD", "Periodical", "DVD", "Game"];
 
   constructor() {
     const autoCompleteQueryFields = ["Author", "Genre", "Title", "Type"];
-    const removeFromGrouping = ['BranchID'];
+    const removeFromGrouping = ["BranchID"];
     super(MediaModel, removeFromGrouping, autoCompleteQueryFields);
   }
 
-   /**
+  /**
    * Gets the most recent 3 unique media from each type field.
    *
    * @returns {Promise<Object[]>} An array containing the most recent 3 unique media items from each type.
    */
-   async fetchMediaByTypeAndLimit() {
+  async fetchMediaByTypeAndLimit() {
     try {
       const results = [];
 
@@ -28,17 +30,11 @@ class MediaDbHandler extends DbHandler {
         // Fetch the most recent 3 unique media of the current type.
         const mediaList = await MediaModel.findAll({
           where: { Type: type },
-          attributes: [
-            'Title', 
-            'Author',
-            'Genre',
-            'PublishDate',
-            'Type'
-          ],
+          attributes: ["Title", "Author", "Genre", "PublishDate", "Type"],
           // Only fetch distinct records, by disregarding the primary key.
-          group: ['Type', 'Title', 'Author', 'Genre', 'PublishDate'],
-          order: [['PublishDate', 'DESC']], 
-          limit: 3, 
+          group: ["Type", "Title", "Author", "Genre", "PublishDate"],
+          order: [["PublishDate", "DESC"]],
+          limit: 3,
         });
 
         // Push the result to the final array
@@ -54,34 +50,40 @@ class MediaDbHandler extends DbHandler {
     }
   }
 
+  /**
+   * Fetches 5 random media items, ensuring no duplicates in title or type.
+   *
+   * @async
+   * @returns {Promise<Array>} A promise that resolves to an array of the top 5 unique media items.
+   * @throws {Error} Throws an error if there is an issue fetching the media items from the database.
+   */
   async fetchMediaTopFive() {
     try {
-        const selectedMedia = [];
-        const seenTitles = new Set();
-        const seenTypes = new Set();
+      const selectedMedia = [];
+      const seenTitles = new Set();
+      const seenTypes = new Set();
 
-        while (selectedMedia.length < 5) {
-            const randomMedia = await MediaModel.findOne({
-                order: [sequelize.fn('RAND')],
-            });
+      while (selectedMedia.length < 5) {
+        const randomMedia = await MediaModel.findOne({
+          order: [sequelize.fn("RAND")],
+        });
 
-            if (
-                randomMedia &&
-                !seenTitles.has(randomMedia.Title) &&
-                !seenTypes.has(randomMedia.Type)
-            ) {
-                selectedMedia.push(randomMedia);
-                seenTitles.add(randomMedia.Title);
-                seenTypes.add(randomMedia.Type);
-            }
+        if (
+          randomMedia &&
+          !seenTitles.has(randomMedia.Title) &&
+          !seenTypes.has(randomMedia.Type)
+        ) {
+          selectedMedia.push(randomMedia);
+          seenTitles.add(randomMedia.Title);
+          seenTypes.add(randomMedia.Type);
         }
-        return selectedMedia;
+      }
+      return selectedMedia;
     } catch (error) {
-        console.error("Error fetching top 5 media items:", error);
-        throw new Error("Error fetching top 5 media items.");
+      console.error("Error fetching top 5 media items:", error);
+      throw new Error("Error fetching top 5 media items.");
     }
   }
 }
-
 
 module.exports = MediaDbHandler;

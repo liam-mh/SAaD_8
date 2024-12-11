@@ -4,6 +4,8 @@ const MemberModel = require("./memberModel")
 /**
  * Database handler for member related requests.
  * Injects its model as a dependency into its base class.
+ * 
+ * @author Guy Nicklin
  */
 class MemberDbHandler extends DbHandler {
   constructor() {

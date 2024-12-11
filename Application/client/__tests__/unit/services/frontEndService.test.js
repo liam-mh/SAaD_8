@@ -1,6 +1,11 @@
 import FrontEndService from '../../../src/services/frontEndService';
 import fetchFromApiGateway from '../../../src/services/apiService';
 
+/**
+ * Unit tests for front end service
+ * @author Guy Nicklin
+ */
+
 jest.mock('../../../src/services/apiService'); // Mock the fetchFromApiGateway module
 
 describe('FrontEndService', () => {
