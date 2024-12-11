@@ -133,8 +133,7 @@ const EmployeeIndexPage = () => {
               "/readRecords",
               { MediaID: media.MediaID }
             );
-            var available = mediaHistoryRes.data[0];
-            !available ? (available = 0) : (available = 1);
+            let available = mediaHistoryRes?.data?.[0]?.Active || 0;
             return { ...media, availability: available };
           } catch (error) {
             console.error(
