@@ -689,7 +689,7 @@ const EmployeeIndexPage = () => {
                       const returnDate = calculateReturnDate(rentLength);
                       const isMinimumTerm = rentLength <= 7;
                       const tokens = Math.ceil(rentLength / 7);
-                      const deliveryMethod = deliveryOptions[index];
+                      const deliveryMethod = deliveryOptions[index] || "collect";
 
                       item = {
                         ...item,
