@@ -4,6 +4,8 @@ const path = require('path');
  * Converts kebab-case to camelCase.
  * @param {String} resource - The resource name.
  * @returns {String} The resource name in camelCase.
+ * 
+ * @author Guy Nicklin
  */
 const toCamelCase = (resource) =>
     resource.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
@@ -35,6 +37,8 @@ const getController = (resource, serviceName) => {
  * @param {Object} router - Express router instance.
  * @param {String} serviceName - The service name.
  * @param {Array} resources - Array of resource names.
+ * 
+ * @author Guy Nicklin
  */
 const handleRoutes = (router, serviceName, resources) => {
     resources.forEach((resource) => {
@@ -76,8 +80,35 @@ const handleRoutes = (router, serviceName, resources) => {
                 res.status(201).json({ message: 'Record created successfully', data: created, status: res.statusCode});
             } catch (error) {
                 console.error(`Error creating record in ${resource}:`, error);
-                res.status(500).json({ message: 'Failed to create record', error: error.message });
+                res.status(500).json({ message: 'Failed to create records', error: error.message });
             }
+            // try {
+            //     const created = await controllerInstance.createRecords(req.body);
+            //     res.status(201).json({
+            //         message: 'Records created successfully',
+            //         data: created,
+            //         status: res.statusCode
+            //     });
+            // } catch (error) {
+            //     if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+            //         // Handle validation errors thrown by Sequelize
+            //         res.status(400).json({
+            //             message: 'Validation error: Invalid input data',
+            //             errors: error.errors.map(err => ({
+            //                 field: err.path,
+            //                 message: err.message
+            //             })),
+            //             status: 400
+            //         });
+            //     } else {
+            //         console.error(`Error creating record in ${resource}:`, error);
+            //         res.status(500).json({
+            //             message: 'Failed to create records',
+            //             error: error.message,
+            //             status: 500
+            //         });
+            //     }
+            // }
         });
 
         router.put(`/${resource}/updateRecord`, async (req, res) => {
@@ -94,7 +125,7 @@ const handleRoutes = (router, serviceName, resources) => {
             try {
                 const deleted = await controllerInstance.deleteRecord(req.body);
                 if (deleted) {
-                    res.status(200).json({ message: 'Record deleted successfully', data: deleted, status: res.statusCode});
+                    res.status(204).json({ message: 'Record deleted successfully', data: deleted, status: res.statusCode});
                 } else {
                     res.status(404).json({ message: 'Record not found' });
                 }
@@ -122,10 +153,6 @@ const handleRoutes = (router, serviceName, resources) => {
             try {
                 // Extract `chars` directly from the query parameters
                 const { chars } = req.query;
-        
-                if (!chars) {
-                    return res.status(400).json({ message: 'Missing query parameter: chars' });
-                }
         
                 const autoCompleteResults = await controllerInstance.autoComplete(chars);
                 res.status(200).json({
@@ -162,7 +189,7 @@ const handleRoutes = (router, serviceName, resources) => {
             }
         });
 
-        //------------------------------------- Media specific -------------------------------------------
+        //------------------------------------- Member specific -------------------------------------------
         
         router.get(`/${resource}/fetchEmails`, async (req, res) => {
             try{

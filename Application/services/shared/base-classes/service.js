@@ -3,6 +3,7 @@ const DbHandler = require("./dbHandler");
 
 /**
  * Base service class
+ * @author Guy Nicklin
  */
 class Service {
 

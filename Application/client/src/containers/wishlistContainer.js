@@ -48,7 +48,7 @@ const addToWishlist = async () => {
     //SIMPLE RETURN BUTTON ON AFTER A SEARCH BY MEDIAID UPDATES THE MEDIA ITEMS AVAILABILITY AND ACTUAL RETURN.
     const historyID = 20;
     const returnMedia = await mediaHistoryFrontEndService.put(
-        '/updateRecords',
+        '/updateRecord',
          {
             HistoryID: historyID,
             Active: 1,

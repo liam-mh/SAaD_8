@@ -4,6 +4,8 @@ const MemberService = require("./memberService");
 /**
  * Service for member related requests.
  * Injects its service as a dependency into its base class.
+ * 
+ * @author Guy Nicklin
  */
 class MemberController extends Controller {
   constructor() {

@@ -1,4 +1,4 @@
-// __tests__/MediaPage.test.jsx
+
 
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
@@ -8,6 +8,11 @@ import MediaPage from "../../../src/pages/media";
 import MediaFrontEndService from "../../../src/services/storefront/mediaFrontEndService";
 import WishlistFrontEndService from "../../../src/services/storefront/wishlistFrontEndSevice";
 import "@testing-library/jest-dom";
+
+/**
+ * Unit tests for Media page.
+ * @author Guy Nicklin
+ */
 
 // Mocks for external dependencies
 jest.mock("../../../src/services/storefront/mediaFrontEndService");
