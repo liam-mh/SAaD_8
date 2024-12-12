@@ -273,7 +273,7 @@ class DbHandler {
   async updateByQuery(dataObject) {
     try {
       const whereClause = this.#getUniqueKeys(dataObject);
-
+ 
       return await this.model.update(dataObject, {
         validate: true,
         where: whereClause,

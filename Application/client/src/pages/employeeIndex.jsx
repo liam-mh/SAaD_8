@@ -14,21 +14,20 @@ import LoginCard from "../components/Login-Card/LoginCard";
 import WishlistFrontEndSevice from "../services/storefront/wishlistFrontEndSevice";
 import moment from "moment";
 
-const mediaFrontEndService = new MediaFrontEndService();
-const branchFrontEndService = new BranchFrontEndService();
-const memberFrontEndService = new MemberFrontEndService();
-const mediaHistoryFrontEndService = new MediaHistoryFrontEndService();
-const memberSubscriptionFrontEndService = new MemberSubscriptionFrontEndService();
-const emailFrontEndService = new EmailFrontEndService();
-const wishlistFrontEndSevice = new WishlistFrontEndSevice();
-
 const EmployeeIndexPage = () => {
+  const mediaFrontEndService = new MediaFrontEndService();
+  const branchFrontEndService = new BranchFrontEndService();
+  const memberFrontEndService = new MemberFrontEndService();
+  const mediaHistoryFrontEndService = new MediaHistoryFrontEndService();
+  const memberSubscriptionFrontEndService =
+    new MemberSubscriptionFrontEndService();
+  const emailFrontEndService = new EmailFrontEndService();
+  const wishlistFrontEndSevice = new WishlistFrontEndSevice();
   const [searchMedia, setSearchMedia] = useState([]);
   const [searchPK, setSearchPK] = useState("");
   const [historyID, setHistoryID] = useState("");
   const [searchTitle, setSearchTitle] = useState("");
-  const { basket, setBasket, clearBasket } =
-    useContext(SessionContext) || {};
+  const { basket, setBasket, clearBasket } = useContext(SessionContext) || {};
   const [deliveryOptions, setDeliveryOptions] = useState(
     basket.map(() => "collect")
   );
@@ -80,22 +79,28 @@ const EmployeeIndexPage = () => {
   };
 
   const returnMedia = async () => {
-    
     if (historyID) {
-      const returnedMedia = await mediaHistoryFrontEndService.put('/updateRecord', {HistoryID: historyID, Active: 1, ActualReturn: moment().format("YYYY-MM-DD")});
-      if(returnedMedia.status === 200){
-        const wishlist = await wishlistFrontEndSevice.get(
-          '/readRecords', 
-          {
-            Title: returnedMedia.data.Title,
-            Type: returnedMedia.data.Type
-          });
-          if(wishlist.data.length > 0){
-            const member = await memberFrontEndService.handleMembersWishlist(wishlist.data);
-          }
-      } 
+      const returnedMedia = await mediaHistoryFrontEndService.put(
+        "/updateRecord",
+        {
+          HistoryID: historyID,
+          Active: 0,
+          ActualReturn: moment().format("YYYY-MM-DD"),
+        }
+      );
+      if (returnedMedia.status === 200) {
+        const wishlist = await wishlistFrontEndSevice.get("/readRecords", {
+          Title: returnedMedia.data.Title,
+          Type: returnedMedia.data.Type,
+        });
+        if (wishlist.data.length > 0) {
+          const member = await memberFrontEndService.handleMembersWishlist(
+            wishlist.data
+          );
+        }
+      }
     }
-  }
+  };
 
   const getBranchInfo = async (mediaItems) => {
     try {
@@ -354,7 +359,7 @@ const EmployeeIndexPage = () => {
   const handleHistoryIdChange = async (e) => {
     const value = e.target.value;
     setHistoryID(value);
-  }
+  };
 
   const handleTitleInputChange = async (e) => {
     const value = e.target.value;
@@ -402,7 +407,7 @@ const EmployeeIndexPage = () => {
         <LoginCard
           onLoginSuccess={(success) => {
             if (success) {
-              setEmployee(true); 
+              setEmployee(true);
             }
           }}
         />
@@ -634,12 +639,12 @@ const EmployeeIndexPage = () => {
               </Form>
             </Col>
             <Col className="justify-content-center">
-              <h1> Return Media By ID</h1>
+              <h1> Return Media By History ID</h1>
               <Form className="d-flex align-items-center">
                 <div className="search-wrapper d-flex">
                   <Form.Control
                     type="text"
-                    placeholder="Enter media ID"
+                    placeholder="Enter history ID"
                     className="search-input"
                     value={historyID}
                     onChange={handleHistoryIdChange}
@@ -649,7 +654,7 @@ const EmployeeIndexPage = () => {
                     style={{ borderRadius: "0 5px 5px 0" }}
                     onClick={returnMedia}
                   >
-                    Search
+                    Return
                   </Button>
                 </div>
               </Form>
@@ -689,7 +694,8 @@ const EmployeeIndexPage = () => {
                       const returnDate = calculateReturnDate(rentLength);
                       const isMinimumTerm = rentLength <= 7;
                       const tokens = Math.ceil(rentLength / 7);
-                      const deliveryMethod = deliveryOptions[index] || "collect";
+                      const deliveryMethod =
+                        deliveryOptions[index] || "collect";
 
                       item = {
                         ...item,

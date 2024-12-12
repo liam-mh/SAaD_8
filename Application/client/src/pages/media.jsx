@@ -27,7 +27,7 @@ const MediaPage = () => {
         const allItems = await mediaFrontEndService.get(
           "/readRecords",
           { Title: mediaTitle, Type: mediaType },
-          true
+          false
         );
         setMedia(allItems.data);
         allItems.data.length === 0
