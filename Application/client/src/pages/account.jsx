@@ -29,8 +29,8 @@ const AccountPage = () => {
               "/readRecords",
               { MediaID: mediaItem.MediaID }
             );
-            const activeStatus = availability?.data?.[0]?.Active ?? false;
-            return { ...mediaItem, available: !activeStatus };
+            const activeStatus = !!(availability?.data?.[0]?.Active) ?? false;
+            return { ...mediaItem, available: activeStatus };
           })
         );
         setWishlistItems(availabilityResults || {});
