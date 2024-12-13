@@ -78,19 +78,22 @@ function Header() {
           <>
             <Row className="border-bottom border-secondary">
               <Col>
-                {localBranch && (
+                {localBranch ? (
                   <span>
                     <strong>Home Branch: </strong>
                     {localBranch.FirstLineAddress},{" "}
                     {[localBranch.City, " ", localBranch.Postcode]}
                   </span>
+                ) : (
+                  <span>
+                    Press <Link to="/account">here</Link> to login for personalised results
+                  </span>
                 )}
               </Col>
               <Col className="text-end">
-                <p className="d-inline">Need </p>
-                <Link to="/help">
-                  <span>Help?</span>
-                </Link>
+                <span className="d-inline">
+                  Need <Link to="/help">help?</Link>
+                </span>
               </Col>
             </Row>
 
