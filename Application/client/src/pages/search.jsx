@@ -12,8 +12,8 @@ const SearchPage = () => {
     const { preFilterType } = location.state || {};
 
     const [media, setMedia] = useState([]);
-    const [filteredMedia, setFilteredMedia] = useState([]); 
-    const [selectedFormats, setSelectedFormats] = useState([preFilterType]);
+    const [displayMedia, setDisplayMedia] = useState([]); 
+    const [selectedFormats, setSelectedFormats] = useState(preFilterType ? [preFilterType] : []);
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [sortType, setSortType] = useState('Relevance');
     const [productsPerPage, setProductsPerPage] = useState(24); 
@@ -40,11 +40,15 @@ const SearchPage = () => {
                 let res;
                 if (preFilterType) {
                     res = await mediaFrontEndService.get('/readRecords', { Type: preFilterType }, true);
+                } else if (searchTerm) {
+                    res = await mediaFrontEndService.autoComplete(searchTerm);
                 } else {
                     res = await mediaFrontEndService.get('/readRecords', {}, true);
                     setAllDataLoaded(true);
                 }
+                console.log("Media loaded:", res.data);
                 setMedia(res.data);
+                setDisplayMedia(res.data);
             } catch (error) {
                 console.error('Error loading media data:', error);
             }
@@ -54,35 +58,42 @@ const SearchPage = () => {
     }, [searchTerm, preFilterType]);    
 
     useEffect(() => {
-        let updatedMedia = [...media];
+        if (media.length === 0) return;
+        if (!selectedFormats.length && !selectedGenres.length && !allDataLoaded) {
+            setDisplayMedia(media);
+        }
+    }, [media, selectedFormats, selectedGenres, allDataLoaded]);
+
+    useEffect(() => {
+        if (media.length > 0) {
+            let updatedMedia = [...media];
+            if (selectedFormats.length > 0) {
+                updatedMedia = updatedMedia.filter((item) =>
+                    selectedFormats.includes(item.Type)
+                );
+            }
+            if (selectedGenres.length > 0) {
+                updatedMedia = updatedMedia.filter((item) =>
+                    selectedGenres.some((genre) => item.Genre.includes(genre))
+                );
+            }
+
+            switch (sortType) {
+                case 'Title':
+                    updatedMedia.sort((a, b) => a.Title.localeCompare(b.Title));
+                    break;
+                case 'Release':
+                    updatedMedia = sortByDateNewestFirst(updatedMedia);
+                    break;
+                default:
+                    break;
+            }
     
-        if (selectedFormats.length > 0) {
-            updatedMedia = updatedMedia.filter((item) =>
-                selectedFormats.includes(item.Type)
-            );
+            setDisplayMedia(updatedMedia);
+        } else {
+            setDisplayMedia([]);
         }
-        if (selectedGenres.length > 0) {
-            updatedMedia = updatedMedia.filter((item) =>
-                selectedGenres.some((genre) => item.Genre.includes(genre))
-            );
-        }
-        if (selectedFormats.length === 0 && selectedGenres.length === 0 && allDataLoaded) {
-            updatedMedia = media;
-        }
-    
-        switch (sortType) {
-            case 'Title':
-                updatedMedia.sort((a, b) => a.Title.localeCompare(b.Title));
-                break;
-            case 'Release':
-                updatedMedia = sortByDateNewestFirst(updatedMedia);
-                break;
-            default:
-                break;
-        }
-    
-        setFilteredMedia(updatedMedia);
-    }, [selectedFormats, selectedGenres, sortType, media, allDataLoaded]);
+    }, [media, selectedFormats, selectedGenres, sortType]);
     
 
     const handleFormatChange = (format) => {
@@ -90,10 +101,6 @@ const SearchPage = () => {
             const updatedFormats = prevSelected.includes(format)
                 ? prevSelected.filter((f) => f !== format)
                 : [...prevSelected, format];
-
-            if (updatedFormats.length === 0 && !allDataLoaded) {
-                fetchAllData(); 
-            }
     
             return updatedFormats;
         });
@@ -103,6 +110,7 @@ const SearchPage = () => {
         try {
             const res = await mediaFrontEndService.get('/readRecords', {}, true);
             setMedia(res.data);
+            setDisplayMedia(res.data);
             setAllDataLoaded(true);
         } catch (error) {
             console.error('Error fetching all media data:', error);
@@ -125,7 +133,7 @@ const SearchPage = () => {
     return (
         <Container fluid="lg">
             <h1 className="pb-2">
-                Search Results: <strong>{searchTerm}</strong>
+                Search Results: <strong>{searchTerm || preFilterType+'s'}</strong>
             </h1>
             {media.length === 0 ? (
                 <div className="content-panel" style={{ width: 'fit-content' }}>
@@ -204,7 +212,7 @@ const SearchPage = () => {
                             </Form.Group>
                         </Row>
                         <Row className="pt-4">
-                            <MediaPagination media={filteredMedia} numColumn={4} numRow={productsPerPage / 4} />
+                            <MediaPagination media={displayMedia} numColumn={4} numRow={productsPerPage / 4} />
                         </Row>
                     </Col>
                 </Row>
