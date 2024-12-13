@@ -7,10 +7,10 @@ import Col from 'react-bootstrap/Col';
 const Footer = ({ localBranch = {} }) => {
   const location = useLocation();
   const minimalFooter = 
-    location.pathname === '/checkout';
-  const footerClass = 
-    location.pathname === '/help' || 
+    location.pathname === '/checkout' ||
     location.pathname.startsWith('/employee') 
+  const footerClass = 
+    location.pathname === '/help'
     ? 'footer mt-0' 
     : 'footer';
 

@@ -38,6 +38,7 @@ const EmployeeIndexPage = () => {
   const [totalTokenCost, setTotalTokenCost] = useState(0);
   const [confirmation, setConfirmation] = useState(false);
   const [transactionID, setTransactionID] = useState(null);
+  const [userMediaHistory, setUserMediaHistory] = useState([]);
 
   const today = new Date();
   const startDate = today.toLocaleDateString("en-GB").split("/").join("-");
@@ -79,13 +80,12 @@ const EmployeeIndexPage = () => {
   };
 
   const returnMedia = async () => {
-    console.log("returnMedia");
     if (historyID) {
       const returnedMedia = await mediaHistoryFrontEndService.put(
         "/updateRecord",
         {
           HistoryID: historyID,
-          Active: 1,
+          Active: 0,
           ActualReturn: moment().format("YYYY-MM-DD"),
         }
       );
@@ -139,8 +139,7 @@ const EmployeeIndexPage = () => {
               "/readRecords",
               { MediaID: media.MediaID }
             );
-            var available = mediaHistoryRes.data[0];
-            !available ? (available = 0) : (available = 1);
+            let available = mediaHistoryRes?.data?.[0]?.Active || 0;
             return { ...media, availability: available };
           } catch (error) {
             console.error(
@@ -161,9 +160,12 @@ const EmployeeIndexPage = () => {
       const userData = await memberFrontEndService.get("/readRecords", {
         Email: searchEmail,
       });
-      if (!userData.data[0]) {
+      console.log(userData);
+      if (!userData) {
+        alert('No member with that email');
         userData.data[0] = "";
         userData.data[1] = "";
+        return;
       } else {
         var convertedDate = new Date(userData.data[0].RegisterDate);
         convertedDate = convertedDate
@@ -172,10 +174,14 @@ const EmployeeIndexPage = () => {
           .join("-");
         userData.data[0].RegisterDate = convertedDate;
       }
-
       const userBranch = await fetchUserBranch(userData.data[0].BranchID);
       userData.data.push(userBranch.data[0]);
       setUserDetails(userData.data);
+
+      const userMediaHistory = await mediaHistoryFrontEndService.get("/readRecords", {
+        MemberID: userData.data[0].MemberID,
+      });
+      setUserMediaHistory(userMediaHistory.data);
     } catch (error) {
       console.error("Error during search: ", error);
     }
@@ -202,17 +208,19 @@ const EmployeeIndexPage = () => {
 
       basket.map(async (item) => {
         try {
-          const returnDate = formatDateForDB(item.returnDate);
-          await mediaHistoryFrontEndService.post("/createRecord", {
+          const startDateFormatted = formatDateForDB(startDate);
+          const returnDateFormatted = formatDateForDB(item.returnDate);
+          const res = await mediaHistoryFrontEndService.post("/createRecord", {
             MediaID: item.MediaID,
             MemberID: user[0].MemberID,
             BranchID: item.branch.BranchID,
-            EmployeeID: null,
-            Active: 0,
-            RentStart: startDate,
-            RentEnd: returnDate,
+            EmployeeID: employee.EmployeeID,
+            Active: 1,
+            RentStart: startDateFormatted,
+            RentEnd: returnDateFormatted,
             ActualReturn: null,
           });
+          console.log(res);
         } catch (error) {
           console.error("Error while writing to media history table: ", error);
         }
@@ -404,101 +412,407 @@ const EmployeeIndexPage = () => {
           </div>
         </div>
       )}
-      {/* Render LoginCard if not logged in as an employee */}
-      {!employee ? (
-        <LoginCard
-          onLoginSuccess={(success) => {
-            if (success) {
-              setEmployee(true);
-            }
-          }}
-        />
-      ) : (
-        <Container fluid="lg">
-          <Row>
-            <Col>
-              <br />
-            </Col>
-          </Row>
-          <Row>
-            {/* User info */}
-            <div className="content-panel">
+      <Container fluid="lg">
+        <h1 className="pb-2 pt-4">AML Employee</h1>
+        {!employee ? (
+          <LoginCard
+            onLoginSuccess={(success) => {
+              if (success) {
+                setEmployee(true);
+              }
+            }}
+          />
+        ) : (
+          <>
+            {/* Member section */}
+            <Row className="g-0">
+              <h3>Member</h3>
+              <Col className="p-0" style={{ paddingRight: "1.5rem" }}>
+                <div className="content-panel">
+                  <span><strong>Enter members email address</strong></span>
+                  <Form className="d-flex align-items-center">
+                    <div className="search-wrapper d-flex">
+                      <Form.Control
+                        type="text"
+                        placeholder="jane.doe@example.com"
+                        className="search-input"
+                        value={searchEmail}
+                        onChange={handleEmailInputChange}
+                      />
+                      <Button
+                        className="button-secondary me-2"
+                        style={{ borderRadius: "0 5px 5px 0" }}
+                        onClick={fetchUserData}
+                      >
+                        Search Member
+                      </Button>
+                    </div>
+                  </Form>
+                  <br />
+                  <Row>
+                    {user[0]!="" && (
+                      <span>
+                      <strong>Account Details</strong> <br />
+                      Name: {[user[0].FirstName || "Firstname", " ", user[0].Surname || "Surname",]} <br />
+                      Email: {user[0].Email || "Email address"} <br />
+                      Register Date: {user[0].RegisterDate} <br />
+                      <br />
+                      <strong>Home Address</strong> <br />
+                      {user[0].FirstLineAddress || "First Line Address"} <br />
+                      {user[0].City || "City"} <br />
+                      {user[0].Postcode || "Postcode"} <br />
+                      <br />
+                      <strong>Current Branch</strong> <br />
+                      {user[1].FirstLineAddress || "First Line Address"} <br />
+                      {user[1].City || "City"} <br />
+                      {user[1].Postcode || "Postcode"} <br />
+                      </span>
+                    )}
+                  </Row>
+                </div>
+              </Col>
+              {/* Members Media */}
+              <Col style={{ paddingLeft: "1.5rem", maxHeight: "60vh", overflow: "auto" }}>
+                <div className="content-panel">
+                  <Table hover className="aml-table">
+                    <thead>
+                      <tr>
+                        <th>Product</th>
+                        <th>Rent Details</th>
+                        <th>Days Remaining</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userMediaHistory.map((item, index) => {
+                        const returnMessage = item.ActualReturn
+                          ? item.ActualReturn
+                          : 'Not returned yet'
+
+                        const checkDateAndDifference = (returnDate) => {
+                          const today = moment(); 
+                          const firstDate = moment(returnDate, 'YYYY-MM-DD');
+                          const isBeforeToday = firstDate.isBefore(today, 'day'); 
+                          const differenceInDays = firstDate.diff(today, 'days'); 
+                          return {
+                              isBeforeToday,
+                              differenceInDays,
+                          };
+                        };
+
+                        const result = checkDateAndDifference(item.RentEnd);
+                        const remainingDays = result.differenceInDays;
+                        const isBeforeToday = result.isBeforeToday;
+
+                        let remainingMessage = '';
+                        let spanStyle = '';
+                        if (item.Active === 1 && isBeforeToday) {
+                          remainingMessage = `Overdue: ${remainingDays}`;
+                          spanStyle = 'highlight-orange-outline'
+                        } 
+                        if (item.Active === 0) {
+                          remainingMessage = `Returned ${item.ActualReturn}`;
+                          spanStyle = 'highlight-primary'
+                        }
+                        if (item.Active === 1 && !isBeforeToday) {
+                          remainingMessage = `Left: ${remainingDays}`;
+                          spanStyle = 'highlight-primary-outline'
+                        }
+                        
+                        return (
+                          <tr key={index} style={{ verticalAlign: "middle" }}>
+                            <td>
+                              <span>
+                                ID: {item.MediaID}
+                              </span>
+                            </td>
+                            <td>
+                              <span>
+                                Start: {item.RentStart} <br />
+                                Return: {item.RentEnd} <br />
+                              </span>
+                            </td>
+                            <td>
+                              <span className={spanStyle}>
+                                {remainingMessage}
+                              </span>
+                              
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </Table>
+                </div>
+              </Col>
+            </Row>
+
+            {/* Media section */}
+            <Row >
+              <h3 className="pt-3">Media</h3>
               <Col className="justify-content-center">
-                <br />
-                <h4>
-                  <b>Enter user's email address</b>
-                </h4>
+                <span><strong>Search by MediaID</strong></span>
                 <Form className="d-flex align-items-center">
                   <div className="search-wrapper d-flex">
                     <Form.Control
                       type="text"
-                      placeholder="jane.doe@example.com"
+                      placeholder="Enter media ID e.g. 54"
                       className="search-input"
-                      value={searchEmail}
-                      onChange={handleEmailInputChange}
+                      value={searchPK}
+                      onChange={handlePKInputChange}
                     />
                     <Button
                       className="button-secondary me-2"
                       style={{ borderRadius: "0 5px 5px 0" }}
-                      onClick={fetchUserData}
+                      onClick={handleSearch}
                     >
                       Search
                     </Button>
                   </div>
                 </Form>
               </Col>
-              <br />
-              <Row>
-                <Col className="d-flex">
-                  <span>
-                    <strong>Account Details</strong>
-                    <br />
-                    Name: <br />{" "}
-                    {[
-                      user[0].FirstName || "Firstname",
-                      " ",
-                      user[0].Surname || "Surname",
-                    ]}
-                    <br />
-                    Email: <br /> {user[0].Email || "Email address"}
-                  </span>
-                </Col>
-                <Col classsName="d-flex">
-                  <br />
-                  Register Date: <br /> {user[0].RegisterDate}
-                </Col>
-              </Row>
-              <br />
-              <br />
-              <Row>
-                <Col>
-                  <span>
-                    <strong>Home Address</strong>
-                    <br />
-                    {user[0].FirstLineAddress || "First Line Address"}
-                    <br />
-                    {user[0].City || "City"}
-                    <br />
-                    {user[0].Postcode || "Postcode"}
-                    <br />
-                  </span>
-                </Col>
-                <Col>
-                  <span>
-                    <strong>Current Branch</strong>
-                    <br />
-                    {user[1].FirstLineAddress || "First Line Address"}
-                    <br />
-                    {user[1].City || "City"}
-                    <br />
-                    {user[1].Postcode || "Postcode"}
-                    <br />
-                  </span>
-                </Col>
-              </Row>
-            </div>
-            {/* User's basket */}
-            <Col>
+              <Col className="justify-content-center">
+                <span><strong>Search by Media title</strong></span>
+                <Form className="align-items-center">
+                  <div className="search-wrapper d-flex">
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter media title e.g. The Hobbit"
+                      className="search-input"
+                      value={searchTitle}
+                      onChange={handleTitleInputChange}
+                    />
+                    <Button
+                      className="button-secondary me-2"
+                      style={{ borderRadius: "0 5px 5px 0" }}
+                      onClick={handleSearch}
+                    >
+                      Search
+                    </Button>
+                  </div>
+                  <div>
+                    <label htmlFor="uniqueTitles">Unique Titles</label>
+                    <input
+                      type="checkbox"
+                      name="uniqueTitles"
+                      checked={uniqueTitles}
+                      onChange={handleCheckboxChange}
+                    />
+                  </div>
+                </Form>
+              </Col>
+              <Col className="justify-content-center">
+                <span><strong>Return Media by HistoryID</strong></span>
+                <Form className="d-flex align-items-center">
+                  <div className="search-wrapper d-flex">
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter History ID"
+                      className="search-input"
+                      value={historyID}
+                      onChange={handleHistoryIdChange}
+                    />
+                    <Button
+                      className="button-secondary me-2"
+                      style={{ borderRadius: "0 5px 5px 0" }}
+                      onClick={returnMedia}
+                    >
+                      Return
+                    </Button>
+                  </div>
+                </Form>
+              </Col>
+            </Row>
+
+            {/* Searched media results */}
+            <Row>
+              <Col>
+                <div
+                  className="content-panel mt-3"
+                  style={{ maxHeight: "75vh", overflow: "auto" }}
+                >
+                  <Table hover className="aml-table">
+                    <thead>
+                      <tr>
+                        <th>Product</th>
+                        <th>Rent Start Date</th>
+                        <th>Return Date</th>
+                        <th>Store</th>
+                        <th>Delivery Option</th>
+                        <th>Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {searchMedia.map((item, index) => {
+                        if (!item.rentLength) {
+                          item.rentLength = 7;
+                        }
+                        const mediaID = item.MediaID;
+                        const branch = item.branch;
+                        const rentLength = item.rentLength;
+                        const returnDate = calculateReturnDate(rentLength);
+                        const isMinimumTerm = rentLength <= 7;
+                        const tokens = Math.ceil(rentLength / 7);
+                        const deliveryMethod =
+                          deliveryOptions[index] || "collect";
+
+                        item = {
+                          ...item,
+                          rentLength,
+                          returnDate,
+                          tokens,
+                          deliveryMethod,
+                        };
+
+                        return (
+                          <tr key={index} style={{ verticalAlign: "middle" }}>
+                            <td>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "3rem",
+                                }}
+                              >
+                                {/* Column 1: Title and Info */}
+                                <div>
+                                  <span>ID: {mediaID}</span>
+                                  <br />
+                                  <strong>{item.Title}</strong>
+                                  <br />
+                                  <span>Type: {item.Type}</span>
+                                  <br />
+                                  <span>Rent tokens per week: 1</span>
+                                </div>
+                              </div>
+                            </td>
+
+                            <td>
+                              {/* Column 2: Rent Start Date */}
+                              <span>{startDate}</span>
+                            </td>
+
+                            <td>
+                              {/* Column 3: Increase/Decrease Return Date + Display */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Button
+                                  className="button-primary mb-3"
+                                  style={{ width: "3rem" }}
+                                  onClick={() => adjustRentLength(item, 7)}
+                                >
+                                  + 7
+                                </Button>
+                                {returnDate}
+                                <Button
+                                  className="button-primary-outline mt-3"
+                                  style={{ width: "3rem" }}
+                                  onClick={() =>
+                                    !isMinimumTerm && adjustRentLength(item, -7)
+                                  }
+                                  disabled={isMinimumTerm}
+                                >
+                                  - 7
+                                </Button>
+                              </div>
+                            </td>
+
+                            <td>
+                              {/* Column 4: Branch Info*/}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <span>
+                                  {branch.FirstLineAddress || "First Line"}
+                                </span>
+                                <span>{branch.City || "City"}</span>
+                                <span>{branch.Postcode || "Postcode"}</span>
+                              </div>
+                            </td>
+
+                            <td>
+                              {/* Column 5: Delivery Options */}
+                              <Form.Select
+                                className="form-secondary"
+                                value={deliveryOptions[index]}
+                                onChange={(e) =>
+                                  handleDeliveryChange(index, e.target.value)
+                                }
+                                required
+                              >
+                                <option value="collect">Collect In-Store</option>
+                                <option value="delivery">Home Delivery</option>
+                              </Form.Select>
+                            </td>
+
+                            <td>
+                              {/* Column 6: Token Cost */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "middle",
+                                }}
+                              >
+                                {tokens} Tokens
+                              </div>
+                            </td>
+
+                            <td>
+                              {/* Column 7: Basket/Unavailble Button */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "middle",
+                                }}
+                              >
+                                {!isAvailable(item.availability) ? (
+                                  <span
+                                    style={{ color: "red", paddingRight: "1rem" }}
+                                    Title="Out of stock"
+                                  >
+                                    <i className="bi bi-x-circle-fill"></i>
+                                  </span>
+                                ) : !isInBasket(item.MediaID) ? (
+                                  <button
+                                    className="button-primary"
+                                    onClick={(e) => handleAddToBasket(e, item)}
+                                  >
+                                    <i className="bi bi-basket"></i>
+                                  </button>
+                                ) : (
+                                  <button
+                                    className="button-secondary-outline"
+                                    onClick={(e) =>
+                                      handleRemoveFromBasket(e, item)
+                                    }
+                                  >
+                                    <i className="bi bi-x-circle-fill"></i>
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </Table>
+                </div>
+              </Col>
+            </Row>
+
+            {/* Basket */}          
+            <Row className="g-0">
+              <h3 className="pt-3">Basket</h3>
               <div
                 className="content-panel"
                 style={{ height: "40vh", overflowY: "auto" }}
@@ -559,299 +873,23 @@ const EmployeeIndexPage = () => {
                     })}
                   </tbody>
                 </Table>
+                {basket.length > 0 && (
+                  <>
+                    <div style={{ textAlign: "right" }}>
+                      <h4>Total cost: {totalTokenCost} tokens</h4>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <Button className="button-primary" onClick={handleCheckout}>
+                        Checkout User's Basket
+                      </Button>
+                    </div>
+                  </>
+                )}
               </div>
-              <br />
-              {basket.length > 0 && (
-                <div
-                  className="content-panel"
-                  style={{
-                    height: "5vh",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <div style={{ textAlign: "left" }}>
-                    <h4>Total cost: {totalTokenCost} tokens</h4>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <Button className="button-primary" onClick={handleCheckout}>
-                      Checkout User's Basket
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </Col>
-          </Row>
-          <Row>
-            <Row>
-              <Col>
-                <br />
-              </Col>
             </Row>
-            <Col className="justify-content-center">
-              <h1>Search by media ID</h1>
-              <Form className="d-flex align-items-center">
-                <div className="search-wrapper d-flex">
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter media ID e.g. 54"
-                    className="search-input"
-                    value={searchPK}
-                    onChange={handlePKInputChange}
-                  />
-                  <Button
-                    className="button-secondary me-2"
-                    style={{ borderRadius: "0 5px 5px 0" }}
-                    onClick={handleSearch}
-                  >
-                    Search
-                  </Button>
-                </div>
-              </Form>
-            </Col>
-            <Col className="justify-content-center">
-              <h1>Search by media title</h1>
-              <Form className="align-items-center">
-                <div className="search-wrapper d-flex">
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter media title e.g. The Hobbit"
-                    className="search-input"
-                    value={searchTitle}
-                    onChange={handleTitleInputChange}
-                  />
-                  <Button
-                    className="button-secondary me-2"
-                    style={{ borderRadius: "0 5px 5px 0" }}
-                    onClick={handleSearch}
-                  >
-                    Search
-                  </Button>
-                </div>
-                <div>
-                  <label htmlFor="uniqueTitles">Unique Titles</label>
-                  <input
-                    type="checkbox"
-                    name="uniqueTitles"
-                    checked={uniqueTitles}
-                    onChange={handleCheckboxChange}
-                  />
-                </div>
-              </Form>
-            </Col>
-            <Col className="justify-content-center">
-              <h1> Return Media</h1>
-              <Form className="d-flex align-items-center">
-                <div className="search-wrapper d-flex">
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter History ID"
-                    className="search-input"
-                    value={historyID}
-                    onChange={handleHistoryIdChange}
-                  />
-                  <Button
-                    className="button-secondary me-2"
-                    style={{ borderRadius: "0 5px 5px 0" }}
-                    onClick={returnMedia}
-                  >
-                    Search
-                  </Button>
-                </div>
-              </Form>
-            </Col>
-          </Row>
-          {/* Searched media */}
-          <Row>
-            <Col>
-              <br />
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <div
-                className="content-panel"
-                style={{ maxHeight: "75vh", overflow: "auto" }}
-              >
-                <Table hover className="aml-table">
-                  <thead>
-                    <tr>
-                      <th>Product</th>
-                      <th>Rent Start Date</th>
-                      <th>Return Date</th>
-                      <th>Store</th>
-                      <th>Delivery Option</th>
-                      <th>Subtotal</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {searchMedia.map((item, index) => {
-                      if (!item.rentLength) {
-                        item.rentLength = 7;
-                      }
-                      const mediaID = item.MediaID;
-                      const branch = item.branch;
-                      const rentLength = item.rentLength;
-                      const returnDate = calculateReturnDate(rentLength);
-                      const isMinimumTerm = rentLength <= 7;
-                      const tokens = Math.ceil(rentLength / 7);
-                      const deliveryMethod = deliveryOptions[index];
-
-                      item = {
-                        ...item,
-                        rentLength,
-                        returnDate,
-                        tokens,
-                        deliveryMethod,
-                      };
-
-                      return (
-                        <tr key={index} style={{ verticalAlign: "middle" }}>
-                          <td>
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "3rem",
-                              }}
-                            >
-                              {/* Column 1: Title and Info */}
-                              <div>
-                                <span>ID: {mediaID}</span>
-                                <br />
-                                <strong>{item.Title}</strong>
-                                <br />
-                                <span>Type: {item.Type}</span>
-                                <br />
-                                <span>Rent tokens per week: 1</span>
-                              </div>
-                            </div>
-                          </td>
-
-                          <td>
-                            {/* Column 2: Rent Start Date */}
-                            <span>{startDate}</span>
-                          </td>
-
-                          <td>
-                            {/* Column 3: Increase/Decrease Return Date + Display */}
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Button
-                                className="button-primary mb-3"
-                                style={{ width: "3rem" }}
-                                onClick={() => adjustRentLength(item, 7)}
-                              >
-                                + 7
-                              </Button>
-                              {returnDate}
-                              <Button
-                                className="button-primary-outline mt-3"
-                                style={{ width: "3rem" }}
-                                onClick={() =>
-                                  !isMinimumTerm && adjustRentLength(item, -7)
-                                }
-                                disabled={isMinimumTerm}
-                              >
-                                - 7
-                              </Button>
-                            </div>
-                          </td>
-
-                          <td>
-                            {/* Column 4: Branch Info*/}
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                              }}
-                            >
-                              <span>
-                                {branch.FirstLineAddress || "First Line"}
-                              </span>
-                              <span>{branch.City || "City"}</span>
-                              <span>{branch.Postcode || "Postcode"}</span>
-                            </div>
-                          </td>
-
-                          <td>
-                            {/* Column 5: Delivery Options */}
-                            <Form.Select
-                              className="form-secondary"
-                              value={deliveryOptions[index]}
-                              onChange={(e) =>
-                                handleDeliveryChange(index, e.target.value)
-                              }
-                              required
-                            >
-                              <option value="collect">Collect In-Store</option>
-                              <option value="delivery">Home Delivery</option>
-                            </Form.Select>
-                          </td>
-
-                          <td>
-                            {/* Column 6: Token Cost */}
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "middle",
-                              }}
-                            >
-                              {tokens} Tokens
-                            </div>
-                          </td>
-
-                          <td>
-                            {/* Column 7: Basket/Unavailble Button */}
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "middle",
-                              }}
-                            >
-                              {!isAvailable(item.availability) ? (
-                                <Button className="btn-danger">
-                                  Unavailable
-                                </Button>
-                              ) : !isInBasket(item.MediaID) ? (
-                                <button
-                                  className="button-primary"
-                                  onClick={(e) => handleAddToBasket(e, item)}
-                                >
-                                  Add to Basket
-                                </button>
-                              ) : (
-                                <button
-                                  className="button-secondary"
-                                  onClick={(e) =>
-                                    handleRemoveFromBasket(e, item)
-                                  }
-                                >
-                                  Remove from Basket
-                                </button>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
-              </div>
-            </Col>
-          </Row>
-          <br></br>
-        </Container>
-      )}
+          </>
+        )}
+      </Container>
     </>
   );
 };

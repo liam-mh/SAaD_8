@@ -36,7 +36,8 @@ const MediaPage = () => {
       try {
         const allItems = await mediaFrontEndService.get(
           "/readRecords",
-          { Title: mediaTitle, Type: mediaType }
+          { Title: mediaTitle, Type: mediaType },
+          false
         );
         const deduplicatedItems = deduplicateByBranchID(allItems.data);
         setMedia(deduplicatedItems);
