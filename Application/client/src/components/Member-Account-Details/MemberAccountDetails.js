@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
 import { Row, Col, Table, Button, Form } from 'react-bootstrap';
 
+import { SessionContext } from '../../services/sessionContext';
 import MemberFrontEndService from '../../services/account/memberFrontEndService';
 import MemberSubscriptionFrontEndService from '../../services/account/memberSubscriptionFrontEndService';
 
@@ -9,6 +9,7 @@ function MemberAccountDetails({ ID = null, email = null }) {
     const memberFrontEndService = new MemberFrontEndService();
     const memberSubscriptionFrontEndService = new MemberSubscriptionFrontEndService();
 
+    const { user, setUser } = useContext(SessionContext) || {};
     const [member, setMember] = useState();
     const [memberTokens, setMemberTokens] = useState();
     const [editMode, setEditMode] = useState(false);
@@ -17,6 +18,10 @@ function MemberAccountDetails({ ID = null, email = null }) {
 
     useEffect(() => {
         if (member) return;
+        if (user) {
+            setMember(user);
+            return;
+        }
         async function loadData() {
             try {
                 let userData;
@@ -72,6 +77,7 @@ function MemberAccountDetails({ ID = null, email = null }) {
         }
         console.log(editableData);
         setMember(editableData);
+        setUser(editableData);
         setEditMode(false); 
         setPasswordChanged(false);
         const updateData = async () => {
