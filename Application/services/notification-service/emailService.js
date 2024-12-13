@@ -1,6 +1,10 @@
 const nodemailer = require('nodemailer');
 const config = require('../../config/env');
 
+/**
+ * Email service 
+ * @author Guy Nicklin
+ */
 class EmailService {
   constructor() {
     this.transporter = nodemailer.createTransport({

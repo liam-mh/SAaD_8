@@ -1,6 +1,11 @@
 import FrontEndService from "../frontEndService";
 import EmailFrontEndService from "../notification/emailFrontEndService";
 
+/**
+ * Frond end service for member logic.
+ * 
+ * @author Guy Nicklin
+ */
 class MemberFrontEndService extends FrontEndService {
   emailFrontEndService = new EmailFrontEndService();
   constructor() {
@@ -13,15 +18,18 @@ class MemberFrontEndService extends FrontEndService {
    * @param {Array} emailAddresses - An array of email addresses.
    */
   async #genAndSendEmails(emailAddresses, type, title, wishType) {
-    const message = 
-    "You recently added the " + type  + ": " + title + " via our online " + wishType + " feature.\n\n" +
-    "We just thought we would let you know it is now in stock.\n\n" +
-    "Head to your online account to proceed with your rental.\n\n" +
-    "The AML team";
+    const message =
+      "You recently added the " +
+      type +
+      ": " +
+      title +
+      " via our online " +
+      wishType +
+      " feature.\n\n" +
+      "We just thought we would let you know it is now in stock.\n\n" +
+      "Head to your online account to proceed with your rental.\n\n" +
+      "The AML team";
 
-    
-    console.log(message);
-    
     for (let email of emailAddresses) {
       try {
         // Sending the email to each address using the emailFrontEndService
@@ -35,6 +43,14 @@ class MemberFrontEndService extends FrontEndService {
       }
     }
   }
+
+  /**
+   * Processes a member's wishlist or reservation and sends email notifications.
+   *
+   * @param {Array<Object>} wishlistData - List of wishlist or reservation items containing `MemberID`, `WishType`, `Type`, and `Title`.
+   *
+   * @returns {Promise<void>} Resolves when emails are sent, or an empty array on error.
+   */
 
   async handleMembersWishlist(wishlistData) {
     let memberIDs = {};
@@ -52,7 +68,7 @@ class MemberFrontEndService extends FrontEndService {
       memberIDs = { MemberID: firstReservationRecord.MemberID };
       type = firstReservationRecord.Type;
       title = firstReservationRecord.Title;
-      wishType = 'Reservation';
+      wishType = "Reservation";
     } else {
       // Get all membersIds that have media in their wishlist.
       const wishlistRecords = wishlistData.filter(
@@ -60,7 +76,7 @@ class MemberFrontEndService extends FrontEndService {
       );
       type = wishlistRecords[0]?.Type;
       title = wishlistRecords[0]?.Title;
-      wishType = 'Wishlist';
+      wishType = "Wishlist";
 
       memberIDs["MemberIDs"] = [];
       wishlistRecords.forEach((item) => {

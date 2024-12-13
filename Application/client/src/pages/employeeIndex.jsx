@@ -639,12 +639,12 @@ const EmployeeIndexPage = () => {
               </Form>
             </Col>
             <Col className="justify-content-center">
-              <h1> Return Media By History ID</h1>
+              <h1> Return Media</h1>
               <Form className="d-flex align-items-center">
                 <div className="search-wrapper d-flex">
                   <Form.Control
                     type="text"
-                    placeholder="Enter history ID"
+                    placeholder="Enter History ID"
                     className="search-input"
                     value={historyID}
                     onChange={handleHistoryIdChange}

@@ -2,6 +2,7 @@ const formatDateFields = require("../utils/dateFormatter");
 
 /**
  * Base controller class.
+ * @author Guy Nicklin
  */
 class Contoller {
   /**

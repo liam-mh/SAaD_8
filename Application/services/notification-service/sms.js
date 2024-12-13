@@ -2,6 +2,11 @@
 const twilio = require('twilio');
 const nodemailer = require('nodemailer');
 
+/**
+ * !!INACTIVE!!
+ * TWILLO Notification service for sending emails and SMS.
+ * @author Guy Nicklin
+ */
 class NotificationService {
   constructor(config) {
     this.smsClient = twilio(config.twilio.accountSid, config.twilio.authToken);

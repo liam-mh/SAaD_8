@@ -21,6 +21,16 @@ const MediaPage = () => {
   const [usedWishlistButton, setUsedWishlistButton] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const deduplicateByBranchID = (items) => {
+    const uniqueItemsMap = new Map();
+    items.forEach(item => {
+        if (!uniqueItemsMap.has(item.BranchID)) {
+            uniqueItemsMap.set(item.BranchID, item);
+        }
+    });
+    return Array.from(uniqueItemsMap.values());
+  };
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -29,7 +39,8 @@ const MediaPage = () => {
           { Title: mediaTitle, Type: mediaType },
           false
         );
-        setMedia(allItems.data);
+        const deduplicatedItems = deduplicateByBranchID(allItems.data);
+        setMedia(deduplicatedItems);
         allItems.data.length === 0
           ? setErrorMessage("No media available")
           : setErrorMessage("");

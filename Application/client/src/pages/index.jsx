@@ -6,9 +6,8 @@ import { First } from "react-bootstrap/esm/PageItem";
 import moment from "moment";
 import MediaFrontEndService from "../services/storefront/mediaFrontEndService";
 
-const mediaFrontEndService = new MediaFrontEndService();
-
 const IndexPage = () => {
+  const mediaFrontEndService = new MediaFrontEndService();
   const [allMedia, setAllMedia] = useState([]);
   const [whatsNew, setRecentMedia] = useState([]);
   const [topPicks, setRandomMedia] = useState([]);

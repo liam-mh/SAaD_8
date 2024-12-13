@@ -77,9 +77,12 @@ function BranchStockCard({ media, onAddToBasket }) {
 
   const handleAddToBasket = (e) => {
     e.preventDefault();
+    const branchExists = branches.some(b => b.BranchID === branch.BranchID);
+    if (!branchExists) {
+        setBranches([...branches, { ...branch }]);
+    }
     if (!isInBasket) {
       setBasket([...basket, { ...media }]);
-      setBranches([...branches, { ...branch }]);
       onAddToBasket(media);
     }
   };

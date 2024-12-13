@@ -4,6 +4,8 @@ const MemberDbHandler = require("../../../account-service/micro-services/member/
 /**
  * Service for member related requests.
  * Injects its database handler as a dependency into its base class.
+ * 
+ * @author Guy Nicklin
  */
 class MemberService extends Service {
   constructor() {

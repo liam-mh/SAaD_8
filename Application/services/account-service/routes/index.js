@@ -2,10 +2,14 @@ const express = require('express');
 const {handleRoutes} = require("shared");
 const router = express.Router();
 
-// Define resources for the account service
-const resources = ['member', 'employee', 'member-subscription', 'subscription', 'payment'];
+/**
+ * Defines resources for the account service.
+ * Use the route handler utility to dynamically register routes.
+ * 
+ * @author Guy Nicklin
+ */
 
-// Use the route handler utility to dynamically register routes.
+const resources = ['member', 'employee', 'member-subscription', 'subscription', 'payment'];
 handleRoutes(router, 'account-service', resources);
 
 module.exports = router;

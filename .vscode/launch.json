@@ -1,3 +1,7 @@
+// Launch file, allows debugging of induvidual service test suites.
+// Allows debugging of induvidual tests
+// @author GuyNicklin
+
 {
   "version": "0.2.0",
   "configurations": [

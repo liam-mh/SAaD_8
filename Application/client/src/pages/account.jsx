@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import WishlistFrontEndSevice from "../services/storefront/wishlistFrontEndSevice";
 import LoginCard from "../components/Login-Card/LoginCard";
 import MediaFrontEndService from "../services/storefront/mediaFrontEndService";
-import MediaHistoryFrontEndService from '../services/storefront/mediaHistoryFrontEndService'
+import MediaHistoryFrontEndService from "../services/storefront/mediaHistoryFrontEndService";
 
 const AccountPage = () => {
   const mediaFrontEndService = new MediaFrontEndService();
@@ -17,6 +17,7 @@ const AccountPage = () => {
 
   // load user wishlist
   useEffect(() => {
+    if (!user) return;
     const loadData = async () => {
       try {
         const stockData = await wishlistFrontEndSevice.get("/readRecords", {
@@ -28,8 +29,8 @@ const AccountPage = () => {
               "/readRecords",
               { MediaID: mediaItem.MediaID }
             );
-            const activeStatus = availability?.data?.[0]?.Active ?? false;
-            return { ...mediaItem, available: !activeStatus };
+            const activeStatus = !!(availability?.data?.[0]?.Active) ?? false;
+            return { ...mediaItem, available: activeStatus };
           })
         );
         setWishlistItems(availabilityResults || {});

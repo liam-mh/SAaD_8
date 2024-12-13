@@ -1,5 +1,9 @@
 import fetchFromApiGateway from "./apiService";
 
+/**
+ * Front end service base class.
+ * @author Guy Nicklin
+ */
 class FrontEndService {
   constructor(baseRoute) {
 
