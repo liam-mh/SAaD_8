@@ -7,6 +7,7 @@ import LoginCard from "../components/Login-Card/LoginCard";
 import MediaFrontEndService from "../services/storefront/mediaFrontEndService";
 import MediaHistoryFrontEndService from "../services/storefront/mediaHistoryFrontEndService";
 import MemberAccountDetails from "../components/Member-Account-Details/MemberAccountDetails";
+import MemberMediaHistory from "../components/Member-Media-History/MemberMediaHistory";
 
 const AccountPage = () => {
   const mediaFrontEndService = new MediaFrontEndService();
@@ -98,10 +99,11 @@ const AccountPage = () => {
         <>
           <h2 id="account">My Account</h2>
           <MemberAccountDetails ID={user.MemberID}/>
-          <h2 id="subscription">My Subscription</h2>
-          <h2 id="library">My Library</h2>
 
-          <h2 id="wishlist">My Wishlist</h2>
+          <h2 id="library" className="pt-3">My Library</h2>
+          <MemberMediaHistory ID={user.MemberID}/>
+
+          <h2 id="wishlist" className="pt-3">My Wishlist</h2>
           <div className="content-panel">
             {wishlistItems.length > 0 ? (
               <Table hover className="aml-table">
