@@ -13,6 +13,7 @@ import EmailFrontEndService from "../services/notification/emailFrontEndService"
 import LoginCard from "../components/Login-Card/LoginCard";
 import WishlistFrontEndSevice from "../services/storefront/wishlistFrontEndSevice";
 import moment from "moment";
+import MemberAccountDetails from "../components/Member-Account-Details/MemberAccountDetails";
 
 const EmployeeIndexPage = () => {
   const mediaFrontEndService = new MediaFrontEndService();
@@ -428,49 +429,33 @@ const EmployeeIndexPage = () => {
             <Row className="g-0">
               <h3>Member</h3>
               <Col className="p-0" style={{ paddingRight: "1.5rem" }}>
-                <div className="content-panel">
-                  <span><strong>Enter members email address</strong></span>
-                  <Form className="d-flex align-items-center">
-                    <div className="search-wrapper d-flex">
-                      <Form.Control
-                        type="text"
-                        placeholder="jane.doe@example.com"
-                        className="search-input"
-                        value={searchEmail}
-                        onChange={handleEmailInputChange}
-                      />
-                      <Button
-                        className="button-secondary me-2"
-                        style={{ borderRadius: "0 5px 5px 0" }}
-                        onClick={fetchUserData}
-                      >
-                        Search Member
-                      </Button>
-                    </div>
-                  </Form>
-                  <br />
-                  <Row>
-                    {user[0]!="" && (
-                      <span>
-                      <strong>Account Details</strong> <br />
-                      Name: {[user[0].FirstName || "Firstname", " ", user[0].Surname || "Surname",]} <br />
-                      Email: {user[0].Email || "Email address"} <br />
-                      Register Date: {user[0].RegisterDate} <br />
-                      <br />
-                      <strong>Home Address</strong> <br />
-                      {user[0].FirstLineAddress || "First Line Address"} <br />
-                      {user[0].City || "City"} <br />
-                      {user[0].Postcode || "Postcode"} <br />
-                      <br />
-                      <strong>Current Branch</strong> <br />
-                      {user[1].FirstLineAddress || "First Line Address"} <br />
-                      {user[1].City || "City"} <br />
-                      {user[1].Postcode || "Postcode"} <br />
-                      </span>
-                    )}
-                  </Row>
-                </div>
+                <span><strong>Enter members email address</strong></span>
+                <Form className="d-flex align-items-center">
+                  <div className="search-wrapper d-flex">
+                    <Form.Control
+                      type="text"
+                      placeholder="jane.doe@example.com"
+                      className="search-input"
+                      value={searchEmail}
+                      onChange={handleEmailInputChange}
+                    />
+                    <Button
+                      className="button-secondary me-2"
+                      style={{ borderRadius: "0 5px 5px 0" }}
+                      onClick={fetchUserData}
+                    >
+                      Search Member
+                    </Button>
+                  </div>
+                </Form>
+                <br />
+                <Row className="g-0">
+                  {user[0]!="" && (
+                    <MemberAccountDetails ID={user[0].MemberID}/>
+                  )}
+                </Row>
               </Col>
+              
               {/* Members Media */}
               <Col style={{ paddingLeft: "1.5rem", maxHeight: "60vh", overflow: "auto" }}>
                 <div className="content-panel">
