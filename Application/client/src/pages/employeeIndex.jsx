@@ -14,6 +14,7 @@ import LoginCard from "../components/Login-Card/LoginCard";
 import WishlistFrontEndSevice from "../services/storefront/wishlistFrontEndSevice";
 import moment from "moment";
 import MemberAccountDetails from "../components/Member-Account-Details/MemberAccountDetails";
+import MemberMediaHistory from "../components/Member-Media-History/MemberMediaHistory";
 
 const EmployeeIndexPage = () => {
   const mediaFrontEndService = new MediaFrontEndService();
@@ -428,107 +429,37 @@ const EmployeeIndexPage = () => {
             {/* Member section */}
             <Row className="g-0">
               <h3>Member</h3>
-              <Col className="p-0" style={{ paddingRight: "1.5rem" }}>
+              <Row className="g-0 pb-3">
                 <span><strong>Enter members email address</strong></span>
                 <Form className="d-flex align-items-center">
-                  <div className="search-wrapper d-flex">
-                    <Form.Control
-                      type="text"
-                      placeholder="jane.doe@example.com"
-                      className="search-input"
-                      value={searchEmail}
-                      onChange={handleEmailInputChange}
-                    />
-                    <Button
-                      className="button-secondary me-2"
-                      style={{ borderRadius: "0 5px 5px 0" }}
-                      onClick={fetchUserData}
-                    >
-                      Search Member
-                    </Button>
-                  </div>
-                </Form>
-                <br />
-                <Row className="g-0">
-                  {user[0]!="" && (
-                    <MemberAccountDetails ID={user[0].MemberID}/>
-                  )}
+                    <div className="search-wrapper d-flex">
+                      <Form.Control
+                        type="text"
+                        placeholder="jane.doe@example.com"
+                        className="search-input"
+                        value={searchEmail}
+                        onChange={handleEmailInputChange}
+                      />
+                      <Button
+                        className="button-secondary me-2"
+                        style={{ borderRadius: "0 5px 5px 0" }}
+                        onClick={fetchUserData}
+                      >
+                        Search Member
+                      </Button>
+                    </div>
+                  </Form>
+              </Row>
+              {user[0]!="" && (
+                <Row>
+                  <Col className="p-0" style={{ paddingRight: "1.5rem" }}>
+                      <MemberAccountDetails ID={user[0].MemberID}/>
+                  </Col>
+                  <Col style={{ paddingLeft: "1.5rem" }}>
+                    <MemberMediaHistory ID={user[0].MemberID}/>
+                  </Col>
                 </Row>
-              </Col>
-
-              {/* Members Media */}
-              <Col style={{ paddingLeft: "1.5rem", maxHeight: "60vh", overflow: "auto" }}>
-                <div className="content-panel">
-                  <Table hover className="aml-table">
-                    <thead>
-                      <tr>
-                        <th>Product</th>
-                        <th>Rent Details</th>
-                        <th>Days Remaining</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {userMediaHistory.map((item, index) => {
-                        const returnMessage = item.ActualReturn
-                          ? item.ActualReturn
-                          : 'Not returned yet'
-
-                        const checkDateAndDifference = (returnDate) => {
-                          const today = moment(); 
-                          const firstDate = moment(returnDate, 'YYYY-MM-DD');
-                          const isBeforeToday = firstDate.isBefore(today, 'day'); 
-                          const differenceInDays = firstDate.diff(today, 'days'); 
-                          return {
-                              isBeforeToday,
-                              differenceInDays,
-                          };
-                        };
-
-                        const result = checkDateAndDifference(item.RentEnd);
-                        const remainingDays = result.differenceInDays;
-                        const isBeforeToday = result.isBeforeToday;
-
-                        let remainingMessage = '';
-                        let spanStyle = '';
-                        if (item.Active === 1 && isBeforeToday) {
-                          remainingMessage = `Overdue: ${remainingDays}`;
-                          spanStyle = 'highlight-red-outline'
-                        } 
-                        if (item.Active === 0) {
-                          remainingMessage = `Returned ${item.ActualReturn}`;
-                          spanStyle = 'highlight-primary'
-                        }
-                        if (item.Active === 1 && !isBeforeToday) {
-                          remainingMessage = `Left: ${remainingDays}`;
-                          spanStyle = 'highlight-primary-outline'
-                        }
-                        
-                        return (
-                          <tr key={index} style={{ verticalAlign: "middle" }}>
-                            <td>
-                              <span>
-                                ID: {item.MediaID}
-                              </span>
-                            </td>
-                            <td>
-                              <span>
-                                Start: {item.RentStart} <br />
-                                Return: {item.RentEnd} <br />
-                              </span>
-                            </td>
-                            <td>
-                              <span className={spanStyle}>
-                                {remainingMessage}
-                              </span>
-                              
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </Table>
-                </div>
-              </Col>
+              )}
             </Row>
 
             {/* Media section */}
