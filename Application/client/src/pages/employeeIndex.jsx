@@ -38,6 +38,7 @@ const EmployeeIndexPage = () => {
   const [totalTokenCost, setTotalTokenCost] = useState(0);
   const [confirmation, setConfirmation] = useState(false);
   const [transactionID, setTransactionID] = useState(null);
+  const [userMediaHistory, setUserMediaHistory] = useState([]);
 
   const today = new Date();
   const startDate = today.toLocaleDateString("en-GB").split("/").join("-");
@@ -159,10 +160,12 @@ const EmployeeIndexPage = () => {
       const userData = await memberFrontEndService.get("/readRecords", {
         Email: searchEmail,
       });
+      console.log(userData);
       if (!userData) {
         alert('No member with that email');
         userData.data[0] = "";
         userData.data[1] = "";
+        return;
       } else {
         var convertedDate = new Date(userData.data[0].RegisterDate);
         convertedDate = convertedDate
@@ -171,10 +174,14 @@ const EmployeeIndexPage = () => {
           .join("-");
         userData.data[0].RegisterDate = convertedDate;
       }
-
       const userBranch = await fetchUserBranch(userData.data[0].BranchID);
       userData.data.push(userBranch.data[0]);
       setUserDetails(userData.data);
+
+      const userMediaHistory = await mediaHistoryFrontEndService.get("/readRecords", {
+        MemberID: userData.data[0].MemberID,
+      });
+      setUserMediaHistory(userMediaHistory.data);
     } catch (error) {
       console.error("Error during search: ", error);
     }
@@ -418,8 +425,8 @@ const EmployeeIndexPage = () => {
             {/* Member section */}
             <Row className="g-0">
               <h3>Member</h3>
-              <div className="content-panel">
-                <Col className="justify-content-center">
+              <Col className="p-0" style={{ paddingRight: "1.5rem" }}>
+                <div className="content-panel">
                   <span><strong>Enter members email address</strong></span>
                   <Form className="d-flex align-items-center">
                     <div className="search-wrapper d-flex">
@@ -439,29 +446,102 @@ const EmployeeIndexPage = () => {
                       </Button>
                     </div>
                   </Form>
-                </Col>
-                <br />
-                <Row>
-                  {user[0]!="" && (
-                    <span>
-                    <strong>Account Details</strong> <br />
-                    Name: {[user[0].FirstName || "Firstname", " ", user[0].Surname || "Surname",]} <br />
-                    Email: {user[0].Email || "Email address"} <br />
-                    Register Date: {user[0].RegisterDate} <br />
-                    <br />
-                    <strong>Home Address</strong> <br />
-                    {user[0].FirstLineAddress || "First Line Address"} <br />
-                    {user[0].City || "City"} <br />
-                    {user[0].Postcode || "Postcode"} <br />
-                    <br />
-                    <strong>Current Branch</strong> <br />
-                    {user[1].FirstLineAddress || "First Line Address"} <br />
-                    {user[1].City || "City"} <br />
-                    {user[1].Postcode || "Postcode"} <br />
-                    </span>
-                  )}
-                </Row>
-              </div>
+                  <br />
+                  <Row>
+                    {user[0]!="" && (
+                      <span>
+                      <strong>Account Details</strong> <br />
+                      Name: {[user[0].FirstName || "Firstname", " ", user[0].Surname || "Surname",]} <br />
+                      Email: {user[0].Email || "Email address"} <br />
+                      Register Date: {user[0].RegisterDate} <br />
+                      <br />
+                      <strong>Home Address</strong> <br />
+                      {user[0].FirstLineAddress || "First Line Address"} <br />
+                      {user[0].City || "City"} <br />
+                      {user[0].Postcode || "Postcode"} <br />
+                      <br />
+                      <strong>Current Branch</strong> <br />
+                      {user[1].FirstLineAddress || "First Line Address"} <br />
+                      {user[1].City || "City"} <br />
+                      {user[1].Postcode || "Postcode"} <br />
+                      </span>
+                    )}
+                  </Row>
+                </div>
+              </Col>
+              {/* Members Media */}
+              <Col style={{ paddingLeft: "1.5rem", maxHeight: "60vh", overflow: "auto" }}>
+                <div className="content-panel">
+                  <Table hover className="aml-table">
+                    <thead>
+                      <tr>
+                        <th>Product</th>
+                        <th>Rent Details</th>
+                        <th>Days Remaining</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userMediaHistory.map((item, index) => {
+                        const returnMessage = item.ActualReturn
+                          ? item.ActualReturn
+                          : 'Not returned yet'
+
+                        const checkDateAndDifference = (returnDate) => {
+                          const today = moment(); 
+                          const firstDate = moment(returnDate, 'YYYY-MM-DD');
+                          const isBeforeToday = firstDate.isBefore(today, 'day'); 
+                          const differenceInDays = firstDate.diff(today, 'days'); 
+                          return {
+                              isBeforeToday,
+                              differenceInDays,
+                          };
+                        };
+
+                        const result = checkDateAndDifference(item.RentEnd);
+                        const remainingDays = result.differenceInDays;
+                        const isBeforeToday = result.isBeforeToday;
+
+                        let remainingMessage = '';
+                        let spanStyle = '';
+                        if (item.Active === 1 && isBeforeToday) {
+                          remainingMessage = `Overdue: ${remainingDays}`;
+                          spanStyle = 'highlight-orange-outline'
+                        } 
+                        if (item.Active === 0) {
+                          remainingMessage = `Returned ${item.ActualReturn}`;
+                          spanStyle = 'highlight-primary'
+                        }
+                        if (item.Active === 1 && !isBeforeToday) {
+                          remainingMessage = `Left: ${remainingDays}`;
+                          spanStyle = 'highlight-primary-outline'
+                        }
+                        
+                        return (
+                          <tr key={index} style={{ verticalAlign: "middle" }}>
+                            <td>
+                              <span>
+                                ID: {item.MediaID}
+                              </span>
+                            </td>
+                            <td>
+                              <span>
+                                Start: {item.RentStart} <br />
+                                Return: {item.RentEnd} <br />
+                              </span>
+                            </td>
+                            <td>
+                              <span className={spanStyle}>
+                                {remainingMessage}
+                              </span>
+                              
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </Table>
+                </div>
+              </Col>
             </Row>
 
             {/* Media section */}
@@ -561,6 +641,7 @@ const EmployeeIndexPage = () => {
                     </thead>
                     <tbody>
                       {searchMedia.map((item, index) => {
+                        console.log(item);
                         if (!item.rentLength) {
                           item.rentLength = 7;
                         }
