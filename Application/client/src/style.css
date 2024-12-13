@@ -146,6 +146,8 @@ html, body {
 .highlight-primary-outline,
 .highlight-secondary-outline,
 .highlight-orange-outline,
+.highlight-red-outline,
+.button-red-outline,
 .button-primary,
 .button-secondary,
 .button-primary-outline,
@@ -228,6 +230,22 @@ html, body {
     border: 2px solid orange;
     background-color: white;
     color: orange;
+}
+.highlight-red-outline {
+    border: 2px solid red;
+    background-color: white;
+    color: red;
+}
+
+.button-red-outline {
+    border: 2px solid red;
+    background-color: white;
+    color: red;
+}
+.button-red-outline:hover {
+    border: 2px solid red;
+    background-color: red;
+    color: white;
 }
 
 /* NAVIGATION ---------------------------------------------------------------------------------- */
@@ -401,9 +419,24 @@ a:hover {
 .aml-table tbody tr {
     border-bottom: 2px solid #E0E0E0; 
 }
+.aml-table tbody td {
+    color: var(--secondary);
+}
 
 .aml-table tbody tr:last-child {
     border-bottom: none; 
+}
+
+
+.account-details tr {
+    border-bottom: none;
+    margin: 0;
+}
+.account-details td, 
+.account-details th {
+    color: var(--secondary);
+    padding: 0.2rem;
+    border-bottom: 1px solid #E0E0E0; 
 }
 
 /* PAYMENT CARD -------------------------------------------------------------------------------- */

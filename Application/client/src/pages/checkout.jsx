@@ -12,6 +12,7 @@ import EmailFrontEndService from "../services/notification/emailFrontEndService"
 import LoginCard from "../components/Login-Card/LoginCard";
 import PaymentCard from "../components/Payment-Card/PaymentCard";
 import CountdownTimer from "../components/CountdownTimer";
+import MemberAccountDetails from "../components/Member-Account-Details/MemberAccountDetails";
 
 const CheckoutPage = () => {
   const mediaHistoryFrontEndService = new MediaHistoryFrontEndService();
@@ -300,53 +301,11 @@ const CheckoutPage = () => {
             {!user ? (
               <LoginCard onLoginSuccess={(success) => success} />
             ) : (
-              <div className="content-panel">
-                <Row>
-                  <Col>
-                    <span>
-                      <strong>Account Details</strong>
-                      <br />
-                      Name:{" "}
-                      {[
-                        user.FirstName || "Firstname",
-                        " ",
-                        user.Surname || "Surname",
-                      ]}
-                      <br />
-                      Email: {user.Email}
-                    </span>
-                    <br />
-                    <br />
-                    <span>
-                      <strong>Home Address</strong>
-                      <br />
-                      {user.FirstLineAddress || "First Line Address"}
-                      <br />
-                      {user.City || "City"}, {user.Postcode || "Postcode"}
-                      <br />
-                    </span>
-                  </Col>
-                  <Col
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "flex-end",
-                      alignItems: "flex-end",
-                    }}
-                  >
-                    {!confirmation && (
-                      <Button
-                        className="button-primary-outline"
-                        onClick={removeReservation}
-                        as={Link}
-                        to="/account#account"
-                      >
-                        Edit Account
-                      </Button>
-                    )}
-                  </Col>
-                </Row>
-              </div>
+              <Row>
+                <Col>
+                  <MemberAccountDetails ID={user.MemberID}/>
+                </Col>
+              </Row>
             )}
 
             {/* Order Summary */}

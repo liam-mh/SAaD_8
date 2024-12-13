@@ -13,6 +13,8 @@ import EmailFrontEndService from "../services/notification/emailFrontEndService"
 import LoginCard from "../components/Login-Card/LoginCard";
 import WishlistFrontEndSevice from "../services/storefront/wishlistFrontEndSevice";
 import moment from "moment";
+import MemberAccountDetails from "../components/Member-Account-Details/MemberAccountDetails";
+import MemberMediaHistory from "../components/Member-Media-History/MemberMediaHistory";
 
 const EmployeeIndexPage = () => {
   const mediaFrontEndService = new MediaFrontEndService();
@@ -427,10 +429,9 @@ const EmployeeIndexPage = () => {
             {/* Member section */}
             <Row className="g-0">
               <h3>Member</h3>
-              <Col className="p-0" style={{ paddingRight: "1.5rem" }}>
-                <div className="content-panel">
-                  <span><strong>Enter members email address</strong></span>
-                  <Form className="d-flex align-items-center">
+              <Row className="g-0 pb-3">
+                <span><strong>Enter members email address</strong></span>
+                <Form className="d-flex align-items-center">
                     <div className="search-wrapper d-flex">
                       <Form.Control
                         type="text"
@@ -448,102 +449,17 @@ const EmployeeIndexPage = () => {
                       </Button>
                     </div>
                   </Form>
-                  <br />
-                  <Row>
-                    {user[0]!="" && (
-                      <span>
-                      <strong>Account Details</strong> <br />
-                      Name: {[user[0].FirstName || "Firstname", " ", user[0].Surname || "Surname",]} <br />
-                      Email: {user[0].Email || "Email address"} <br />
-                      Register Date: {user[0].RegisterDate} <br />
-                      <br />
-                      <strong>Home Address</strong> <br />
-                      {user[0].FirstLineAddress || "First Line Address"} <br />
-                      {user[0].City || "City"} <br />
-                      {user[0].Postcode || "Postcode"} <br />
-                      <br />
-                      <strong>Current Branch</strong> <br />
-                      {user[1].FirstLineAddress || "First Line Address"} <br />
-                      {user[1].City || "City"} <br />
-                      {user[1].Postcode || "Postcode"} <br />
-                      </span>
-                    )}
-                  </Row>
-                </div>
-              </Col>
-              {/* Members Media */}
-              <Col style={{ paddingLeft: "1.5rem", maxHeight: "60vh", overflow: "auto" }}>
-                <div className="content-panel">
-                  <Table hover className="aml-table">
-                    <thead>
-                      <tr>
-                        <th>Product</th>
-                        <th>Rent Details</th>
-                        <th>Days Remaining</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {userMediaHistory.map((item, index) => {
-                        const returnMessage = item.ActualReturn
-                          ? item.ActualReturn
-                          : 'Not returned yet'
-
-                        const checkDateAndDifference = (returnDate) => {
-                          const today = moment(); 
-                          const firstDate = moment(returnDate, 'YYYY-MM-DD');
-                          const isBeforeToday = firstDate.isBefore(today, 'day'); 
-                          const differenceInDays = firstDate.diff(today, 'days'); 
-                          return {
-                              isBeforeToday,
-                              differenceInDays,
-                          };
-                        };
-
-                        const result = checkDateAndDifference(item.RentEnd);
-                        const remainingDays = result.differenceInDays;
-                        const isBeforeToday = result.isBeforeToday;
-
-                        let remainingMessage = '';
-                        let spanStyle = '';
-                        if (item.Active === 1 && isBeforeToday) {
-                          remainingMessage = `Overdue: ${remainingDays}`;
-                          spanStyle = 'highlight-orange-outline'
-                        } 
-                        if (item.Active === 0) {
-                          remainingMessage = `Returned ${item.ActualReturn}`;
-                          spanStyle = 'highlight-primary'
-                        }
-                        if (item.Active === 1 && !isBeforeToday) {
-                          remainingMessage = `Left: ${remainingDays}`;
-                          spanStyle = 'highlight-primary-outline'
-                        }
-                        
-                        return (
-                          <tr key={index} style={{ verticalAlign: "middle" }}>
-                            <td>
-                              <span>
-                                ID: {item.MediaID}
-                              </span>
-                            </td>
-                            <td>
-                              <span>
-                                Start: {item.RentStart} <br />
-                                Return: {item.RentEnd} <br />
-                              </span>
-                            </td>
-                            <td>
-                              <span className={spanStyle}>
-                                {remainingMessage}
-                              </span>
-                              
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </Table>
-                </div>
-              </Col>
+              </Row>
+              {user[0]!="" && (
+                <Row>
+                  <Col className="p-0" style={{ paddingRight: "1.5rem" }}>
+                      <MemberAccountDetails ID={user[0].MemberID}/>
+                  </Col>
+                  <Col style={{ paddingLeft: "1.5rem" }}>
+                    <MemberMediaHistory ID={user[0].MemberID}/>
+                  </Col>
+                </Row>
+              )}
             </Row>
 
             {/* Media section */}
