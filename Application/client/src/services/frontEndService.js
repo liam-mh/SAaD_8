@@ -67,10 +67,12 @@ class FrontEndService {
   /**
    * Perform a PUT request.
    * @param {string} path - The service endpoint path.
-   * @param {object} body - The request payload.
+   * @param {object} fields - The fields to update.
+   * @param {Boolean} shouldReturn - If the update should return the affected rows.
    * @returns {Promise<object>} - The API response.
    */
-  async put(path, body) {
+  async put(path, fields, shouldReturn=false) {
+    const body = {fields, shouldReturn};
     const url = `${this.baseRoute}${path}`;
     try {
       return await fetchFromApiGateway(url, {

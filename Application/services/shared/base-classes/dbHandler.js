@@ -221,10 +221,9 @@ class DbHandler {
       if (dataObject.Password) {
         whereClause = this.#getUniqueKeys(dataObject);
         queryOptions.where = whereClause;
-      } 
+      }
       // Other reads.
-      else 
-      {
+      else {
         whereClause = {};
 
         for (const [key, value] of Object.entries(dataObject)) {
@@ -268,17 +267,28 @@ class DbHandler {
    * Update a record based on relative dataObject's properties and its unique keys.
    *
    * @param {Object} dataObject - Object containing properties for the update.
+   * @param {Boolean} - MySQL doesn't allow return from update so use flag to find record if needed.
    * @returns {Promise<Object>} - Resolves to an object representing the updated record.
    */
-  async updateByQuery(dataObject) {
+  async updateByQuery(dataObject, shouldReturn = false) {
     try {
       const whereClause = this.#getUniqueKeys(dataObject);
- 
-      return await this.model.update(dataObject, {
+
+      const [affectedCount] = await this.model.update(dataObject, {
         validate: true,
         where: whereClause,
-        returning: true,
+        returning: true
       });
+
+      if (shouldReturn) {
+        const primaryKeyField = this.model.primaryKeyAttribute; 
+        const primaryKeyValue = dataObject[primaryKeyField];
+        const affectedRow = await this.model.findOne({
+          where: { [primaryKeyField]: primaryKeyValue }
+        });
+        return[affectedRow, affectedCount]
+      }
+      return [null, affectedCount];
     } catch (error) {
       this.#handleError(error);
     }

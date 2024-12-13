@@ -89,16 +89,23 @@ const EmployeeIndexPage = () => {
           HistoryID: historyID,
           Active: 0,
           ActualReturn: moment().format("YYYY-MM-DD"),
-        }
+        },
+        true
       );
-      if (returnedMedia.status === 200) {
+      alert('return Success');
+      setHistoryID("");
+
+      const media = await mediaFrontEndService.get("/readrecords", {
+        MediaID: returnedMedia.data[0].MediaID
+      })
+      if (media.status === 200) {
         const wishlist = await wishlistFrontEndSevice.get("/readRecords", {
-          Title: returnedMedia.data.Title,
-          Type: returnedMedia.data.Type,
+          Title: media.data[0].Title,
+          Type: media.data[0].Type,
         });
-        if (wishlist.data.length > 0) {
-          const member = await memberFrontEndService.handleMembersWishlist(
-            wishlist.data
+        if (wishlist !== null) {
+          await memberFrontEndService.handleMembersWishlist(
+            wishlist.data,
           );
         }
       }
