@@ -159,7 +159,6 @@ const EmployeeIndexPage = () => {
       const userData = await memberFrontEndService.get("/readRecords", {
         Email: searchEmail,
       });
-      console.log('USER DATA', userData);
       if (!userData) {
         alert('No member with that email');
         userData.data[0] = "";
@@ -417,7 +416,7 @@ const EmployeeIndexPage = () => {
         ) : (
           <>
             {/* Member section */}
-            <Row>
+            <Row className="g-0">
               <h3>Member</h3>
               <div className="content-panel">
                 <Col className="justify-content-center">
@@ -463,96 +462,13 @@ const EmployeeIndexPage = () => {
                   )}
                 </Row>
               </div>
-              {/* User's basket */}
-              <Col>
-                <div
-                  className="content-panel"
-                  style={{ height: "40vh", overflowY: "auto" }}
-                >
-                  <h4 id="order" className="mt-3">
-                    Order Summary
-                  </h4>
-                  <Table hover className="aml-table">
-                    <thead>
-                      <tr>
-                        <th>Remove</th>
-                        <th>Product</th>
-                        <th>Rent Details</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {basket.map((item, index) => {
-                        const deliveryMessage =
-                          item.deliveryMethod === "collect"
-                            ? `In-Store Collection from ${item.branch.Postcode}`
-                            : `Home Delivery to ${
-                                user[0].Postcode || "Unknown Address"
-                              }`;
-                        return (
-                          <tr key={index} style={{ verticalAlign: "middle" }}>
-                            <td>
-                              <div>
-                                <Button
-                                  variant="danger"
-                                  onClick={(e) => handleRemoveFromBasket(e, item)}
-                                >
-                                  X
-                                </Button>
-                              </div>
-                            </td>
-                            <td>
-                              <span>
-                                ID: {item.MediaID}
-                                <br />
-                                <strong>{item.Title}</strong>
-                                <br />
-                                Format: {item.Type}
-                                <br />
-                                Subtotal: {item.tokens} tokens
-                              </span>
-                            </td>
-                            <td>
-                              <span>
-                                Start: {startDate}
-                                <br />
-                                Return: {item.returnDate}
-                                <br />
-                                Delivery: {deliveryMessage}
-                              </span>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </Table>
-                </div>
-                <br />
-                {basket.length > 0 && (
-                  <div
-                    className="content-panel"
-                    style={{
-                      height: "5vh",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div style={{ textAlign: "left" }}>
-                      <h4>Total cost: {totalTokenCost} tokens</h4>
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <Button className="button-primary" onClick={handleCheckout}>
-                        Checkout User's Basket
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </Col>
             </Row>
-            <Row>
-              <h3>Media</h3>
+
+            {/* Media section */}
+            <Row >
+              <h3 className="pt-3">Media</h3>
               <Col className="justify-content-center">
-                <h1>Search by media ID</h1>
+                <span><strong>Search by MediaID</strong></span>
                 <Form className="d-flex align-items-center">
                   <div className="search-wrapper d-flex">
                     <Form.Control
@@ -573,7 +489,7 @@ const EmployeeIndexPage = () => {
                 </Form>
               </Col>
               <Col className="justify-content-center">
-                <h1>Search by media title</h1>
+                <span><strong>Search by Media title</strong></span>
                 <Form className="align-items-center">
                   <div className="search-wrapper d-flex">
                     <Form.Control
@@ -603,7 +519,7 @@ const EmployeeIndexPage = () => {
                 </Form>
               </Col>
               <Col className="justify-content-center">
-                <h1> Return Media</h1>
+                <span><strong>Return Media by HistoryID</strong></span>
                 <Form className="d-flex align-items-center">
                   <div className="search-wrapper d-flex">
                     <Form.Control
@@ -624,16 +540,12 @@ const EmployeeIndexPage = () => {
                 </Form>
               </Col>
             </Row>
-            {/* Searched media */}
-            <Row>
-              <Col>
-                <br />
-              </Col>
-            </Row>
+
+            {/* Searched media results */}
             <Row>
               <Col>
                 <div
-                  className="content-panel"
+                  className="content-panel mt-3"
                   style={{ maxHeight: "75vh", overflow: "auto" }}
                 >
                   <Table hover className="aml-table">
@@ -782,24 +694,27 @@ const EmployeeIndexPage = () => {
                                 }}
                               >
                                 {!isAvailable(item.availability) ? (
-                                  <Button className="btn-danger">
-                                    Unavailable
-                                  </Button>
+                                  <span
+                                    style={{ color: "red", paddingRight: "1rem" }}
+                                    Title="Out of stock"
+                                  >
+                                    <i className="bi bi-x-circle-fill"></i>
+                                  </span>
                                 ) : !isInBasket(item.MediaID) ? (
                                   <button
                                     className="button-primary"
                                     onClick={(e) => handleAddToBasket(e, item)}
                                   >
-                                    Add to Basket
+                                    <i className="bi bi-basket"></i>
                                   </button>
                                 ) : (
                                   <button
-                                    className="button-secondary"
+                                    className="button-secondary-outline"
                                     onClick={(e) =>
                                       handleRemoveFromBasket(e, item)
                                     }
                                   >
-                                    Remove from Basket
+                                    <i className="bi bi-x-circle-fill"></i>
                                   </button>
                                 )}
                               </div>
@@ -811,6 +726,84 @@ const EmployeeIndexPage = () => {
                   </Table>
                 </div>
               </Col>
+            </Row>
+
+            {/* Basket */}          
+            <Row className="g-0">
+              <h3 className="pt-3">Basket</h3>
+              <div
+                className="content-panel"
+                style={{ height: "40vh", overflowY: "auto" }}
+              >
+                <h4 id="order" className="mt-3">
+                  Order Summary
+                </h4>
+                <Table hover className="aml-table">
+                  <thead>
+                    <tr>
+                      <th>Remove</th>
+                      <th>Product</th>
+                      <th>Rent Details</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {basket.map((item, index) => {
+                      const deliveryMessage =
+                        item.deliveryMethod === "collect"
+                          ? `In-Store Collection from ${item.branch.Postcode}`
+                          : `Home Delivery to ${
+                              user[0].Postcode || "Unknown Address"
+                            }`;
+                      return (
+                        <tr key={index} style={{ verticalAlign: "middle" }}>
+                          <td>
+                            <div>
+                              <Button
+                                variant="danger"
+                                onClick={(e) => handleRemoveFromBasket(e, item)}
+                              >
+                                X
+                              </Button>
+                            </div>
+                          </td>
+                          <td>
+                            <span>
+                              ID: {item.MediaID}
+                              <br />
+                              <strong>{item.Title}</strong>
+                              <br />
+                              Format: {item.Type}
+                              <br />
+                              Subtotal: {item.tokens} tokens
+                            </span>
+                          </td>
+                          <td>
+                            <span>
+                              Start: {startDate}
+                              <br />
+                              Return: {item.returnDate}
+                              <br />
+                              Delivery: {deliveryMessage}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+                {basket.length > 0 && (
+                  <>
+                    <div style={{ textAlign: "right" }}>
+                      <h4>Total cost: {totalTokenCost} tokens</h4>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <Button className="button-primary" onClick={handleCheckout}>
+                        Checkout User's Basket
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </div>
             </Row>
           </>
         )}
