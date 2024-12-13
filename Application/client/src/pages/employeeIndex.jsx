@@ -208,17 +208,19 @@ const EmployeeIndexPage = () => {
 
       basket.map(async (item) => {
         try {
-          const returnDate = formatDateForDB(item.returnDate);
-          await mediaHistoryFrontEndService.post("/createRecord", {
+          const startDateFormatted = formatDateForDB(startDate);
+          const returnDateFormatted = formatDateForDB(item.returnDate);
+          const res = await mediaHistoryFrontEndService.post("/createRecord", {
             MediaID: item.MediaID,
             MemberID: user[0].MemberID,
             BranchID: item.branch.BranchID,
-            EmployeeID: null,
-            Active: 0,
-            RentStart: startDate,
-            RentEnd: returnDate,
+            EmployeeID: employee.EmployeeID,
+            Active: 1,
+            RentStart: startDateFormatted,
+            RentEnd: returnDateFormatted,
             ActualReturn: null,
           });
+          console.log(res);
         } catch (error) {
           console.error("Error while writing to media history table: ", error);
         }
@@ -641,7 +643,6 @@ const EmployeeIndexPage = () => {
                     </thead>
                     <tbody>
                       {searchMedia.map((item, index) => {
-                        console.log(item);
                         if (!item.rentLength) {
                           item.rentLength = 7;
                         }
