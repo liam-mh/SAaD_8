@@ -47,9 +47,6 @@ Container(notificationService, "Notifcation Service", "Node.js/Express.js", "Han
 Container(authService, "Authentication Service", "Node.js/Express", "Handles authentication requests", $tags="backendAPI")
 
 ContainerDb(amlDB, "AML Database", "Azure MySQL", "Stores all tables the system requires e.g. media data, member data, renting data.", $tags="database")
-
-Container(externalAPIGateway, "External API Gateway", "Node.js", "Manages external communication with payment systems, notifications and external vendors.", $tags="apiGateway", $baseShape="hexagon")
-
 }
 
 
@@ -111,16 +108,16 @@ Rel(esb, backendAPIInventory, "Routes requests related to media inventory, procu
 
 'Relationships - Storefront Service '
 Rel(backendAPIStorefront, amlDB, "Read/write media data ", $tags="Relationship")
-Rel(backendAPIStorefront, externalAPIGateway, "Communicates with external systems for payments ", $tags="Relationship")
+Rel(backendAPIStorefront, paymentGateway, "Communicates with external systems for payments ", $tags="Relationship")
 
 
 'Relationships - Account Service '
 Rel(backendAPIAccount, amlDB, "Read/write user data ", $tags="Relationship")
 
 
-'Relationships - Inventory Service '
+'Relationships - Procurement Service '
 Rel(backendAPIInventory, amlDB, "Read/write inventory data ", $tags="Relationship")
-Rel(backendAPIInventory, externalAPIGateway, "Communicate with external systems for media procurement ", $tags="Relationship")
+Rel(backendAPIInventory, vendorSystem, "Communicate with external systems for media procurement ", $tags="Relationship")
 
 
 ' Relationships - Notifcation Service '
@@ -130,14 +127,6 @@ Rel(notificationService, smsSys, "Sends subscription and media notifications via
 
 ' Relationships - Auth Service '
 Rel_D(authService, 2faSys, "Handles 2fa when signing into an account", $tags="Relationship")
-
-'Relationships - Database '
-Rel_D(amlDB, externalAPIGateway, " ", $tags="Invisible")
-
-
-' Relationships - External Systems '
-Rel(externalAPIGateway, vendorSystem, "Procure media resources ", $tags="Relationship")
-Rel(externalAPIGateway, paymentGateway, "Processes payments for subscriptions ", $tags="Relationship")
 
 
 SHOW_LEGEND(true)
