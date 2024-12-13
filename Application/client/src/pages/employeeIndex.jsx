@@ -159,7 +159,9 @@ const EmployeeIndexPage = () => {
       const userData = await memberFrontEndService.get("/readRecords", {
         Email: searchEmail,
       });
-      if (!userData.data[0]) {
+      console.log('USER DATA', userData);
+      if (!userData) {
+        alert('No member with that email');
         userData.data[0] = "";
         userData.data[1] = "";
       } else {
@@ -414,19 +416,12 @@ const EmployeeIndexPage = () => {
           />
         ) : (
           <>
+            {/* Member section */}
             <Row>
-              <Col>
-                <br />
-              </Col>
-            </Row>
-            <Row>
-              {/* User info */}
+              <h3>Member</h3>
               <div className="content-panel">
                 <Col className="justify-content-center">
-                  <br />
-                  <h4>
-                    <b>Enter user's email address</b>
-                  </h4>
+                  <span><strong>Enter members email address</strong></span>
                   <Form className="d-flex align-items-center">
                     <div className="search-wrapper d-flex">
                       <Form.Control
@@ -441,59 +436,31 @@ const EmployeeIndexPage = () => {
                         style={{ borderRadius: "0 5px 5px 0" }}
                         onClick={fetchUserData}
                       >
-                        Search
+                        Search Member
                       </Button>
                     </div>
                   </Form>
                 </Col>
                 <br />
                 <Row>
-                  <Col className="d-flex">
+                  {user[0]!="" && (
                     <span>
-                      <strong>Account Details</strong>
-                      <br />
-                      Name: <br />{" "}
-                      {[
-                        user[0].FirstName || "Firstname",
-                        " ",
-                        user[0].Surname || "Surname",
-                      ]}
-                      <br />
-                      Email: <br /> {user[0].Email || "Email address"}
-                    </span>
-                  </Col>
-                  <Col classsName="d-flex">
+                    <strong>Account Details</strong> <br />
+                    Name: {[user[0].FirstName || "Firstname", " ", user[0].Surname || "Surname",]} <br />
+                    Email: {user[0].Email || "Email address"} <br />
+                    Register Date: {user[0].RegisterDate} <br />
                     <br />
-                    Register Date: <br /> {user[0].RegisterDate}
-                  </Col>
-                </Row>
-                <br />
-                <br />
-                <Row>
-                  <Col>
-                    <span>
-                      <strong>Home Address</strong>
-                      <br />
-                      {user[0].FirstLineAddress || "First Line Address"}
-                      <br />
-                      {user[0].City || "City"}
-                      <br />
-                      {user[0].Postcode || "Postcode"}
-                      <br />
+                    <strong>Home Address</strong> <br />
+                    {user[0].FirstLineAddress || "First Line Address"} <br />
+                    {user[0].City || "City"} <br />
+                    {user[0].Postcode || "Postcode"} <br />
+                    <br />
+                    <strong>Current Branch</strong> <br />
+                    {user[1].FirstLineAddress || "First Line Address"} <br />
+                    {user[1].City || "City"} <br />
+                    {user[1].Postcode || "Postcode"} <br />
                     </span>
-                  </Col>
-                  <Col>
-                    <span>
-                      <strong>Current Branch</strong>
-                      <br />
-                      {user[1].FirstLineAddress || "First Line Address"}
-                      <br />
-                      {user[1].City || "City"}
-                      <br />
-                      {user[1].Postcode || "Postcode"}
-                      <br />
-                    </span>
-                  </Col>
+                  )}
                 </Row>
               </div>
               {/* User's basket */}
@@ -583,11 +550,7 @@ const EmployeeIndexPage = () => {
               </Col>
             </Row>
             <Row>
-              <Row>
-                <Col>
-                  <br />
-                </Col>
-              </Row>
+              <h3>Media</h3>
               <Col className="justify-content-center">
                 <h1>Search by media ID</h1>
                 <Form className="d-flex align-items-center">
