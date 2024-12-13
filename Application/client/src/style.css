@@ -401,9 +401,24 @@ a:hover {
 .aml-table tbody tr {
     border-bottom: 2px solid #E0E0E0; 
 }
+.aml-table tbody td {
+    color: var(--secondary);
+}
 
 .aml-table tbody tr:last-child {
     border-bottom: none; 
+}
+
+
+.account-details tr {
+    border-bottom: none;
+    margin: 0;
+}
+.account-details td, 
+.account-details th {
+    color: var(--secondary);
+    padding: 0.2rem;
+    border-bottom: 1px solid #E0E0E0; 
 }
 
 /* PAYMENT CARD -------------------------------------------------------------------------------- */
