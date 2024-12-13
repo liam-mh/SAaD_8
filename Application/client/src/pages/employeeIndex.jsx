@@ -455,7 +455,7 @@ const EmployeeIndexPage = () => {
                   )}
                 </Row>
               </Col>
-              
+
               {/* Members Media */}
               <Col style={{ paddingLeft: "1.5rem", maxHeight: "60vh", overflow: "auto" }}>
                 <div className="content-panel">
@@ -492,7 +492,7 @@ const EmployeeIndexPage = () => {
                         let spanStyle = '';
                         if (item.Active === 1 && isBeforeToday) {
                           remainingMessage = `Overdue: ${remainingDays}`;
-                          spanStyle = 'highlight-orange-outline'
+                          spanStyle = 'highlight-red-outline'
                         } 
                         if (item.Active === 0) {
                           remainingMessage = `Returned ${item.ActualReturn}`;

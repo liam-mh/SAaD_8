@@ -146,6 +146,7 @@ html, body {
 .highlight-primary-outline,
 .highlight-secondary-outline,
 .highlight-orange-outline,
+.highlight-red-outline,
 .button-red-outline,
 .button-primary,
 .button-secondary,
@@ -229,6 +230,11 @@ html, body {
     border: 2px solid orange;
     background-color: white;
     color: orange;
+}
+.highlight-red-outline {
+    border: 2px solid red;
+    background-color: white;
+    color: red;
 }
 
 .button-red-outline {
