@@ -113,7 +113,8 @@ const handleRoutes = (router, serviceName, resources) => {
 
         router.put(`/${resource}/updateRecord`, async (req, res) => {
             try {
-                const updated = await controllerInstance.updateRecord(req.body);
+                const {fields, shouldReturn} = req.body;
+                const updated = await controllerInstance.updateRecord(fields, shouldReturn);
                 res.status(200).json({ message: 'Record updated successfully', data: updated, status: res.statusCode });
             } catch (error) {
                 console.error(`Error updating record in ${resource}:`, error);
