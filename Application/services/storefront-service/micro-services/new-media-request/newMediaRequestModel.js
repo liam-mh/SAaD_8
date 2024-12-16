@@ -1,6 +1,10 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize');
 
+/**
+ * New media request model.
+ * @author Guy Nicklin
+ */
 const NewMediaRequestModel = sequelize.define('NewMediaRequest', {
   RequestID: {
     type: DataTypes.INTEGER,

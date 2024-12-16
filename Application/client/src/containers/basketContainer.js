@@ -44,7 +44,6 @@ const checkoutBasket = async () => {
       ]
     );
 
-    console.log(transactionCreated.data[0].MemberID);
     //Then update the members account we dont want to charge unless the media is rented.
     if (transactionCreated.status === 201) {
       //This could either be something you save in state or you could do some maths with the start and end dates of returned objects.
@@ -58,7 +57,6 @@ const checkoutBasket = async () => {
             RemainingTokens: remainingTokens,
           }
         );
-        console.log(chargeCustomer);
       } catch (error) {
         console.error("Error charging customer", error);
       }
@@ -68,7 +66,6 @@ const checkoutBasket = async () => {
         "/deleteRecord",
         { HistoryID: 96 }
       ); //Get on creation from transactionCreated.
-      console.log(deleted);
     } else {
       console.error("No data added to rental history");
     }

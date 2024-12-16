@@ -1,9 +1,14 @@
-const FrontEndService = require('../frontEndService');
+import FrontEndService from "../frontEndService";
 
+/**
+ * Front end service for employee logic.
+ * 
+ * @author Guy Nicklin
+ */
 class EmployeeFrontEndService extends FrontEndService{
     constructor() {
         super('/account/employee');
     }
 }
 
-module.exports = new EmployeeFrontEndService();
+export default EmployeeFrontEndService;

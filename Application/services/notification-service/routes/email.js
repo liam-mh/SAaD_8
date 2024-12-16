@@ -1,7 +1,11 @@
-// routes/email.js
 const express = require('express');
 const EmailService = require('../emailService');
 const router = express.Router();
+
+/**
+ * Dfines email route.
+ * @author Guy Nicklin
+ */
 
 const emailService = new EmailService();
 

@@ -1,11 +1,16 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize');
 
+/**
+ * Member subscription model.
+ * 
+ * @author Guy Nicklin
+ */
+
 const MemberSubscriptionModel = sequelize.define('MemberSubscription', {
   MemberID: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    primaryKey: true,
     unique: 'unique_subscription',
     references: {
       model: 'Member',
@@ -17,7 +22,8 @@ const MemberSubscriptionModel = sequelize.define('MemberSubscription', {
   SubscriptionID: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    unique: 'unique_subscription',
+    primaryKey: true,
+    autoIncrement: true,
     references: {
       model: 'Subscription',
       key: 'SubscriptionID',

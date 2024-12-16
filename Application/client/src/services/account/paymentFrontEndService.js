@@ -1,9 +1,14 @@
-const FrontEndService = require('../frontEndService');
+import FrontEndService from "../frontEndService";
 
+/**
+ * Front End service for payment logic.
+ * 
+ * @author Guy Nicklin
+ */
 class PaymentFrontEndService extends FrontEndService{
     constructor() {
         super('/account/payment');
     }
 }
 
-module.exports = new PaymentFrontEndService();
+export default PaymentFrontEndService;

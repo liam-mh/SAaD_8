@@ -4,9 +4,10 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Carousel from 'react-bootstrap/Carousel';
-const mediaFrontEndService = require('../../services/storefront/mediaFrontEndService');
+import MediaFrontEndService from '../../services/storefront/mediaFrontEndService';
 
 function WhatsNewCarousel({ media }) {
+  const mediaFrontEndService = new MediaFrontEndService();
   const dvds = media.filter(item => item.Type === 'DVD');
   const books = media.filter(item => item.Type === 'Book');
   const journals = media.filter(item => item.Type === 'Journal');

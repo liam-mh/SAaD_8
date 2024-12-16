@@ -7,10 +7,10 @@ import Col from 'react-bootstrap/Col';
 const Footer = ({ localBranch = {} }) => {
   const location = useLocation();
   const minimalFooter = 
-    location.pathname === '/checkout';
-  const footerClass = 
-    location.pathname === '/help' || 
+    location.pathname === '/checkout' ||
     location.pathname.startsWith('/employee') 
+  const footerClass = 
+    location.pathname === '/help'
     ? 'footer mt-0' 
     : 'footer';
 
@@ -22,7 +22,7 @@ const Footer = ({ localBranch = {} }) => {
             {/* Help Section */}
             <Col>
               <Row className='pb-2'>
-                <span><strong>Helpful Information</strong></span>
+                <span><strong>Helpful Information <i className="bi bi-info-circle"></i></strong></span>
               </Row>
               <Row>
                 <Col>
@@ -53,7 +53,7 @@ const Footer = ({ localBranch = {} }) => {
             <Col xs={5} className='px-4'>
               <Row className='pb-2'>
                 <Col>
-                  <span><strong>Local Branch</strong></span>
+                  <span><strong>Local Branch <i className="bi bi-shop"></i></strong></span>
                 </Col>
                 <Col className='text-end'>
                   <Link to="/account" className="nav-link-secondary">
@@ -81,7 +81,7 @@ const Footer = ({ localBranch = {} }) => {
             {/* Socials section */}
             <Col>
               <Row className='pb-2'>
-                <span><strong>Stay In Touch</strong></span>
+                <span><strong>Stay In Touch <i className="bi bi-chat-square-heart"></i></strong></span>
               </Row>
               <Row>
                 <Col>

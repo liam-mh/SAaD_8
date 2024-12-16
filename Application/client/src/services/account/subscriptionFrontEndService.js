@@ -1,9 +1,14 @@
-const FrontEndService = require('../frontEndService');
+import FrontEndService from "../frontEndService";
 
+/**
+ * Front end service for Subscription logic.
+ * 
+ * @author Guy Nicklin
+ */
 class SubscriptionFrontEndService extends FrontEndService{
     constructor() {
         super('/account/subscription');
     }
 }
 
-module.exports = new SubscriptionFrontEndService();
+export default SubscriptionFrontEndService;

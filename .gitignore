@@ -33,14 +33,13 @@ logs/
 Thumbs.db
 
 # Editor directories and files
-.vscode/
+#.vscode/ <---- I am incuding this as it has my launch file in it alowing you to debug the tests and run each services tests induvidually.
 .idea/
 *.swp
 *.swo
 
 # Testing
 coverage/
-*.test.js
 *.spec.js
 
 # Misc

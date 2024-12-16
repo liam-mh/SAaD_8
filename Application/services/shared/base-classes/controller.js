@@ -2,6 +2,7 @@ const formatDateFields = require("../utils/dateFormatter");
 
 /**
  * Base controller class.
+ * @author Guy Nicklin
  */
 class Contoller {
   /**
@@ -79,10 +80,11 @@ class Contoller {
    * Update a record based on a unique key.
    * @param {String}
    * @param {Object} newObject - Object of new values.
+   * @param {Boolean} shouldReturn - if the update should also return the record.
    * @returns {Promise<Object>} - Created Records.
    */
-  updateRecord(newObject) {
-    return this.service.updateRecordByQuery(newObject);
+  updateRecord(newObject, shouldReturn=false) {
+    return this.service.updateRecordByQuery(newObject, shouldReturn);
   }
 
   /**

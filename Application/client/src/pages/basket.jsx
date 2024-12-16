@@ -1,11 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { Container, Table, Button, Form } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
-import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
+import MediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
 const BasketPage = () => {
+  const mediaFrontEndService = new MediaFrontEndService();
   const { basket, setBasket, branches, setCheckout } = useContext(SessionContext) || {};
   const [deliveryOptions, setDeliveryOptions] = useState(basket.map(() => 'collect'));
   if (!basket || !branches) {

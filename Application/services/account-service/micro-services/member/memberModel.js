@@ -1,5 +1,13 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize'); 
+const bcrypt = require('bcrypt');
+
+/**
+ * Member model
+ * @author Guy Nicklin
+ */
+
+const SALT_ROUNDS = 10;
 
 const MemberModel = sequelize.define('Member', {
   MemberID: {
@@ -59,6 +67,28 @@ const MemberModel = sequelize.define('Member', {
 }, {
   tableName: 'Member',
   timestamps: false, 
+  hooks: {
+    // Hash on create.
+    beforeCreate: async (member) => {
+      if (member.Password) {
+        const hashedPassword = await bcrypt.hash(member.Password, SALT_ROUNDS);
+        member.Password = hashedPassword;
+      }
+    },
+    // Hash on update.
+    beforeUpdate: async (member) => {
+      if (member.Password) {
+        const hashedPassword = await bcrypt.hash(member.Password, SALT_ROUNDS);
+        member.Password = hashedPassword;
+      }
+    },
+  },
 });
+
+// Hashed password validation.
+MemberModel.prototype.validatePassword = async function (password) {
+  
+  return bcrypt.compare(password, this.Password);
+};
 
 module.exports = MemberModel;

@@ -3,6 +3,7 @@ const DbHandler = require("./dbHandler");
 
 /**
  * Base service class
+ * @author Guy Nicklin
  */
 class Service {
 
@@ -91,10 +92,11 @@ class Service {
      * Update a record in the relative table.
      * 
      * @param {Array} newValues - Array of new values.
+     * @param {Boolean} shouldReturn -if the update should also return the record.
      * @returns 
      */
-    updateRecordByQuery(newValues) {
-        return this.dbHandler.updateByQuery(newValues);
+    updateRecordByQuery(newValues, shouldReturn=false) {
+        return this.dbHandler.updateByQuery(newValues, shouldReturn);
     }
 
     /**

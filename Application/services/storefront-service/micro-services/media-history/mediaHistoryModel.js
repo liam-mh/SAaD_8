@@ -1,6 +1,10 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize');
 
+/**
+ * Media model.
+ * @author Guy Nicklin
+ */
 const MediaHistoryModel = sequelize.define('MediaHistory', {
   HistoryID: {
     type: DataTypes.INTEGER,
