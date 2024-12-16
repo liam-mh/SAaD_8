@@ -46,7 +46,6 @@ const SearchPage = () => {
                     res = await mediaFrontEndService.get('/readRecords', {}, true);
                     setAllDataLoaded(true);
                 }
-                console.log("Media loaded:", res.data);
                 setMedia(res.data);
                 setDisplayMedia(res.data);
             } catch (error) {
@@ -152,24 +151,26 @@ const SearchPage = () => {
             ) : (
                 <Row>
                     <Col xs={2}>
+                        {!preFilterType && (
+                            <Row className="content-panel g-0 mb-4">
+                                <span>
+                                    <strong>Format</strong>
+                                </span>
+                                <Form>
+                                    {formats.map((format) => (
+                                        <FormGroup controlId={`format-${format}`} key={format}>
+                                            <Form.Check
+                                                type="checkbox"
+                                                label={format}
+                                                checked={selectedFormats.includes(format)}
+                                                onChange={() => handleFormatChange(format)}
+                                            />
+                                        </FormGroup>
+                                    ))}
+                                </Form>
+                            </Row>
+                        )}
                         <Row className="content-panel g-0">
-                            <span>
-                                <strong>Format</strong>
-                            </span>
-                            <Form>
-                                {formats.map((format) => (
-                                    <FormGroup controlId={`format-${format}`} key={format}>
-                                        <Form.Check
-                                            type="checkbox"
-                                            label={format}
-                                            checked={selectedFormats.includes(format)}
-                                            onChange={() => handleFormatChange(format)}
-                                        />
-                                    </FormGroup>
-                                ))}
-                            </Form>
-                        </Row>
-                        <Row className="content-panel g-0 mt-4">
                             <span>
                                 <strong>Genre</strong>
                             </span>
