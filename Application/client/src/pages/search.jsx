@@ -133,7 +133,8 @@ const SearchPage = () => {
     return (
         <Container fluid="lg">
             <h1 className="pb-2">
-                Search Results: <strong>{searchTerm || preFilterType+'s'}</strong>
+                Search Results:{' '}
+                <strong>{searchTerm || (preFilterType ? preFilterType + 's' : 'All')}</strong>
             </h1>
             {media.length === 0 ? (
                 <div className="content-panel" style={{ width: 'fit-content' }}>
