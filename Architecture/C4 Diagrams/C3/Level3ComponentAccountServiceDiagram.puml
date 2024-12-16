@@ -26,10 +26,10 @@ Container_Boundary(account, "Account Service") {
     Component(empCtr, "Employee Controller", "Node.js/Express.js", "Manages input for Employee table.", $tags="controller")
     Component(userSubCtr, "MemberSubcription Controller", "Node.js/Express.js", "Manages input for MemberSubscription table.", $tags="controller")
 
-    Component(usrService, "Member Service", "Node.js/Express.js", "Provides account creation, member sign-in and security functionality.", $tags="service")
+    Component(usrService, "Member Service", "Node.js/Express.js", "Provides account creation and member sign-in functionality.", $tags="service")
     Component(paymentService, "Payment Service", "Node.js/Express.js", "Handles management of payment details.", $tags="service")
     Component(subService, "Subscription Service", "Node.js/Express.js", "Handles management of subscriptions.", $tags="service")
-    Component(empService, "Employee Service", "Node.js/Express.js", "Provides sign-in and security functionality for employees.", $tags="service")
+    Component(empService, "Employee Service", "Node.js/Express.js", "Provides sign-in functionality for employees.", $tags="service")
     Component(usrSubService, "MemberSubscription Service", "Node.js/Express.js", "Handles relations between members, subscriptions and payments.", $tags="service")
 
     Component(usrModel, "Member Model", "Node.js/Express.js", "Represents the member table.", $tags="model")
@@ -55,25 +55,25 @@ Rel(routeHandler, empCtr, "Handles API calls for employee related functionality"
 Rel(routeHandler, userSubCtr, "Handles API calls for specific member subscription and payment functionality", $tags="Relationship")
 
 ' Relationships - Internal - Controller to Service '
-Rel(usrCtr, usrService, " ", $tags="Relationship")
-Rel(paymentCtr, paymentService, " ", $tags="Relationship")
-Rel(subscriptionCtr, subService, " ", $tags="Relationship")
-Rel(userSubCtr, usrSubService, " ", $tags="Relationship")
-Rel(empCtr, empService, " ", $tags="Relationship")
+Rel(usrCtr, usrService, "Has instance of ", $tags="Relationship")
+Rel(paymentCtr, paymentService, "Has instance of ", $tags="Relationship")
+Rel(subscriptionCtr, subService, "Has instance of ", $tags="Relationship")
+Rel(userSubCtr, usrSubService, "Has instance of ", $tags="Relationship")
+Rel(empCtr, empService, "Has instance of ", $tags="Relationship")
 
-' Relationships - Internal - Service to Model '
-Rel(usrService, usrModel, " ", $tags="Relationship")
-Rel(paymentService, paymentModel, " ", $tags="Relationship")
-Rel(subService, subModel, " ", $tags="Relationship")
-Rel(empService, empModel, " ", $tags="Relationship")
-Rel(usrSubService, usrSubModel, " ", $tags="Relationship")
+' Relationships - Internal - Service to Repo '
+Rel(usrService, userRepo, "Has instance of ", $tags="Relationship")
+Rel(paymentService, paymentRepo, "Has instance of ", $tags="Relationship")
+Rel(subService, subRepo, "Has instance of ", $tags="Relationship")
+Rel(empService, employeeRepo, "Has instance of ", $tags="Relationship")
+Rel(usrSubService, userSubRepo, "Has instance of ", $tags="Relationship")
 
-' Relationships - Internal - Model to Repo '
-Rel(usrModel, userRepo, " ", $tags="Relationship")
-Rel(paymentModel, paymentRepo, " ", $tags="Relationship")
-Rel(subModel, subRepo, " ", $tags="Relationship")
-Rel(empModel, employeeRepo, " ", $tags="Relationship")
-Rel(usrSubModel, userSubRepo, " ", $tags="Relationship")
+' Relationships - Internal - Repo to Model '
+Rel(usrModel, userRepo, "Has instance of ", $tags="Relationship")
+Rel(paymentModel, paymentRepo, "Has instance of ", $tags="Relationship")
+Rel(subModel, subRepo, "Has instance of ", $tags="Relationship")
+Rel(empModel, employeeRepo, "Has instance of ", $tags="Relationship")
+Rel(usrSubModel, userSubRepo, "Has instance of ", $tags="Relationship")
 
 ' Relationships - Internal - Repo to Database '
 Rel(userRepo, database, "CRUD operations on Member table", $tags="Relationship")

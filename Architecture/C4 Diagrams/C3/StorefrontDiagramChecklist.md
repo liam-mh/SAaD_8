@@ -60,8 +60,8 @@
 
 ## Relationships
 - **Does every line have a label describing the intent of that relationship?**  
-  - [ ] Yes  
-  - [X] No  
+  - [X] Yes  
+  - [ ] No  
 
 - **Does the description match the relationship direction?**  
   - [X] Yes  

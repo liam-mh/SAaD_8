@@ -35,7 +35,7 @@ Container_Boundary(storefront, "Storefront Service") {
     Component(mediaModel, "Media Model", "Node.js/Express.js", "Represents the media table.", $tags="model")
     Component(branchModel, "Branch Model", "Node.js/Express.js", "Represents the branch table.", $tags="model")
     Component(mediaHistModel, "MediaHistory Model", "Node.js/Express.js", "Represents the media-history table.", $tags="model")
-    Component(mediaReqModel, "NewMediaRequest Model", "Node.js/Express.js", "Represents the new-media-request table.", $tags="model")
+    Component(mediaReqModel, "NewMediaRequest Model", "Node.js/Express.js", "Represents the NewMediaRequest table.", $tags="model")
     Component(wishlistModel, "Wishlist Model", "Node.js/Express.js", "Represents the wishlist table.", $tags="model")
 
     Component(mediaRepo, "Media DB Handler", "Node.js/Express.js", "Handles SQL statements for media details.", $tags="repo")
@@ -55,25 +55,25 @@ Rel(routeHandler, mediaReqCtr, "Handles API calls for requesting new media ", $t
 Rel(routeHandler, wishlistCtr, "Handles API calls for media wishlist functionality ", $tags="Relationship")
 
 ' Relationships - Internal - Controller to Service '
-Rel(mediaCtr, mediaService, " ", $tags="Relationship")
-Rel(branchCtr, branchService, " ", $tags="Relationship")
-Rel(mediaHistCtr, mediaHistService, " ", $tags="Relationship")
-Rel(wishlistCtr, wishlistService, " ", $tags="Relationship")
-Rel(mediaReqCtr, mediaReqService, " ", $tags="Relationship")
+Rel(mediaCtr, mediaService, "Has instance of ", $tags="Relationship")
+Rel(branchCtr, branchService, "Has instance of ", $tags="Relationship")
+Rel(mediaHistCtr, mediaHistService, "Has instance of ", $tags="Relationship")
+Rel(wishlistCtr, wishlistService, "Has instance of ", $tags="Relationship")
+Rel(mediaReqCtr, mediaReqService, "Has instance of ", $tags="Relationship")
 
-' Relationships - Internal - Service to Model '
-Rel(mediaService, mediaModel, " ", $tags="Relationship")
-Rel(branchService, branchModel, " ", $tags="Relationship")
-Rel(mediaHistService, mediaHistModel, " ", $tags="Relationship")
-Rel(mediaReqService, mediaReqModel, " ", $tags="Relationship")
-Rel(wishlistService, wishlistModel, " ", $tags="Relationship")
+' Relationships - Internal - Service to Repo '
+Rel(mediaService, mediaRepo, "Has instance of ", $tags="Relationship")
+Rel(branchService, branchRepo, "Has instance of ", $tags="Relationship")
+Rel(mediaHistService, mediaHistRepo, "Has instance of ", $tags="Relationship")
+Rel(mediaReqService, mediaReqRepo, "Has instance of ", $tags="Relationship")
+Rel(wishlistService, wishlistRepo, "Has instance of ", $tags="Relationship")
 
-' Relationships - Internal - Model to Repo '
-Rel(mediaModel, mediaRepo, " ", $tags="Relationship")
-Rel(branchModel, branchRepo, " ", $tags="Relationship")
-Rel(mediaHistModel, mediaHistRepo, " ", $tags="Relationship")
-Rel(mediaReqModel, mediaReqRepo, " ", $tags="Relationship")
-Rel(wishlistModel, wishlistRepo, " ", $tags="Relationship")
+' Relationships - Internal - Repo to Model '
+Rel(mediaModel, mediaRepo, "Has instance of ", $tags="Relationship")
+Rel(branchModel, branchRepo, "Has instance of ", $tags="Relationship")
+Rel(mediaHistModel, mediaHistRepo, "Has instance of ", $tags="Relationship")
+Rel(mediaReqModel, mediaReqRepo, "Has instance of ", $tags="Relationship")
+Rel(wishlistModel, wishlistRepo, "Has instance of ", $tags="Relationship")
 
 ' Relationships - Internal - Repo to Database '
 Rel(mediaRepo, database, "CRUD operations on Media table ", $tags="Relationship")
