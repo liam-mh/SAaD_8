@@ -46,7 +46,6 @@ const SearchPage = () => {
                     res = await mediaFrontEndService.get('/readRecords', {}, true);
                     setAllDataLoaded(true);
                 }
-                console.log("Media loaded:", res.data);
                 setMedia(res.data);
                 setDisplayMedia(res.data);
             } catch (error) {
@@ -133,7 +132,8 @@ const SearchPage = () => {
     return (
         <Container fluid="lg">
             <h1 className="pb-2">
-                Search Results: <strong>{searchTerm || preFilterType+'s'}</strong>
+                Search Results:{' '}
+                <strong>{searchTerm || (preFilterType ? preFilterType + 's' : 'All')}</strong>
             </h1>
             {media.length === 0 ? (
                 <div className="content-panel" style={{ width: 'fit-content' }}>
@@ -151,24 +151,26 @@ const SearchPage = () => {
             ) : (
                 <Row>
                     <Col xs={2}>
+                        {!preFilterType && (
+                            <Row className="content-panel g-0 mb-4">
+                                <span>
+                                    <strong>Format</strong>
+                                </span>
+                                <Form>
+                                    {formats.map((format) => (
+                                        <FormGroup controlId={`format-${format}`} key={format}>
+                                            <Form.Check
+                                                type="checkbox"
+                                                label={format}
+                                                checked={selectedFormats.includes(format)}
+                                                onChange={() => handleFormatChange(format)}
+                                            />
+                                        </FormGroup>
+                                    ))}
+                                </Form>
+                            </Row>
+                        )}
                         <Row className="content-panel g-0">
-                            <span>
-                                <strong>Format</strong>
-                            </span>
-                            <Form>
-                                {formats.map((format) => (
-                                    <FormGroup controlId={`format-${format}`} key={format}>
-                                        <Form.Check
-                                            type="checkbox"
-                                            label={format}
-                                            checked={selectedFormats.includes(format)}
-                                            onChange={() => handleFormatChange(format)}
-                                        />
-                                    </FormGroup>
-                                ))}
-                            </Form>
-                        </Row>
-                        <Row className="content-panel g-0 mt-4">
                             <span>
                                 <strong>Genre</strong>
                             </span>
