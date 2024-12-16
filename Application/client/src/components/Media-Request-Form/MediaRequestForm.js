@@ -15,6 +15,7 @@ const MediaRequestForm = ({ MemberID }) => {
   const [mediaReason, setReason] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [alreadyInDB, setAlreadyInDB] = useState(false);
+  const [alreadyRequested, setAlreadyRequested] = useState(false);
 
   const handleSubmission = async (e) => {
     e.preventDefault();
@@ -24,15 +25,20 @@ const MediaRequestForm = ({ MemberID }) => {
       return;
     }
 
-    // Check if already exists in Media
     try {
       const allItems = await mediaFrontEndService.get("/readRecords", {
         Title: mediaTitle,
         Type: mediaType,
       });
+      const allRequests = await newMediaRequestFrontEndService.get("/readRecords", {
+        Title: mediaTitle,
+        Type: mediaType,
+      });
 
-      if (allItems.data.length > 0) {
+      if (allItems) {
         setAlreadyInDB(true);
+      } else if (allRequests) {
+        setAlreadyRequested(true);
       } else {
         try {
           const response = await newMediaRequestFrontEndService.post(
@@ -86,14 +92,17 @@ const MediaRequestForm = ({ MemberID }) => {
               <MediaCard media={media} isSearchResult={true} />
             </Col>
           </Row>
+        ) : alreadyRequested ? (
+          <span>
+            The media you have requested is already in progress. Thank you for your patience!
+          </span>
         ) : (
           <span>
-            Your media request has been submitted, thank you for the
-            contribution.
+            Your media request has been submitted, thank you for the contribution.
           </span>
         )}
       </div>
-    );
+    );    
   }
 
   return (
