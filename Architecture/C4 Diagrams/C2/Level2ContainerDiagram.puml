@@ -44,7 +44,7 @@ Container_Boundary(inventory, "Procurement Service ") {
 }
 
 Container(notificationService, "Notifcation Service", "Node.js/Express.js", "Handles notification requests.", $tags="backendAPI")
-Container(authService, "Authentication Service", "Node.js/Express", "Handles authentication requests", $tags="backendAPI")
+Container(authService, "Authentication Service", "Node.js/Express", "Handles authentication requests.", $tags="backendAPI")
 
 ContainerDb(amlDB, "AML Database", "Azure MySQL", "Stores all tables the system requires e.g. media data, member data, renting data.", $tags="database")
 }
@@ -126,7 +126,7 @@ Rel(notificationService, emailSys, "Sends subscription and media notifications v
 Rel(notificationService, smsSys, "Sends subscription and media notifications via SMS ", $tags="Relationship")
 
 ' Relationships - Auth Service '
-Rel_D(authService, 2faSys, "Handles 2fa when signing into an account", $tags="Relationship")
+Rel_D(authService, 2faSys, "Authenticates with", $tags="Relationship")
 
 
 SHOW_LEGEND(true)
