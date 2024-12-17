@@ -87,7 +87,6 @@ const MemberModel = sequelize.define('Member', {
 
 // Hashed password validation.
 MemberModel.prototype.validatePassword = async function (password) {
-  
   return bcrypt.compare(password, this.Password);
 };
 

@@ -64,28 +64,7 @@ class Service {
         return this.dbHandler.autoComplete(chars);
     }
 
-    /**
-     * Reads and returns a single field matching the PK and column from the relative table.
-     * 
-     * @param {Int} primaryKey - Primary key for the record.
-     * @param {String} column - Column to be returned.
-     * @returns 
-     */
-    readFieldByQuery(primaryKey, column) {
-        return this.dbHandler.readByQuery(primaryKey, column);
-    }
-
-    /**
-     * Reads and returns multiple fields based on column identifiers from the relative table.
-     * 
-     * @param {Array} primaryKey - Primary key for the records.
-     * @param {Array} columns - Columns that should be returned.
-     * @returns 
-     */
-    readFieldsByQuery(primaryKey, columns) {
-        return this.dbHandler.readByQuery(primaryKey, columns);
-    }
-
+   
     // ------------------------------------- Update Methods ---------------------------------------------------
 
     /**
@@ -109,30 +88,6 @@ class Service {
      */
     updateRecordsByQuery(primaryKeys, columns, newValues) {
         return this.dbHandler.updateByQuery(primaryKeys, columns, newValues);
-    }
-
-    /**
-     * Update a field in a single record.
-     * 
-     * @param {Int} primaryKey - Primary key of record containing field to be updated.
-     * @param {String} field - Field to be updated.
-     * @param {*} newValue - New value for the field.
-     * @returns 
-     */
-    updateFieldByQuery(primaryKey, field, newValue) {
-        return this.dbHandler.updateByQuery(primaryKey, field, newValue);
-    }
-
-    /**
-     * Update multiple fields in a single record.
-     * 
-     * @param {Int} primaryKey - Primary key of record containing fields to be updated.
-     * @param {Array} fields - Array of fields to be updated.
-     * @param {Array} newValues - Array of new values for each field.
-     * @returns 
-     */
-    updateFieldsByQuery(primaryKey, fields, newValues) {
-        return this.dbHandler.updateByQuery(primaryKey, fields, newValues);
     }
 
     // ------------------------------------- Delete Methods ---------------------------------------------------

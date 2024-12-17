@@ -126,45 +126,6 @@ class DbHandler {
     }
   }
 
-  //------------------------------------- Connection/Disconnection -------------------------------------------
-
-  /**
-   * Connect to the DB.
-   * @returns {Promise} - DB connection.
-   */
-  async connect() {
-    return new Promise((resolve, reject) => {
-      this.connection.connect((error) => {
-        if (error) {
-          console.error("Database connection failed:", err);
-          reject(error);
-        } else {
-          console.log("Database connected!");
-          resolve();
-        }
-      });
-    });
-  }
-
-  /**
-   * Closes the database connection.
-   * @returns {Promise<void>} - Resolves when the connection is successfully closed.
-   * @throws {Error} - Rejects with an error if the disconnection fails.
-   */
-  async disconnect() {
-    return new Promise((resolve, reject) => {
-      this.connection.end((err) => {
-        if (err) {
-          console.error("Error closing database connection:", err);
-          reject(err);
-        } else {
-          console.log("Database connection closed");
-          resolve();
-        }
-      });
-    });
-  }
-
   //------------------------------------- CRUD Operations -------------------------------------------
 
   /**
@@ -367,24 +328,24 @@ class DbHandler {
     }
   }
 
-  /**
-   * Closes the database connection.
-   * @returns {Promise<void>} - Resolves when the connection is successfully closed.
-   * @throws {Error} - Rejects with an error if the disconnection fails.
-   */
-  async disconnect() {
-    return new Promise((resolve, reject) => {
-      this.connection.end((err) => {
-        if (err) {
-          console.error("Error closing database connection:", err);
-          reject(err);
-        } else {
-          console.log("Database connection closed");
-          resolve();
-        }
-      });
-    });
-  }
+  // /**
+  //  * Closes the database connection.
+  //  * @returns {Promise<void>} - Resolves when the connection is successfully closed.
+  //  * @throws {Error} - Rejects with an error if the disconnection fails.
+  //  */
+  // async disconnect() {
+  //   return new Promise((resolve, reject) => {
+  //     this.connection.end((err) => {
+  //       if (err) {
+  //         console.error("Error closing database connection:", err);
+  //         reject(err);
+  //       } else {
+  //         console.log("Database connection closed");
+  //         resolve();
+  //       }
+  //     });
+  //   });
+  // }
 }
 
 module.exports = DbHandler;
