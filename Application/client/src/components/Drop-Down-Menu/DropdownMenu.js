@@ -34,6 +34,7 @@ function DropdownMenu({ searchText, setSearchText }) {
       <Form.Control
         type="text"
         placeholder="Search products..."
+        aria-label="Search products"
         className="search-input"
         value={searchText}
         onChange={handleInputChange}
