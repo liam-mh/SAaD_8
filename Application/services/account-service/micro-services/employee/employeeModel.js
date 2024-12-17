@@ -1,11 +1,20 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize');
+const bcrypt = require('bcrypt');
+
+/**
+ * Employee model.
+ * @author Guy Nicklin
+ */
+
+const SALT_ROUNDS = 10;
 
 const EmployeeModel = sequelize.define('Employee', {
   EmployeeID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
+    unique: "unique_employee"
   },
   FirstName: {
     type: DataTypes.STRING(100),
@@ -18,7 +27,7 @@ const EmployeeModel = sequelize.define('Employee', {
   Email: {
     type: DataTypes.STRING(255),
     allowNull: false,
-    unique: true,
+    unique: "unique_employee",
     validate: {
       isEmail: true,
     },
@@ -26,6 +35,7 @@ const EmployeeModel = sequelize.define('Employee', {
   Password: {
     type: DataTypes.STRING(255),
     allowNull: false,
+    //Can hash in her with bcrypt
   },
   FirstLineAddress: {
     type: DataTypes.STRING(255),
@@ -41,6 +51,7 @@ const EmployeeModel = sequelize.define('Employee', {
   },
   BranchID: {
     type: DataTypes.INTEGER,
+    unique: "unique_employee",
     references: {
       model: 'Branch',
       key: 'BranchID',
@@ -63,6 +74,28 @@ const EmployeeModel = sequelize.define('Employee', {
 }, {
   tableName: 'Employee',
   timestamps: false,
+  hooks: {
+    // Hash on create.
+    beforeCreate: async (employee) => {
+      if (employee.Password) {
+        const hashedPassword = await bcrypt.hash(employee.Password, SALT_ROUNDS);
+        employee.Password = hashedPassword;
+      }
+    },
+    // Hash on update.
+    beforeUpdate: async (employee) => {
+      if (employee.Password) {
+        const hashedPassword = await bcrypt.hash(employee.Password, SALT_ROUNDS);
+        employee.Password = hashedPassword;
+      }
+    },
+  },
 });
+
+// Hashed password validation.
+EmployeeModel.prototype.validatePassword = async function (password) {
+  
+  return bcrypt.compare(password, this.Password);
+};
 
 module.exports = EmployeeModel;

@@ -1,9 +1,13 @@
-const FrontEndService = require("../frontEndService");
+import FrontEndService from "../frontEndService";
 
-class Wishlist extends FrontEndService{
+/**
+ * Front end service for media logic.
+ * @author Guy Nicklin
+ */
+class WishlistFrontEndService extends FrontEndService{
     constructor(){
         super('/storefront/wishlist');
     }
 }
 
-module.exports = new Wishlist();
+export default WishlistFrontEndService;

@@ -1,101 +1,86 @@
 //Base service class.
 const DbHandler = require("./dbHandler");
 
+/**
+ * Base service class
+ * @author Guy Nicklin
+ */
 class Service {
 
     /**
      * Constructor
+     * 
      * @param {DbHandler} dbHandler - Specific database handler based on derived Service.
      */
-
-    constructor(dbHandler, object) {
+    constructor(dbHandler) {
         if (this.constructor === Service) {
             throw new Error("Cannot instantiate abstract class directly.");
         }
         // Inject specific instances
         this.dbHandler = dbHandler; 
-        this.object = object
     }
 
     // Common methods that all services can use
 
-    // ------------------------------------- Validation methods -----------------------------------------------
-
-    isEmpty = (obj) => Object.keys(obj).length === 0;
-
     // ------------------------------------- Create Methods ---------------------------------------------------
     /**
-     * Creates a new record
-     * @param {Array} recordValues - Array of record values in order.
-     * @returns 
+     * Creates a new record in the relative table.
+     * 
+     * @param {Object} record - Record to create.
+     * @returns {Promise<Object>} - Created Record.
      */
-    createRecordByQuery(recordValues) {
-        this.object.mapObject(recordValues);
-        return this.dbHandler.createByQuery(this.object);
+    createRecordByQuery(record) {
+        return this.dbHandler.createByQuery(record);
+    }
+
+    /**
+     * Creates multiple records in the relative table..
+     * 
+     * @param {Object[]} records - Records to create.
+     * @returns {Promise<Object[]>} - Created Records.
+     */
+    createRecordsByQuery(records){
+        return this.dbHandler.createMultipleByQuery(records);
     }
 
     // ------------------------------------- Read Methods ---------------------------------------------------
 
     /**
-     * Reads and returns multiple records based on matching field values.
+     * Reads and returns multiple records based on matching field values from the raative table.
+     * 
      * @param {Array} fieldIdentifiers - Array of field identifiers.
      * @returns 
      */
     readRecordsByQuery(fieldIdentifiers={}, uniqueFlag=false) {
-        
-        // Skip object mapping and just retrieve all records for the relevant table.
-        if(this.isEmpty(fieldIdentifiers) && !uniqueFlag){
-            return this.dbHandler.readByQuery();
-        }
-
-        // Map to the relevant object.
-        //this.object.mapObject(fieldIdentifiers);
-
         return this.dbHandler.readByQuery(fieldIdentifiers, uniqueFlag);
     }
 
     /**
+     * Reads and returns 10 records containing the users inputed characters from the relative table.
      * 
-     * @param {String} chars 
+     * @param {String} chars - User input.
      */
     autoComplete(chars){
         return this.dbHandler.autoComplete(chars);
     }
 
-    /**
-     * Reads and returns a single field matching the PK and column.
-     * @param {Int} primaryKey - Primary key for the record.
-     * @param {String} column - Column to be returned.
-     * @returns 
-     */
-    readFieldByQuery(primaryKey, column) {
-        return this.dbHandler.readByQuery(primaryKey, column);
-    }
-
-    /**
-     * Reads and returns multiple fields based on column identifiers.
-     * @param {Array} primaryKey - Primary key for the records.
-     * @param {Array} columns - Columns that should be returned.
-     * @returns 
-     */
-    readFieldsByQuery(primaryKey, columns) {
-        return this.dbHandler.readByQuery(primaryKey, columns);
-    }
-
+   
     // ------------------------------------- Update Methods ---------------------------------------------------
 
     /**
-     * Create Object with new values then pass to dbHandler to update DB.
+     * Update a record in the relative table.
+     * 
      * @param {Array} newValues - Array of new values.
+     * @param {Boolean} shouldReturn -if the update should also return the record.
      * @returns 
      */
-    updateRecordByQuery(newValues) {
-        this.object.mapObject(newValues);
-        return this.dbHandler.updateByQuery(this.object);
+    updateRecordByQuery(newValues, shouldReturn=false) {
+        return this.dbHandler.updateByQuery(newValues, shouldReturn);
     }
 
     /**
      * Updates multiple record's fields.
+     * 
      * @param {Array} primaryKeys - Array of primary keys.
      * @param {2D Array} columns - 2D array of column identifiers.
      * @param {2D Array} newValues - 2D array of new values.
@@ -105,46 +90,26 @@ class Service {
         return this.dbHandler.updateByQuery(primaryKeys, columns, newValues);
     }
 
-    /**
-     * Update a field in a single record.
-     * @param {Int} primaryKey - Primary key of record containing field to be updated.
-     * @param {String} field - Field to be updated.
-     * @param {*} newValue - New value for the field.
-     * @returns 
-     */
-    updateFieldByQuery(primaryKey, field, newValue) {
-        return this.dbHandler.updateByQuery(primaryKey, field, newValue);
-    }
-
-    /**
-     * Update multiple fields in a single record.
-     * @param {Int} primaryKey - Primary key of record containing fields to be updated.
-     * @param {Array} fields - Array of fields to be updated.
-     * @param {Array} newValues - Array of new values for each field.
-     * @returns 
-     */
-    updateFieldsByQuery(primaryKey, fields, newValues) {
-        return this.dbHandler.updateByQuery(primaryKey, fields, newValues);
-    }
-
     // ------------------------------------- Delete Methods ---------------------------------------------------
 
     /**
-     * Delete a single record.
-     * @param {Int} primaryKey - Primary key of the record to be deleted.
-     * @returns {Promise<Object>} - Returns result object.
+     * Delete a single record from the relative table.
+     * 
+     * @param {Object} uniqueKey - A key and value pair to identify the record to delete.
+     * @returns {Promise<Number>} - The number of records deleted.
      */
-    deleteRecordByQuery(primaryKey) {
-        return this.dbHandler.deleteByQuery(primaryKey);
+    deleteRecordByQuery(uniqueKey) {
+        return this.dbHandler.deleteByQuery(uniqueKey);
     }
 
     /**
-     * Delete multiple records.
-     * @param {Array} primaryKeys - Array of primary keys for the records to be deleted.
-     * @returns 
+     * Deletes Multiple records from the relative table.
+     * 
+     * @param {Object[]} uniqueKeys - An array of key and value pairs to identify the records to delete.
+     * @returns {Promise<Number>} - The number of records deleted.
      */
-    deleteRecordsByQuery(primaryKeys) {
-        return this.dbHandler.deleteByQuery(primaryKeys);
+    deleteRecordsByQuery(uniqueKeys) {
+        return this.dbHandler.deleteMultipleByQuery(uniqueKeys);
     }
 }
 

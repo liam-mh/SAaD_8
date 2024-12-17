@@ -1,12 +1,15 @@
 const {Service} = require("shared");
 const NewMediaRequestDbHandler = require("./newMediaRequestDbHandler");
-const NewMediaRequestObject = require("./newMediaRequestObject");
 
+/**
+ * Service for new media request related requests.
+ * Injects its database handler as a dependency into its base class.
+ * @author Guy Nicklin
+ */
 class NewMediaRequestService extends Service{
     constructor() {
         const dbHandler = new NewMediaRequestDbHandler();
-        const object = new NewMediaRequestObject();
-        super(dbHandler, object);
+        super(dbHandler);
       }
 }
 

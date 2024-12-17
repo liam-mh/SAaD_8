@@ -1,10 +1,15 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize');
 
+/**
+ * Subscription model.
+ * @author Guy Nicklin
+ */
 const SubscriptionModel = sequelize.define('Subscription', {
     SubscriptionID: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      unique: "unique_subscription",
       autoIncrement: true,
     },
     TokenQuantity: {

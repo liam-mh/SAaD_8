@@ -1,10 +1,15 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../../config/sequelize');
 
+/**
+ * Wishlist model.
+ * @author Guy Nicklin
+ */
 const WishlistModel = sequelize.define('Wishlist', {
   WishlistID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    unique: "unique_wishlist",
     autoIncrement: true,
   },
   MemberID: {

@@ -1,12 +1,15 @@
 const {Service} = require("shared");
 const MediaHistoryDbHandler = require("./mediaHistoryDbHandler");
-const MediaHistoryObject = require("./mediaHistoryObject");
 
+/**
+ * Service for media history related requests.
+ * Injects its database handler as a dependency into its base class.
+ * @author Guy Nicklin
+ */
 class MediaHistoryService extends Service{
     constructor() {
         const dbHandler = new MediaHistoryDbHandler();
-        const object = new MediaHistoryObject();
-        super(dbHandler, object);
+        super(dbHandler);
       }
 }
 

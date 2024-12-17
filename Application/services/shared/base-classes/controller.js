@@ -1,5 +1,9 @@
 const formatDateFields = require("../utils/dateFormatter");
 
+/**
+ * Base controller class.
+ * @author Guy Nicklin
+ */
 class Contoller {
   /**
    * Constructor
@@ -19,11 +23,20 @@ class Contoller {
   // ------------------------------------- Create Methods ---------------------------------------------------
   /**
    * Creates a new record.
-   * @param {Array} recordValues - Array of Record values in order.
-   * @returns
+   * @param {Object} recordValues - Array of Record values in order.
+   * @returns {Promise<Object>} - Created Record.
    */
-  createRecord(recordValues) {
-    return this.service.createRecordByQuery(recordValues);
+  createRecord(record) {
+    return this.service.createRecordByQuery(record);
+  }
+
+  /**
+   * Creates multiple new records.
+   * @param {Object} records 
+   * @returns {Promise<Object>} - Created Records.
+   */
+  createRecords(records){
+    return this.service.createRecordsByQuery(records);
   }
 
   // ------------------------------------- Read Methods ---------------------------------------------------
@@ -33,7 +46,7 @@ class Contoller {
    * 
    * @param {Array} fieldIdentifiers - Array of field identifiers to filter the records.
    * @param {boolean} uniqueFlag - If true, fetch filtered records based on field identifiers.
-   * @returns {Array} - Array of formatted records with all date fields properly formatted.
+   * @returns {Promise<Object>} - Retrieved Records.
    */
   readRecords(fieldIdentifiers={}, uniqueFlag=false) {
     // Fetch raw records 
@@ -42,17 +55,18 @@ class Contoller {
   }
 
   /**
+   * Retrieve Records based on user search input.
    * 
-   * @param {Array} chars 
+   * @param {String} chars 
    */
   autoComplete(chars){
-    const records = this.service.autoComplete(chars);
-    return formatDateFields(records);
+    return this.service.autoComplete(chars);
   }
 
 
   /**
    * Reads and returns multiple fields based on column identifiers.
+   * 
    * @param {Int} primaryKey - Primary key for the record.
    * @param {Array} columns - columns that should be returned
    * @returns
@@ -63,12 +77,14 @@ class Contoller {
 
   // ------------------------------------- Update Methods ---------------------------------------------------
   /**
-   * Update a records fields using parallel arrays.
-   * @param {Array} newValues - Array of new values.
-   * @returns
+   * Update a record based on a unique key.
+   * @param {String}
+   * @param {Object} newObject - Object of new values.
+   * @param {Boolean} shouldReturn - if the update should also return the record.
+   * @returns {Promise<Object>} - Created Records.
    */
-  updateRecord(newValues) {
-    return this.service.updateRecordByQuery(newValues);
+  updateRecord(newObject, shouldReturn=false) {
+    return this.service.updateRecordByQuery(newObject, shouldReturn);
   }
 
   /**
@@ -104,19 +120,21 @@ class Contoller {
 
   /**
    * Delete a single record
-   * @param {Int} primaryKey
-   * @returns
+   * @param {Object} uniqueKey - A key and value pair to identify the record to delete.
+   * @returns {Promise<Number>} - The number of records deleted (0 or 1).
    */
-  deleteRecord(primaryKey) {
-    return this.service.deleteRecordByQuery(primaryKey);
+  deleteRecord(uniqueKey) {
+    return this.service.deleteRecordByQuery(uniqueKey);
   }
 
   /**
    * Delete Multiple records.
-   * @param {Array} primaryKeys
+   * 
+   * @param {Object[]} uniqueKeys - An array of key and value pairs to identify the records to delete.
+   * @returns {Promise<Number>} - The number of records deleted (0, 1 or many).
    */
-  deleteRecords(primaryKeys) {
-    return this.service.deleteRecordsByQuery(primaryKeys);
+  deleteRecords(uniqueKeys) {
+    return this.service.deleteRecordsByQuery(uniqueKeys);
   }
 
 }

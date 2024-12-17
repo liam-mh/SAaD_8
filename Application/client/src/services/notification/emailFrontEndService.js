@@ -1,9 +1,14 @@
-const FrontEndService =  require("../frontEndService");
+import FrontEndService from "../frontEndService";
 
+/**
+ * Front end service for email logic
+ * 
+ * @author Guy Nicklin
+ */
 class EmailFrontEndService extends FrontEndService{
     constructor(){
         super('/notification/email');
     }
 }
 
-module.exports = new EmailFrontEndService();
+export default EmailFrontEndService;

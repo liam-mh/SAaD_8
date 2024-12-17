@@ -1,12 +1,16 @@
 const {Service} = require("../../../shared");
 const PaymentDbHandler = require("./paymentDbHandler");
-const PaymentObject = require("./paymentObject");
 
+/**
+ * Service for payment related requests.
+ * Injects its database handler as a dependency into its base class.
+ * 
+ * @author Guy Nicklin
+ */
 class PaymentService extends Service {
   constructor() {
     const dbHandler = new PaymentDbHandler();
-    const object = new PaymentObject();
-    super(dbHandler, object);
+    super(dbHandler);
   }
 }
 

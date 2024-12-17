@@ -1,9 +1,13 @@
-const FrontEndService = require("../frontEndService");
+import FrontEndService from "../frontEndService";
 
+/**
+ * Front end service for new media request logic.
+ * @author Guy Nicklin
+ */
 class NewMediaRequestFrontEndService extends FrontEndService{
     constructor(){
         super('/storefront/new-media-request');
     }
 }
 
-module.exports = new NewMediaRequestFrontEndService();
+export default NewMediaRequestFrontEndService;

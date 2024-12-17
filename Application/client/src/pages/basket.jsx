@@ -1,25 +1,19 @@
 import React, { useContext, useState } from 'react';
 import { Container, Table, Button, Form } from 'react-bootstrap';
 import { SessionContext } from '../services/sessionContext';
-import mediaFrontEndService from '../services/storefront/mediaFrontEndService';
+import MediaFrontEndService from '../services/storefront/mediaFrontEndService';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 const BasketPage = () => {
+  const mediaFrontEndService = new MediaFrontEndService();
   const { basket, setBasket, branches, setCheckout } = useContext(SessionContext) || {};
   const [deliveryOptions, setDeliveryOptions] = useState(basket.map(() => 'collect'));
   if (!basket || !branches) {
     return <p>No basket information...</p>;
   }
 
-  const today = new Date();
-  const startDate = today.toLocaleDateString('en-GB').split('/').join('-');
-
-  const calculateReturnDate = (rentLength) => {
-    const returnDateObj = new Date(today);
-    returnDateObj.setDate(returnDateObj.getDate() + rentLength);
-    return returnDateObj.toLocaleDateString('en-GB').split('/').join('-');
-  };
-
+  const today = moment().format("YYYY-MM-DD");
   const adjustRentLength = (index, adjustment) => {
     setBasket((prevBasket) =>
       prevBasket.map((item, i) =>
@@ -32,6 +26,9 @@ const BasketPage = () => {
       )
     );
   };
+  const calculateReturnDate = (rentLength) => {
+    return moment().add(rentLength, "days").format("YYYY-MM-DD");
+  };
 
   const getBranchInfo = (BranchID) => {
     if (!branches || branches.length === 0) {
@@ -42,6 +39,7 @@ const BasketPage = () => {
 
   const handleCheckout = () => {
     const checkoutData = basket.map((item, index) => {
+      const startDate = today;
       const rentLength = item.rentLength || 7;
       const returnDate = calculateReturnDate(rentLength);
       const tokens = Math.ceil(rentLength / 7);
@@ -147,7 +145,7 @@ const BasketPage = () => {
                     </td>
   
                     <td>
-                      <span>{startDate}</span>
+                      <span>{today}</span>
                     </td>
   
                     <td>

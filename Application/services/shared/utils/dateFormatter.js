@@ -2,8 +2,9 @@ const moment = require("moment");
 
 /**
  * Format dates for the front end.
- * @param {Object} data
- * @returns {Object} - The data object with formatted date fields.
+ * @param {Object} data - the object with date properties to format.
+ * @returns {Object} - A data object with formatted date fields.
+ * @author Guy Nicklin
  */
 const formatDateFields = (data) => {
   // Fields that should not be treated as dates.
@@ -20,15 +21,15 @@ const formatDateFields = (data) => {
       }
 
       const innerValue = value[innerKey];
-      console.log(innerValue)
+      //console.log(innerValue)
 
       //console.log("outside IF", value[innerKey])
 
       // If innerValue is a valid ISO 8601 date, format it
       if (moment(innerValue, moment.ISO_8601, true).isValid()) {
-        console.log('B4', value[innerKey])
+        //console.log('B4', value[innerKey])
         value[innerKey] = moment(innerValue).format("DD/MM/YYYY"); // Reformat to DD/MM/YYYY
-        console.log('AFTA', value[innerKey])
+        //console.log('AFTA', value[innerKey])
       }
     }
   }
