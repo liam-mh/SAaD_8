@@ -131,7 +131,11 @@ function Header() {
                     searchText={searchText}
                     setSearchText={setSearchText}
                   />
-                  <Link to="/search" state={{ searchTerm: searchText }}>
+                  <Link 
+                    to="/search" 
+                    state={{ searchTerm: searchText }} 
+                    aria-label={`Search for ${searchText || "products"}`}
+                  >
                     <Button
                       className="button-secondary me-2"
                       style={{ borderRadius: "0 5px 5px 0" }}

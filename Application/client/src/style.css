@@ -2,7 +2,7 @@
 
 /* ROOT VARIABLES ------------------------------------------------------------------------------ */
 :root {
-    --primary: #26c8bc;
+    --primary: #0051C5;
     --primary-dark: color-mix(in srgb, var(--primary) 75%, black 40%);    
     --secondary: #132054; 
     --secondary-light: color-mix(in srgb, var(--secondary) 75%, white 40%);
