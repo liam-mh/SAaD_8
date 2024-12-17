@@ -1,16 +1,31 @@
 #!/bin/bash
 
-# account service
-osascript -e 'tell application "Terminal"
-    do script "cd /Users/liam/Documents/GitHub/SAaD_8/Application/services/account-service && npm install && node app.js"
-end tell'
+# Install Config
+echo "Install Config"
+cd ./Application/config && npm i
+cd - # Return to the original directory
 
-# API gateway
-osascript -e 'tell application "Terminal"
-    do script "cd /Users/liam/Documents/GitHub/SAaD_8/Application/api-gateway && npm install && node app.js"
-end tell'
+# Install Shared
+echo "Install Shared"
+cd ./Application/services/shared && npm i
+cd - # Return to the original directory
 
-# front end
-osascript -e 'tell application "Terminal"
-    do script "cd /Users/liam/Documents/GitHub/SAaD_8/Application/client && npm install && npm start"
-end tell'
+# Start Account Service
+echo "Start Account Service"
+(cd ./Application/services/account-service && npm i && node app.js) &
+
+# Start Storefront Service
+echo "Start Storefront Service"
+(cd ./Application/services/storefront-service && npm i && node app.js) &
+
+# Start Notification Service
+echo "Start Notification Service"
+(cd ./Application/services/notification-service && npm i && node app.js) &
+
+# Start API Gateway
+echo "Start API Gateway"
+(cd ./Application/api-gateway && npm i && node app.js) &
+
+# Start Client
+echo "Start Client"
+(cd ./Application/client && npm i && npm start) &
