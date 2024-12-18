@@ -17,22 +17,43 @@ const AccountPage = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
   const navigate = useNavigate();
 
-  // load user wishlist
   useEffect(() => {
     if (!user) return;
     const loadData = async () => {
       try {
-        const stockData = await wishlistFrontEndSevice.get("/readRecords", {
+        // load member wishlist
+        const wishlistData = await wishlistFrontEndSevice.get("/readRecords", {
           MemberID: user.MemberID,
         });
         const availabilityResults = await Promise.all(
-          stockData.data.map(async (mediaItem) => {
-            const availability = await mediaHistoryFrontEndService.get(
+          wishlistData.data.map(async (mediaItem) => {
+
+            // get media ID of wishlist items (only stores Title and Type)
+            const mediaIDs = await mediaFrontEndService.get(
               "/readRecords",
-              { MediaID: mediaItem.MediaID }
-            );
-            const activeStatus = !!(availability?.data?.[0]?.Active) ?? false;
-            return { ...mediaItem, available: activeStatus };
+              { 
+                Title: mediaItem.Title,
+                Type: mediaItem.Type
+              }
+            )
+            console.log('MEDIA ID: ',mediaIDs);
+
+            // see if any of the MediaID is free to rent
+            let isMediaFreeToRent = true;
+            for (const mediaItem of mediaIDs.data) {
+              console.log("MEDIA ITEM IN ID TO CHECK ACTIVE STATUS: ", mediaItem.MediaID);
+              const availability = await mediaHistoryFrontEndService.get(
+                "/readRecords",
+                {
+                  MediaID: mediaItem.MediaID,
+                  Active: "1",
+                }
+              );
+              if (availability?.data?.length > 0) {
+                isMediaFreeToRent = false;
+              }
+            }
+            return { ...mediaItem, available: isMediaFreeToRent };
           })
         );
         setWishlistItems(availabilityResults || {});

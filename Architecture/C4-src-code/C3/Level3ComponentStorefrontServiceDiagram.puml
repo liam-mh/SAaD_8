@@ -1,0 +1,86 @@
+@startuml
+!ENABLE_ALL_PLANT_ELEMENTS = 1
+!theme C4_united from https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/themes
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+title C4 Level 3: Advanced Media Library System - Component Diagram - Storefront Service
+skinparam defaultFontSize 16
+skinparam backgroundColor white
+
+
+' Define colour coding '
+UpdateBoundaryStyle($bgColor="#E5E5E5", $borderColor="#772953", $fontColor="#772953")
+AddRelTag("Relationship", $textColor="black", $lineColor="black", $lineStyle="dashed")
+AddElementTag("routeHandler", $bgColor="#A9D18E", $fontColor="black", $borderColor="black", $legendText="Route Handler (Node.js/Express.js)")
+AddElementTag("controller", $bgColor="#9DC3E6", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Controller (Node.js/Express.js)")
+AddElementTag("service", $bgColor="#76A3D9", $fontColor="black", $borderColor="black",$shape=RectangleShape(), $legendText="Service (Node.js/Express.js)")
+AddElementTag("model", $bgColor="#4F83CB", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Model (Node.js/Express.js)")
+AddElementTag("repo", $bgColor="#2763BE", $fontColor="black", $borderColor="black", $shape=RectangleShape(), $legendText="Entity (MySQL)")
+AddElementTag("database", $bgColor="#0043B0", $fontColor="black", $borderColor="black", $legendText="Database (Azure MySQL)")
+
+Container(routeHandler, "Route Handler", "Node.js/Express.js", "Manages internal routes for services.", $tags="routeHandler")
+
+Container_Boundary(storefront, "Storefront Service") {
+    Component(mediaCtr, "Media Controller", "Node.js/Express.js", "Manages requests for Media table.", $tags="controller")
+    Component(branchCtr, "Branch Controller", "Node.js/Express.js", "Manages requests for Branch table.", $tags="controller")
+    Component(mediaHistCtr, "MediaHistory Controller", "Node.js/Express.js", "Manages requests for MediaHistory table.", $tags="controller")
+    Component(mediaReqCtr, "NewMediaRequest Controller", "Node.js/Express.js", "Manages requests for NewMediaRequest table.", $tags="controller")
+    Component(wishlistCtr, "Wishlist Controller", "Node.js/Express.js", "Manages requests for Wishlist table.", $tags="controller")
+
+    Component(mediaService, "Media Service", "Node.js/Express.js", "Provides management of media info as well as features such as search.", $tags="service")
+    Component(branchService, "Branch Service", "Node.js/Express.js", "Handles management of branch details.", $tags="service")
+    Component(mediaHistService, "MediaHistory Service", "Node.js/Express.js", "Handles management for the rental history of media.", $tags="service")
+    Component(mediaReqService, "NewMediaRequest Service", "Node.js/Express.js", "Provides funcitonality for requesting new media.", $tags="service")
+    Component(wishlistService, "Wishlist Service", "Node.js/Express.js", "Provides functionality for a media wishlist.", $tags="service")
+
+    Component(mediaModel, "Media Model", "Node.js/Express.js", "Represents the media table.", $tags="model")
+    Component(branchModel, "Branch Model", "Node.js/Express.js", "Represents the branch table.", $tags="model")
+    Component(mediaHistModel, "MediaHistory Model", "Node.js/Express.js", "Represents the media-history table.", $tags="model")
+    Component(mediaReqModel, "NewMediaRequest Model", "Node.js/Express.js", "Represents the NewMediaRequest table.", $tags="model")
+    Component(wishlistModel, "Wishlist Model", "Node.js/Express.js", "Represents the wishlist table.", $tags="model")
+
+    Component(mediaRepo, "Media DB Handler", "Node.js/Express.js", "Handles SQL statements for media details.", $tags="repo")
+    Component(branchRepo, "Branch DB Handler", "Node.js/Express.js", "Handles SQL statements for branch info.", $tags="repo")
+    Component(mediaHistRepo, "MediaHistory DB Handler", "Node.js/Express.js", "Handles SQL statements for the rental history of media.", $tags="repo")
+    Component(mediaReqRepo, "NewMediaRequest DB Handler", "Node.js/Express.js", "Handles SQL statements for requests for new media.", $tags="repo")
+    Component(wishlistRepo, "Wishlist DB Handler", "Node.js/Express.js", "Handles SQL statements for member's media wishlists.", $tags="repo")
+}
+
+ContainerDb(database, "Database", "Azure MySQL", "Stores all tables the system requires e.g. media data, user data, inventory data.", $tags="database")
+
+' Relationships - API Gateway to Controller '
+Rel(routeHandler, mediaCtr, "Handles API calls for media related functionality ", $tags="Relationship")
+Rel(routeHandler, branchCtr, "Handles API calls for branch related functionality ", $tags="Relationship")
+Rel(routeHandler, mediaHistCtr, "Handles API calls for media rental history ", $tags="Relationship")
+Rel(routeHandler, mediaReqCtr, "Handles API calls for requesting new media ", $tags="Relationship")
+Rel(routeHandler, wishlistCtr, "Handles API calls for media wishlist functionality ", $tags="Relationship")
+
+' Relationships - Internal - Controller to Service '
+Rel(mediaCtr, mediaService, "Has instance of ", $tags="Relationship")
+Rel(branchCtr, branchService, "Has instance of ", $tags="Relationship")
+Rel(mediaHistCtr, mediaHistService, "Has instance of ", $tags="Relationship")
+Rel(wishlistCtr, wishlistService, "Has instance of ", $tags="Relationship")
+Rel(mediaReqCtr, mediaReqService, "Has instance of ", $tags="Relationship")
+
+' Relationships - Internal - Service to Repo '
+Rel(mediaService, mediaRepo, "Has instance of ", $tags="Relationship")
+Rel(branchService, branchRepo, "Has instance of ", $tags="Relationship")
+Rel(mediaHistService, mediaHistRepo, "Has instance of ", $tags="Relationship")
+Rel(mediaReqService, mediaReqRepo, "Has instance of ", $tags="Relationship")
+Rel(wishlistService, wishlistRepo, "Has instance of ", $tags="Relationship")
+
+' Relationships - Internal - Repo to Model '
+Rel(mediaModel, mediaRepo, "Has instance of ", $tags="Relationship")
+Rel(branchModel, branchRepo, "Has instance of ", $tags="Relationship")
+Rel(mediaHistModel, mediaHistRepo, "Has instance of ", $tags="Relationship")
+Rel(mediaReqModel, mediaReqRepo, "Has instance of ", $tags="Relationship")
+Rel(wishlistModel, wishlistRepo, "Has instance of ", $tags="Relationship")
+
+' Relationships - Internal - Repo to Database '
+Rel(mediaRepo, database, "CRUD operations on Media table ", $tags="Relationship")
+Rel(branchRepo, database, "CRUD operations on Branch table ", $tags="Relationship")
+Rel(mediaHistRepo, database, "CRUD operations on MediaHistory table ", $tags="Relationship")
+Rel(mediaReqRepo, database, "CRUD operations on NewMediaRequest table ", $tags="Relationship")
+Rel(wishlistRepo, database, "CRUD operations on Wishlist table ", $tags="Relationship")
+
+SHOW_LEGEND(true)
+@enduml

@@ -11,7 +11,7 @@ import PaymentFrontEndService from "../services/account/paymentFrontEndService";
 import EmailFrontEndService from "../services/notification/emailFrontEndService";
 import LoginCard from "../components/Login-Card/LoginCard";
 import PaymentCard from "../components/Payment-Card/PaymentCard";
-import CountdownTimer from "../components/CountdownTimer";
+import CountdownTimer from "../components/Countdown-Timer/CountdownTimer";
 import MemberAccountDetails from "../components/Member-Account-Details/MemberAccountDetails";
 
 const CheckoutPage = () => {
