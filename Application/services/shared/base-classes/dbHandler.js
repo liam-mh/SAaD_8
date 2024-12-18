@@ -327,25 +327,6 @@ class DbHandler {
       throw new Error("Error searching for records");
     }
   }
-
-  // /**
-  //  * Closes the database connection.
-  //  * @returns {Promise<void>} - Resolves when the connection is successfully closed.
-  //  * @throws {Error} - Rejects with an error if the disconnection fails.
-  //  */
-  // async disconnect() {
-  //   return new Promise((resolve, reject) => {
-  //     this.connection.end((err) => {
-  //       if (err) {
-  //         console.error("Error closing database connection:", err);
-  //         reject(err);
-  //       } else {
-  //         console.log("Database connection closed");
-  //         resolve();
-  //       }
-  //     });
-  //   });
-  // }
 }
 
 module.exports = DbHandler;
