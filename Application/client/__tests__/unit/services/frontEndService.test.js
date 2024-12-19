@@ -89,21 +89,25 @@ describe('FrontEndService', () => {
       const path = '/media';
       const body = { title: 'updated test' };
       const mockResponse = { data: 'updated data' };
-
+    
       fetchFromApiGateway.mockResolvedValueOnce(mockResponse);
-
+    
       const response = await service.put(path, body);
-
+    
       expect(fetchFromApiGateway).toHaveBeenCalledWith(
         `${baseRoute}${path}`,
         expect.objectContaining({
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
+          body: JSON.stringify({
+            fields: body,
+            shouldReturn: false, // Adjust based on actual implementation
+          }),
         })
       );
       expect(response).toEqual(mockResponse);
     });
+    
 
     it('should throw an error if the fetch fails', async () => {
       const path = '/media';

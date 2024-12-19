@@ -82,33 +82,6 @@ const handleRoutes = (router, serviceName, resources) => {
                 console.error(`Error creating record in ${resource}:`, error);
                 res.status(500).json({ message: 'Failed to create records', error: error.message });
             }
-            // try {
-            //     const created = await controllerInstance.createRecords(req.body);
-            //     res.status(201).json({
-            //         message: 'Records created successfully',
-            //         data: created,
-            //         status: res.statusCode
-            //     });
-            // } catch (error) {
-            //     if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
-            //         // Handle validation errors thrown by Sequelize
-            //         res.status(400).json({
-            //             message: 'Validation error: Invalid input data',
-            //             errors: error.errors.map(err => ({
-            //                 field: err.path,
-            //                 message: err.message
-            //             })),
-            //             status: 400
-            //         });
-            //     } else {
-            //         console.error(`Error creating record in ${resource}:`, error);
-            //         res.status(500).json({
-            //             message: 'Failed to create records',
-            //             error: error.message,
-            //             status: 500
-            //         });
-            //     }
-            // }
         });
 
         router.put(`/${resource}/updateRecord`, async (req, res) => {
