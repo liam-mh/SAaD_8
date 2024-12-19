@@ -10,11 +10,6 @@ class Contoller {
    * @param {Service} service - Specific Service based on derived Controller
    */
   constructor(service) {
-    if (this.constructor === Contoller) {
-      throw new Error(
-        "Controller is an abstract class and cannot be instantiated directly."
-      );
-    }
     this.service = service; // Inject the specific service instance
   }
 
@@ -48,10 +43,8 @@ class Contoller {
    * @param {boolean} uniqueFlag - If true, fetch filtered records based on field identifiers.
    * @returns {Promise<Object>} - Retrieved Records.
    */
-  readRecords(fieldIdentifiers={}, uniqueFlag=false) {
-    // Fetch raw records 
-    const records = this.service.readRecordsByQuery(fieldIdentifiers, uniqueFlag);
-    return formatDateFields(records);
+  readRecords(fieldIdentifiers={}, uniqueFlag=false) { 
+    return this.service.readRecordsByQuery(fieldIdentifiers, uniqueFlag);
   }
 
   /**
@@ -95,16 +88,6 @@ class Contoller {
    */
   updateRecords(primaryKeys, columns, newValues) {
     return this.service.updateRecordsByQuery(primaryKeys, columns, newValues);
-  }
-
-  /**
-   * Update a field in a single record.
-   * @param {Int} primaryKey
-   * @param {String} column
-   * @returns
-   */
-  updateField(primaryKey, field, newValue) {
-    return this.service.updateFieldByQuery(primaryKey, column, newValue);
   }
 
   /**
