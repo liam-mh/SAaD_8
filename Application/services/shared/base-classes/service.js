@@ -13,9 +13,6 @@ class Service {
      * @param {DbHandler} dbHandler - Specific database handler based on derived Service.
      */
     constructor(dbHandler) {
-        if (this.constructor === Service) {
-            throw new Error("Cannot instantiate abstract class directly.");
-        }
         // Inject specific instances
         this.dbHandler = dbHandler; 
     }
