@@ -32,6 +32,7 @@ function DropdownMenu({ searchText, setSearchText }) {
   return (
     <div className="search-wrapper">
       <Form.Control
+        data-testid="search"
         type="text"
         placeholder="Search products..."
         aria-label="Search products"
@@ -42,13 +43,14 @@ function DropdownMenu({ searchText, setSearchText }) {
         onFocus={() => setShowDropdown(filteredData.length > 0)}
       />
       {showDropdown && (
-        <div className="dropdown-menu search-dropdown show">
+        <div className="dropdown-menu search-dropdown show" data-testid="dropdown-menu">
           {filteredData.map((media, index) => (
             <Link
               key={index}
               to={'/media'}
               state={{ mediaType: media.Type, mediaTitle: media.Title }}
               className="dropdown-item"
+              data-testid="dropdown-item"
             >
               <div>
                 {media.Title}: <strong>{media.Type}</strong>
