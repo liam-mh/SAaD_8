@@ -4,7 +4,7 @@
 
 /**
  * Tests for DropdownMenu component.
- * Unit tests: 
+ * Unit tests: 5
  * 
  * @author Liam Hammond
  */
