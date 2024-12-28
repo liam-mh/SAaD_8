@@ -19,7 +19,6 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 
 // Application-specific imports
 import SearchPage from "../../../src/pages/search";
-import MediaPagination from "../../../src/components/Media-Pagination/MediaPagination";
 import MediaFrontEndService from "../../../src/services/storefront/mediaFrontEndService";
 
 // ==============================
@@ -55,6 +54,7 @@ const mockMediaData = {
     ],
     status: 200
 };
+const mockSearchTerm = 'The';
 
 // ==============================
 // MOCKING DEPENDENCIES
@@ -62,8 +62,8 @@ const mockMediaData = {
 jest.mock("../../../src/services/storefront/mediaFrontEndService");
 MediaFrontEndService.mockImplementation(() => {
     return {
-        get: jest.fn().mockResolvedValue(mockMediaData),
-        autoComplete: jest.fn().mockResolvedValue(mockMediaData)
+        get: jest.fn().mockResolvedValue({ data: mockMediaData.data }),
+        autoComplete: jest.fn().mockResolvedValue({ data: mockMediaData.data })
     };
 });
 
@@ -86,12 +86,6 @@ describe(testPrefix+": SearchPage Tests", () => {
     // TEST CASE
     // ==============================
     it(testCase()+"Should make correct API call with searchTerm", async () => {
-        const mockSearchTerm = 'The';
-        MediaFrontEndService.mockImplementation(() => {
-            return {
-                autoComplete: mockAutoComplete
-            };
-        });
         render(
             <MemoryRouter initialEntries={[{ pathname: "/search", state: { searchTerm: mockSearchTerm } }]}>
                 <Routes>
@@ -107,13 +101,11 @@ describe(testPrefix+": SearchPage Tests", () => {
             expect(MediaFrontEndService.mock.instances[0].autoComplete).toHaveBeenCalled();
             expect(MediaFrontEndService.mock.instances[0].autoComplete).toHaveBeenCalledWith(mockSearchTerm);
         });
-        console.log('Return', MediaFrontEndService.mock);
     });
 
     // TEST CASE
     // ==============================
-    it(testCase()+"Should pass the media to MediaPagination", async () => {
-        const mockSearchTerm = 'The';
+    it(testCase()+"Should pass the media array to MediaPagination", async () => {
         render(
             <MemoryRouter initialEntries={[{ pathname: "/search", state: { searchTerm: mockSearchTerm } }]}>
                 <Routes>
@@ -121,13 +113,57 @@ describe(testPrefix+": SearchPage Tests", () => {
                 </Routes>
             </MemoryRouter>
         );
-        const pagination = screen.getByTestId("media-pagination");
+        const pagination = await waitFor(() => screen.getByTestId("media-pagination"));
 
         // ACTIONS
 
         // RESULTS
         expect(pagination).toBeInTheDocument();
-       
+    });
+
+    // TEST CASE
+    // ==============================
+    it(testCase()+"Should display MediaCards in pagination", async () => {
+        render(
+            <MemoryRouter initialEntries={[{ pathname: "/search", state: { searchTerm: mockSearchTerm } }]}>
+                <Routes>
+                    <Route path="/search" element={<SearchPage />} />
+                </Routes>
+            </MemoryRouter>
+        );
+
+        // ACTIONS
+
+        // RESULTS
+        const mediaItems = mockMediaData.data;
+        expect(mediaItems.length).toBeGreaterThan(0);
+        mediaItems.forEach((item) => {
+            expect(screen.getByText(item.Title)).toBeInTheDocument();
+        });
+    });
+
+    // TEST CASE
+    // ==============================
+    it(testCase()+"Should update media depending on filter selected", async () => {
+        render(
+            <MemoryRouter initialEntries={[{ pathname: "/search", state: { searchTerm: mockSearchTerm } }]}>
+                <Routes>
+                    <Route path="/search" element={<SearchPage />} />
+                </Routes>
+            </MemoryRouter>
+        );
+        expect(await screen.findByText("The Hobbit")).toBeInTheDocument();
+        expect(screen.getByText("The Great Gatsby")).toBeInTheDocument();
+        expect(screen.getByText("Abbey Road")).toBeInTheDocument();
+
+        // ACTIONS
+        const bookCheckbox = screen.getByLabelText("Book");
+        fireEvent.click(bookCheckbox);  
+        // RESULTS
+        expect(await screen.findByText("The Hobbit")).toBeInTheDocument();
+        expect(screen.getByText("The Great Gatsby")).toBeInTheDocument();
+        expect(screen.queryByText("Abbey Road")).not.toBeInTheDocument();
+
     });
 
 });
