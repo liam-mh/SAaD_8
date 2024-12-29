@@ -4,7 +4,7 @@
 
 /**
  * Tests for Search page.
- * Unit tests: 
+ * Unit tests: 5
  * 
  * @author Liam Hammond
  */
@@ -15,7 +15,7 @@
 import React from "react";
 import "@testing-library/jest-dom";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { MemoryRouter, Routes, Route, useLocation } from "react-router-dom";
 
 // Application-specific imports
 import SearchPage from "../../../src/pages/search";
@@ -55,15 +55,24 @@ const mockMediaData = {
     status: 200
 };
 const mockSearchTerm = 'The';
+const mockGet = jest.fn().mockResolvedValue({ data: mockMediaData.data });
+const mockAutoComplete = jest.fn().mockResolvedValue({ data: mockMediaData.data });
 
 // ==============================
 // MOCKING DEPENDENCIES
 // ==============================
+jest.mock("../../../src/services/scrollToSection");
+jest.mock("react-router-dom", () => ({
+    ...jest.requireActual("react-router-dom"),
+    useLocation: jest.fn(),
+}));
+
 jest.mock("../../../src/services/storefront/mediaFrontEndService");
 MediaFrontEndService.mockImplementation(() => {
     return {
-        get: jest.fn().mockResolvedValue({ data: mockMediaData.data }),
-        autoComplete: jest.fn().mockResolvedValue({ data: mockMediaData.data })
+        get: mockGet,
+        autoComplete: mockAutoComplete,
+        generateImageSrc: jest.fn().mockReturnValue("test")
     };
 });
 
@@ -79,15 +88,17 @@ const testCase = () => {
 };
 
 describe(testPrefix+": SearchPage Tests", () => {
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
+        useLocation.mockReturnValue({ state: { searchTerm: mockSearchTerm } });
+        Element.prototype.scrollIntoView = jest.fn();
     });
 
     // TEST CASE
     // ==============================
     it(testCase()+"Should make correct API call with searchTerm", async () => {
         render(
-            <MemoryRouter initialEntries={[{ pathname: "/search", state: { searchTerm: mockSearchTerm } }]}>
+            <MemoryRouter initialEntries={[{ pathname: "/search" }]}>
                 <Routes>
                     <Route path="/search" element={<SearchPage />} />
                 </Routes>
@@ -98,8 +109,29 @@ describe(testPrefix+": SearchPage Tests", () => {
 
         // RESULTS
         await waitFor(() => {
-            expect(MediaFrontEndService.mock.instances[0].autoComplete).toHaveBeenCalled();
-            expect(MediaFrontEndService.mock.instances[0].autoComplete).toHaveBeenCalledWith(mockSearchTerm);
+            expect(mockAutoComplete).toHaveBeenCalled();
+            expect(mockAutoComplete).toHaveBeenCalledWith(mockSearchTerm);
+            expect(mockGet).not.toHaveBeenCalled(); 
+        });
+    });
+
+    // TEST CASE
+    // ==============================
+    it(testCase()+"Should make correct API call for all results if no term", async () => {
+        useLocation.mockReturnValue({ state: { searchTerm: '' } });
+        render(
+            <MemoryRouter initialEntries={[{ pathname: "/search" }]}>
+                <Routes>
+                    <Route path="/search" element={<SearchPage />} />
+                </Routes>
+            </MemoryRouter>
+        );
+
+        // ACTIONS
+
+        // RESULTS
+        await waitFor(() => {
+            expect(mockGet).toHaveBeenCalled();
         });
     });
 
@@ -107,7 +139,7 @@ describe(testPrefix+": SearchPage Tests", () => {
     // ==============================
     it(testCase()+"Should pass the media array to MediaPagination", async () => {
         render(
-            <MemoryRouter initialEntries={[{ pathname: "/search", state: { searchTerm: mockSearchTerm } }]}>
+            <MemoryRouter initialEntries={[{ pathname: "/search" }]}>
                 <Routes>
                     <Route path="/search" element={<SearchPage />} />
                 </Routes>
@@ -125,7 +157,7 @@ describe(testPrefix+": SearchPage Tests", () => {
     // ==============================
     it(testCase()+"Should display MediaCards in pagination", async () => {
         render(
-            <MemoryRouter initialEntries={[{ pathname: "/search", state: { searchTerm: mockSearchTerm } }]}>
+            <MemoryRouter initialEntries={[{ pathname: "/search" }]}>
                 <Routes>
                     <Route path="/search" element={<SearchPage />} />
                 </Routes>
@@ -135,10 +167,12 @@ describe(testPrefix+": SearchPage Tests", () => {
         // ACTIONS
 
         // RESULTS
-        const mediaItems = mockMediaData.data;
-        expect(mediaItems.length).toBeGreaterThan(0);
-        mediaItems.forEach((item) => {
-            expect(screen.getByText(item.Title)).toBeInTheDocument();
+        await waitFor(() => {
+            const mediaItems = mockMediaData.data;
+            expect(mediaItems.length).toBeGreaterThan(0);
+            mediaItems.forEach((item) => {
+                expect(screen.getByText(item.Title)).toBeInTheDocument();
+            });
         });
     });
 
@@ -146,7 +180,7 @@ describe(testPrefix+": SearchPage Tests", () => {
     // ==============================
     it(testCase()+"Should update media depending on filter selected", async () => {
         render(
-            <MemoryRouter initialEntries={[{ pathname: "/search", state: { searchTerm: mockSearchTerm } }]}>
+            <MemoryRouter initialEntries={[{ pathname: "/search" }]}>
                 <Routes>
                     <Route path="/search" element={<SearchPage />} />
                 </Routes>
@@ -159,11 +193,11 @@ describe(testPrefix+": SearchPage Tests", () => {
         // ACTIONS
         const bookCheckbox = screen.getByLabelText("Book");
         fireEvent.click(bookCheckbox);  
+
         // RESULTS
         expect(await screen.findByText("The Hobbit")).toBeInTheDocument();
         expect(screen.getByText("The Great Gatsby")).toBeInTheDocument();
         expect(screen.queryByText("Abbey Road")).not.toBeInTheDocument();
-
     });
 
 });
