@@ -1,0 +1,24 @@
+config:
+  target: 'http://localhost:4000'  
+  phases:
+    - duration: 300
+      arrivalRate: 1000
+    - duration: 300
+      arrivalRate: 1200
+    - duration: 300
+      arrivalRate: 1400
+    - duration: 300
+      arrivalRate: 1600
+    - duration: 300
+      arrivalRate: 1800
+    - duration: 300
+      arrivalRate: 2000
+    - duration: 300
+      arrivalRate: 2200
+
+scenarios:
+  - flow:
+      - get:
+          url: "/api/storefront/media/readRecords?fields=%7B%7D&uniqueFlag=true"  
+          headers:
+            If-None-Match: ""  
