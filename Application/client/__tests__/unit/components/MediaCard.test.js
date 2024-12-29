@@ -32,6 +32,9 @@ const mockMediaData = {
     PublishDate: "1937-09-21",
     Description: "A thrilling book about fairytale ceatures."
 };
+const mockInvalidMediaData = {
+    Title: ""
+};
 const mockGenerateImageSrc = jest.fn().mockReturnValue("https://mocked-url.com/media-artwork.jpg");
 
 // ==============================
@@ -123,6 +126,26 @@ describe(testPrefix+": MediaCard Component Tests", () => {
         expect(mediaType).toBeInTheDocument();
         expect(cardImage).toBeInTheDocument();
         expect(button).toBeInTheDocument();
+    });
+
+    // TEST CASE
+    // ==============================
+    it(testCase()+"Should handle missing fields and null check", () => {
+        render(
+            <BrowserRouter>
+                <MediaCard isSearchResult={true} media={mockInvalidMediaData} />
+            </BrowserRouter>
+        );
+        const title = screen.getByText(mockMediaData.Title);
+        const mediaType = screen.getByText(mockMediaData.Type);
+    
+        // ACTIONS
+
+        // RESULTS
+        expect(title).toBeTruthy();
+        expect(mediaType).toBeTruthy(); 
+        expect(title).not.toBeInTheDocument();
+        expect(mediaType).not.toBeInTheDocument();
     });
 
     // TEST CASE
