@@ -200,4 +200,147 @@ describe(testPrefix+": SearchPage Tests", () => {
         expect(screen.queryByText("Abbey Road")).not.toBeInTheDocument();
     });
 
+    // TEST CASE
+    // ==============================
+    it(testCase()+"Should handle repeat input change for filters", async () => {
+        render(
+            <MemoryRouter initialEntries={[{ pathname: "/search" }]}>
+                <Routes>
+                    <Route path="/search" element={<SearchPage />} />
+                </Routes>
+            </MemoryRouter>
+        );
+        expect(await screen.findByText("The Hobbit")).toBeInTheDocument();
+        expect(screen.getByText("The Great Gatsby")).toBeInTheDocument();
+        expect(screen.getByText("Abbey Road")).toBeInTheDocument();
+
+        // ACTIONS
+        const bookCheckbox = screen.getByLabelText("Book");
+        fireEvent.click(bookCheckbox);  
+        fireEvent.click(bookCheckbox);  
+        fireEvent.click(bookCheckbox);  
+
+        // RESULTS
+        expect(await screen.findByText("The Hobbit")).toBeInTheDocument();
+        expect(screen.getByText("The Great Gatsby")).toBeInTheDocument();
+        expect(screen.queryByText("Abbey Road")).not.toBeInTheDocument();
+    });
+
+    // TEST CASE
+    // ==============================
+    it(testCase()+"Should handle multiple filters selected and display corrcet media", async () => {
+        render(
+            <MemoryRouter initialEntries={[{ pathname: "/search" }]}>
+                <Routes>
+                    <Route path="/search" element={<SearchPage />} />
+                </Routes>
+            </MemoryRouter>
+        );
+        expect(await screen.findByText("The Hobbit")).toBeInTheDocument();
+        expect(screen.getByText("The Great Gatsby")).toBeInTheDocument();
+        expect(screen.getByText("Abbey Road")).toBeInTheDocument();
+
+        // ACTIONS
+        const bookCheckbox = screen.getByLabelText("Book");
+        fireEvent.click(bookCheckbox);  
+        const cdCheckbox = screen.getByLabelText("CD");
+        fireEvent.click(cdCheckbox);   
+
+        // RESULTS
+        expect(await screen.findByText("The Hobbit")).toBeInTheDocument();
+        expect(screen.getByText("The Great Gatsby")).toBeInTheDocument();
+        expect(screen.queryByText("Abbey Road")).toBeInTheDocument();
+    });
+
+    // TEST CASE
+    // ==============================
+    it(testCase()+"Should handle 500 media call error response", async () => {
+        const mockInvalidMediaData = {
+            message: "Failed to retrieve records",
+            data: [],
+            status: 500
+        };
+        const mockGet = jest.fn().mockResolvedValue({ status: mockInvalidMediaData.status });
+        useLocation.mockReturnValue({ state: { searchTerm: '' } });
+        MediaFrontEndService.mockImplementation(() => {
+            return {
+                get: mockGet,
+                autoComplete: mockAutoComplete,
+                generateImageSrc: jest.fn().mockReturnValue("test")
+            };
+        });
+        render(
+            <MemoryRouter initialEntries={[{ pathname: "/search" }]}>
+                <Routes>
+                    <Route path="/search" element={<SearchPage />} />
+                </Routes>
+            </MemoryRouter>
+        );
+        
+        // ACTIONS
+
+        // RESULTS
+        await waitFor(() => {
+            expect(screen.getByText("No Results")).toBeInTheDocument();
+        });
+    });
+
+    // TEST CASE
+    // ==============================
+    it(testCase()+"Should handle missing fields in media data", async () => {
+        const mockInvalidMediaData = {
+            message: "Records retrieved successfully",
+            data: [
+                {
+                    Title: "The Hobbit",
+                    Genre: "Fantasy",
+                    Author: "JRR Tolkien",
+                    PublishDate: "1937-09-21",
+                    Description: "A thrilling book about fairytale ceatures.",
+                },
+                {
+                    Title: "The Great Gatsby",
+                    Genre: "Fiction",
+                    Author: "F. Scott Fitzgerald",
+                    PublishDate: "1925-04-10",
+                    Description: "A tale of love, wealth, and tragedy in 1920s America.",
+                },
+                {
+                    Type: "CD",
+                    Genre: "Entertainment",
+                    Author: "The Beatles",
+                    PublishDate: "1969-09-26",
+                    Description: "A Beatles masterpiece with classic tracks.",
+                }
+            ],
+            status: 200
+        };
+        const mockGet = jest.fn().mockResolvedValue({ data: mockInvalidMediaData.data });
+        useLocation.mockReturnValue({ state: { searchTerm: '' } });
+        MediaFrontEndService.mockImplementation(() => {
+            return {
+                get: mockGet,
+                autoComplete: mockAutoComplete,
+                generateImageSrc: jest.fn().mockReturnValue("test")
+            };
+        });
+        render(
+            <MemoryRouter initialEntries={[{ pathname: "/search" }]}>
+                <Routes>
+                    <Route path="/search" element={<SearchPage />} />
+                </Routes>
+            </MemoryRouter>
+        );
+
+        // ACTIONS
+
+        // RESULTS
+
+        await waitFor(() => {
+            expect(screen.getByText("The Hobbit")).not.toBeInTheDocument();
+            expect(screen.getByText("The Great Gatsby")).not.toBeInTheDocument();
+            expect(screen.getByText("Abbey Road")).not.toBeInTheDocument();
+        });
+    });
+
 });
