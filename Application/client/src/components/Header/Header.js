@@ -8,7 +8,7 @@ import BranchFrontEndService from "../../services/storefront/branchFrontEndServi
 function Header() {
   const branchFrontEndService = new BranchFrontEndService();
   const { employee, user, basket } = useContext(SessionContext) || {};
-  const basketNum = basket.length;
+  const basketNum = basket?.length || 0;
   const [localBranch, setLocalBranch] = useState(null);
   const location = useLocation();
   const minimalHeader =
@@ -126,7 +126,7 @@ function Header() {
                 </Link>
               </Col>
               <Col className="d-flex justify-content-end">
-                <Form className="d-flex align-items-center">
+                <Form className="d-flex align-items-center" data-testid="search-form">
                   <DropdownMenu
                     searchText={searchText}
                     setSearchText={setSearchText}
@@ -135,8 +135,10 @@ function Header() {
                     to="/search" 
                     state={{ searchTerm: searchText }} 
                     aria-label={`Search for ${searchText || "products"}`}
+                    data-testid="search-link"
                   >
                     <Button
+                      data-testid="search-button"
                       className="button-secondary me-2"
                       style={{ borderRadius: "0 5px 5px 0" }}
                     >

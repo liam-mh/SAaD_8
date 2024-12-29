@@ -61,7 +61,7 @@ const MediaPagination = ({ media, numColumn, numRow, displayFirst = null }) => {
 
       {/* Pagination Controls (only show if displayFirst is not set) */}
       {!displayFirst && (
-        <div className="d-flex justify-content-center pt-4">
+        <div className="d-flex justify-content-center pt-4" data-testid="media-pagination">
           <Pagination>
             {/* Previous Button */}
             <Pagination.Prev

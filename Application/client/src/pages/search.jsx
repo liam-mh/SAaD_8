@@ -4,9 +4,8 @@ import { Container, Col, Row, Form, FormGroup } from 'react-bootstrap';
 import MediaPagination from '../components/Media-Pagination/MediaPagination';
 import MediaFrontEndService from '../services/storefront/mediaFrontEndService';
 
-const mediaFrontEndService = new MediaFrontEndService();
-
 const SearchPage = () => {
+    const mediaFrontEndService = new MediaFrontEndService();
     const location = useLocation();
     const searchTerm = location.state ? location.state.searchTerm : '';
     const { preFilterType } = location.state || {};
