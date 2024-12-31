@@ -1,0 +1,33 @@
+config:
+  target: 'http://localhost:4000'  
+  phases:
+    - duration: 60
+      arrivalRate: 6        # Baseline load (5.7 rounded up)
+      name: "Baseline load"
+    - duration: 60
+      arrivalRate: 10       # Midpoint between baseline and peak
+      name: "Moderate load"
+    - duration: 60
+      arrivalRate: 14       # Peak load (13.7 rounded up)
+      name: "Peak load"
+    - duration: 60
+      arrivalRate: 28       # 2x Peak load
+      name: "Stress test 2x peak"
+    - duration: 60
+      arrivalRate: 42       # 3x Peak load
+      name: "Stress test 3x peak"
+
+scenarios:
+  - flow:
+    - post:
+        url: "/api/storefront/wishlist/createRecord"
+        headers:
+          Content-Type: "application/json"
+        json:
+          MemberID: "89"
+          Title: "Sample Media Title"
+          Type: "Periodical"
+          DateTime: "2024-12-30T17:35:44.000Z"
+          WishType: "Wishlist"
+        expect:
+          - statusCode: 201
