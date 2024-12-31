@@ -1,0 +1,12 @@
+config:
+  target: 'http://localhost:4000'  
+  phases:
+    - duration: 1
+      arrivalRate: 1
+
+scenarios:
+  - flow:
+      - get:
+          url: "/api/storefront/media/autoComplete?chars=the"  
+          headers:
+            If-None-Match: ""  
