@@ -10,24 +10,22 @@ const axios = require('axios');
 const forwardRequest = (serviceApi, isRedirect = false) => {
     return async(req, res, next) => {
         const forwardUrl = isRedirect ? redirectUrl(serviceApi, req.originalUrl) : serviceApi;
-
-    try {
-        const response = await axios({
-            method: req.method,
-            url: forwardUrl,
-            data: req.body,
-            headers: req.headers,
-        });
-        
-        res.status(response.status).json(response.data);
-    } catch (error) {
-        console.error(`Error forwarding request to ${serviceApi}:`, error);
-        const status = error.response ? error.response.status : 500;
-        res.status(status).json({
-            error: error.message,
-            details: error.response?.data || 'Service unavailable',
-        });
-    }
+        try {
+            const response = await axios({
+                method: req.method,
+                url: forwardUrl,
+                data: req.body,
+                headers: req.headers,
+            });
+            res.status(response.status).json(response.data);
+        } catch (error) {
+            console.error(`Error forwarding request to ${serviceApi}:`, error);
+            const status = error.response ? error.response.status : 500;
+            res.status(status).json({
+                error: error.message,
+                details: error.response?.data || 'Service unavailable',
+            });
+        }
     };
 };
 

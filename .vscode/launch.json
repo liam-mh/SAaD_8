@@ -6,6 +6,20 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Debug Jest Tests - API Gateway",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/Application/api-gateway/node_modules/jest/bin/jest.js",
+      "args": ["--runInBand"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "cwd": "${workspaceFolder}/Application/api-gateway", 
+      "runtimeArgs": ["--inspect-brk"],
+      "env": {
+        "NODE_ENV": "test"
+      }
+    },
+    {
       "name": "Debug Jest Tests - Client Service",
       "type": "node",
       "request": "launch",
