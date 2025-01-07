@@ -65,7 +65,7 @@ class MemberFrontEndService extends FrontEndService {
 
     if (firstReservationRecord) {
       // Get the member with the oldest reservation.
-      memberIDs = { MemberID: firstReservationRecord.MemberID };
+      memberIDs = { MemberIDs: [firstReservationRecord.MemberID] };
       type = firstReservationRecord.Type;
       title = firstReservationRecord.Title;
       wishType = "Reservation";
